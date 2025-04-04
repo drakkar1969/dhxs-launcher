@@ -87,7 +87,29 @@ impl LauncherApplication {
         let quit_action = gio::ActionEntry::builder("quit-app")
             .activate(move |app: &Self, _, _| app.quit())
             .build();
-        self.add_action_entries([quit_action]);
+
+        let about_action = gio::ActionEntry::builder("show-about")
+            .activate(move |app: &Self, _, _| {
+                let window = app.active_window()
+                    .expect("Could not retrieve active window");
+
+                let about_dialog = adw::AboutDialog::builder()
+                    .application_name("D-Launcher")
+                    // .application_icon("zandronum")
+                    .developer_name("draKKar1969")
+                    .version(env!("CARGO_PKG_VERSION"))
+                    // .website("https://github.com/drakkar1969/zandronum-launcher/")
+                    .developers(vec!["draKKar1969"])
+                    .designers(vec!["draKKar1969"])
+                    .copyright("© 2025 draKKar1969")
+                    .license_type(gtk::License::Gpl30)
+                    .build();
+
+                about_dialog.present(Some(&window));
+            })
+            .build();
+
+        self.add_action_entries([quit_action, about_action]);
 
         self.set_accels_for_action("app.quit-app", &["<ctrl>Q"]);
     }
