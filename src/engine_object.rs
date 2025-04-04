@@ -19,6 +19,8 @@ mod imp {
         #[property(get, set)]
         name: RefCell<String>,
         #[property(get, set)]
+        description: RefCell<String>,
+        #[property(get, set)]
         path: RefCell<String>,
     }
 
@@ -46,10 +48,11 @@ impl EngineObject {
     //-----------------------------------
     // New function
     //-----------------------------------
-    pub fn new(name: &str, path: &str) -> Self {
+    pub fn new(name: &str, description: &str, path: &str) -> Self {
         // Build IWadObject
         glib::Object::builder()
             .property("name", name)
+            .property("description", description)
             .property("path", path)
             .build()
     }

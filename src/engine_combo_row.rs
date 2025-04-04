@@ -84,22 +84,27 @@ impl EngineComboRow {
         let engines: Vec<EngineObject> = vec![
             EngineObject::new(
                 "PrBoom+",
+                "An advanced, Vanilla-compatible Doom engine based on PrBoom",
                 ""
             ),
             EngineObject::new(
                 "Woof!",
+                "Woof! is a continuation of Lee Killough's Doom source port MBF targeted at modern systems",
                 ""
             ),
             EngineObject::new(
                 "Nugget Doom",
+                "Fork of Woof! with additional features",
                 ""
             ),
             EngineObject::new(
                 "GZDoom",
+                "Feature centric port for all Doom engine games",
                 ""
             ),
             EngineObject::new(
                 "Chocolate Doom",
+                "Historically-accurate Doom, Heretic, Hexen, and Strife port",
                 ""
             ),
         ];
