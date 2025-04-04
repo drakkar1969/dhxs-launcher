@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <!--// LauncherWindow template //-->
+  <template class="LauncherWindow" parent="AdwApplicationWindow">
+    <!-- <property name="default-width">580</property>
+    <property name="default-height">-1</property> -->
+    <property name="title">D-Launcher</property>
+    <property name="content">
+      <object class="AdwToolbarView">
+        <child type="top">
+          <object class="GtkHeaderBar">
+            <child type="end">
+              <object class="GtkMenuButton">
+                <property name="icon-name">open-menu-symbolic</property>
+                <property name="primary">true</property>
+                <!-- <property name="menu-model">main_menu</property> -->
+              </object>
+            </child>
+          </object>
+        </child>
+        <property name="content">
+          <object class="AdwClamp">
+            <!-- <property name="tightening-threshold">580</property> -->
+            <child>
+              <object class="GtkBox">
+                <!-- <property name="orientation">vertical</property>
+                <property name="margin-start">24</property>
+                <property name="margin-end">24</property>
+                <property name="margin-top">24</property>
+                <property name="margin-bottom">28</property>
+                <property name="spacing">28</property> -->
+              </object>
+            </child>
+          </object>
+        </property>
+      </object>
+    </property>
+  </template>
+</interface>
