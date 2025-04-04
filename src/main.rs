@@ -2,6 +2,8 @@ mod app;
 mod window;
 mod engine_combo_row;
 mod engine_object;
+mod iwad_combo_row;
+mod iwad_object;
 
 use gtk::{gio, glib};
 use gtk::prelude::*;

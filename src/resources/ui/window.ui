@@ -39,6 +39,13 @@
                         <property name="use-underline">true</property>
                       </object>
                     </child>
+                    <child>
+                      <object class="IWadComboRow" id="iwad_comborow">
+                        <property name="title">_Game</property>
+                        <property name="title-lines">1</property>
+                        <property name="use-underline">true</property>
+                      </object>
+                    </child>
                   </object>
                 </child>
               </object>

@@ -4,6 +4,7 @@ use adw::prelude::*;
 
 use crate::LauncherApplication;
 use crate::engine_combo_row::EngineComboRow;
+use crate::iwad_combo_row::IWadComboRow;
 
 //------------------------------------------------------------------------------
 // MODULE: LauncherWindow
@@ -19,6 +20,8 @@ mod imp {
     pub struct LauncherWindow {
         #[template_child]
         pub engine_comborow: TemplateChild<EngineComboRow>,
+        #[template_child]
+        pub iwad_comborow: TemplateChild<IWadComboRow>,
     }
 
     //-----------------------------------
