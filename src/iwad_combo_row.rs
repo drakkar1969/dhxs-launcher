@@ -1,6 +1,11 @@
+use std::cell::OnceCell;
+use std::collections::HashMap;
+
 use gtk::{gio, glib};
 use adw::subclass::prelude::*;
 use adw::prelude::*;
+
+use glob::{glob_with, MatchOptions};
 
 use crate::iwad_object::IWadObject;
 
@@ -18,6 +23,8 @@ mod imp {
     pub struct IWadComboRow {
         #[template_child]
         pub model: TemplateChild<gio::ListStore>,
+
+        pub iwad_map: OnceCell<HashMap<&'static str, &'static str>>,
     }
 
     //-----------------------------------
@@ -46,6 +53,8 @@ mod imp {
         //-----------------------------------
         fn constructed(&self) {
             self.parent_constructed();
+
+            self.obj().setup_data();
         }
     }
 
@@ -71,6 +80,85 @@ impl IWadComboRow {
     //-----------------------------------
     pub fn new() -> Self {
         glib::Object::builder().build()
+    }
+
+    //-----------------------------------
+    // Setup data
+    //-----------------------------------
+    fn setup_data(&self) {
+        let imp = self.imp();
+
+        let iwad_map: HashMap<&str, &str> = [
+            (
+                "doom.wad",
+                "The Ultimate Doom"
+            ),
+            (
+                "doom2.wad",
+                "Doom II: Hell on Earth"
+            ),
+            (
+                "plutonia.wad",
+                "Final Doom - The Plutonia Experiment"
+            ),
+            (
+                "tnt.wad",
+                "Final Doom - TNT: Evilution"
+            ),
+            (
+                "freedoom1.wad",
+                "Freedoom Phase 1"
+            ),
+            (
+                "freedoom2.wad",
+                "Freedoom Phase 2"
+            ),
+            (
+                "heretic.wad",
+                "Heretic"
+            ),
+            (
+                "hexen.wad",
+                "Hexen"
+            )
+        ]
+        .into_iter()
+        .collect();
+
+        imp.iwad_map.set(iwad_map).unwrap();
+    }
+
+    //-----------------------------------
+    // Init from folder function
+    //-----------------------------------
+    pub fn init_from_folder(&self, folder: &str) {
+        let imp = self.imp();
+
+        let options = MatchOptions {
+            case_sensitive: false,
+            require_literal_separator: false,
+            require_literal_leading_dot: false
+        };
+
+        if let Ok(entries) = glob_with(&format!("{folder}/*.wad"), options) {
+            // Get list of IWADs in folder
+            let iwad_map = imp.iwad_map.get().unwrap();
+
+            let iwad_objects = entries.into_iter()
+                .flatten()
+                .filter_map(|entry| {
+                    let filename = entry.file_name()
+                        .and_then(|filename| filename.to_str())
+                        .unwrap_or_default();
+
+                    iwad_map.get(filename)
+                        .map(|name| IWadObject::new(name, filename))
+                })
+                .collect::<Vec<_>>();
+
+            // Add IWADs to combo row
+            imp.model.splice(0, imp.model.n_items(), &iwad_objects);
+        }
     }
 }
 
