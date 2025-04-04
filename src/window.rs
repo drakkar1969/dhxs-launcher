@@ -1,10 +1,12 @@
-use gtk::{gio, glib};
+use gtk::{gio, glib, gdk};
 use adw::subclass::prelude::*;
 use adw::prelude::*;
+use glib::clone;
 
 use crate::LauncherApplication;
 use crate::engine_combo_row::EngineComboRow;
 use crate::iwad_combo_row::IWadComboRow;
+use crate::preferences_dialog::PreferencesDialog;
 
 //------------------------------------------------------------------------------
 // MODULE: LauncherWindow
@@ -22,6 +24,9 @@ mod imp {
         pub engine_comborow: TemplateChild<EngineComboRow>,
         #[template_child]
         pub iwad_comborow: TemplateChild<IWadComboRow>,
+
+        #[template_child]
+        pub prefs_dialog: TemplateChild<PreferencesDialog>,
     }
 
     //-----------------------------------
@@ -35,6 +40,9 @@ mod imp {
 
         fn class_init(klass: &mut Self::Class) {
             klass.bind_template();
+
+            // Add show preferences shortcut
+            klass.add_binding_action(gdk::Key::comma, gdk::ModifierType::CONTROL_MASK, "win.show-preferences");
         }
 
         fn instance_init(obj: &glib::subclass::InitializingObject<Self>) {
@@ -48,6 +56,10 @@ mod imp {
         //-----------------------------------
         fn constructed(&self) {
             self.parent_constructed();
+
+            let obj = self.obj();
+
+            obj.setup_actions();
         }
     }
 
@@ -73,5 +85,25 @@ impl LauncherWindow {
     //-----------------------------------
     pub fn new(app: &LauncherApplication) -> Self {
         glib::Object::builder().property("application", app).build()
+    }
+
+    //-----------------------------------
+    // Setup actions
+    //-----------------------------------
+    fn setup_actions(&self) {
+        let imp = self.imp();
+
+        // Add show preferences action
+        let prefs_action = gio::ActionEntry::builder("show-preferences")
+            .activate(clone!(
+                #[weak(rename_to = window)] self,
+                #[weak] imp,
+                move |_, _, _| {
+                    imp.prefs_dialog.present(Some(&window));
+                }
+            ))
+            .build();
+        // Add actions to window
+        self.add_action_entries([prefs_action]);
     }
 }

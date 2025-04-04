@@ -5,6 +5,7 @@ mod engine_object;
 mod iwad_combo_row;
 mod iwad_object;
 mod file_select_row;
+mod preferences_dialog;
 
 use gtk::{gio, glib};
 use gtk::prelude::*;

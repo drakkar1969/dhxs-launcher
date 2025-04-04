@@ -56,6 +56,10 @@
     </property>
   </template>
 
+  <!--// Preferences dialog //-->
+  <object class="PreferencesDialog" id="prefs_dialog">
+  </object>
+
   <!--// Primary menu //-->
   <menu id="main_menu">
     <section>

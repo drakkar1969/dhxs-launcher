@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <!--// PreferencesDialog template //-->
+  <template class="PreferencesDialog" parent="AdwPreferencesDialog">
+    <!-- <property name="title">Preferences</property> -->
+    <child>
+      <object class="AdwPreferencesPage">
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title">Application Paths</property>
+            <child>
+              <object class="FileSelectRow" id="iwad_row">
+                <property name="title">_IWAD Folder</property>
+                <property name="subtitle">Folder to search for IWAD files</property>
+                <property name="use-underline">true</property>
+                <property name="select-mode">folder</property>
+                <property name="dialog-title">IWAD Folder</property>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </template>
+</interface>

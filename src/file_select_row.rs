@@ -31,8 +31,8 @@ mod imp {
     // Private structure
     //-----------------------------------
     #[derive(Default, gtk::CompositeTemplate, glib::Properties)]
-    #[template(resource = "/com/github/ZandronumLauncher/ui/file_select_row.ui")]
     #[properties(wrapper_type = super::FileSelectRow)]
+    #[template(resource = "/com/github/D-Launcher/ui/file_select_row.ui")]
     pub struct FileSelectRow {
         #[template_child]
         pub select_label: TemplateChild<gtk::Label>,
