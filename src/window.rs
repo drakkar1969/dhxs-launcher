@@ -3,6 +3,7 @@ use adw::subclass::prelude::*;
 use adw::prelude::*;
 
 use crate::LauncherApplication;
+use crate::engine_combo_row::EngineComboRow;
 
 //------------------------------------------------------------------------------
 // MODULE: LauncherWindow
@@ -16,6 +17,8 @@ mod imp {
     #[derive(Default, gtk::CompositeTemplate)]
     #[template(resource = "/com/github/D-Launcher/ui/window.ui")]
     pub struct LauncherWindow {
+        #[template_child]
+        pub engine_comborow: TemplateChild<EngineComboRow>,
     }
 
     //-----------------------------------

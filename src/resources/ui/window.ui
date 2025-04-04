@@ -20,15 +20,27 @@
         </child>
         <property name="content">
           <object class="AdwClamp">
-            <!-- <property name="tightening-threshold">580</property> -->
+            <property name="tightening-threshold">580</property>
             <child>
               <object class="GtkBox">
-                <!-- <property name="orientation">vertical</property>
+                <property name="orientation">vertical</property>
                 <property name="margin-start">24</property>
                 <property name="margin-end">24</property>
                 <property name="margin-top">24</property>
                 <property name="margin-bottom">28</property>
-                <property name="spacing">28</property> -->
+                <property name="spacing">28</property>
+                <child>
+                  <object class="AdwPreferencesGroup">
+                    <property name="title">Doom Settings</property>
+                    <child>
+                      <object class="EngineComboRow" id="engine_comborow">
+                        <property name="title">_Engine</property>
+                        <property name="title-lines">1</property>
+                        <property name="use-underline">true</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
               </object>
             </child>
           </object>

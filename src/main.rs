@@ -1,5 +1,7 @@
 mod app;
 mod window;
+mod engine_combo_row;
+mod engine_object;
 
 use gtk::{gio, glib};
 use gtk::prelude::*;

@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
   <gresource prefix="/com/github/D-Launcher">
+    <file compressed="true">ui/engine_combo/entry-item.ui</file>
+    <file compressed="true">ui/engine_combo/list-item.ui</file>
+    <file compressed="true">ui/engine_combo_row.ui</file>
     <file compressed="true">ui/window.ui</file>
   </gresource>
 </gresources>
