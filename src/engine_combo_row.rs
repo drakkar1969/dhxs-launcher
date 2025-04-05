@@ -1,3 +1,5 @@
+use std::path::Path;
+
 use gtk::{gio, glib};
 use adw::subclass::prelude::*;
 use adw::prelude::*;
@@ -100,7 +102,7 @@ impl EngineComboRow {
             EngineObject::new(
                 "GZDoom",
                 "Feature centric port for all Doom engine games",
-                ""
+                "/usr/bin/gzdoom"
             ),
             EngineObject::new(
                 "Chocolate Doom",
@@ -109,7 +111,9 @@ impl EngineComboRow {
             ),
         ];
 
-        imp.model.splice(0, imp.model.n_items(), &engines);
+        imp.model.splice(0, imp.model.n_items(), &engines.into_iter().filter(|engine| {
+            Path::new(&engine.path()).try_exists().unwrap_or_default()
+        }).collect::<Vec<EngineObject>>());
     }
 }
 
