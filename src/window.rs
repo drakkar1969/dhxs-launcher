@@ -1,6 +1,6 @@
 use std::cell::OnceCell;
 
-use gtk::{gio, glib, gdk};
+use gtk::{gio, glib, gdk, pango};
 use adw::subclass::prelude::*;
 use adw::prelude::*;
 use glib::clone;
@@ -34,6 +34,9 @@ mod imp {
         pub pwad_row: TemplateChild<FileSelectRow>,
         #[template_child]
         pub switches_row: TemplateChild<adw::EntryRow>,
+
+        #[template_child]
+        pub switches_grid: TemplateChild<gtk::Grid>,
 
         #[template_child]
         pub launch_button: TemplateChild<gtk::Button>,
@@ -121,11 +124,76 @@ impl LauncherWindow {
     }
 
     //-----------------------------------
+    // Label helper functions
+    //-----------------------------------
+    fn key_button(&self, key: &str) -> gtk::Button {
+        let imp = self.imp();
+
+        let button = gtk::Button::new();
+
+        button.set_label(key);
+        button.set_valign(gtk::Align::Center);
+
+        button.connect_clicked(clone!(
+            #[weak] imp,
+            move |button| {
+                let mut text = imp.switches_row.text().to_string();
+
+                text += &format!("{}{}",
+                    if text.is_empty() { "" } else { " " },
+                    button.label().unwrap_or_default()
+                );
+
+                imp.switches_row.set_text(&text);
+            }
+        ));
+
+        button
+    }
+
+    fn value_label(&self, value: &str) -> gtk::Label {
+        let label = gtk::Label::new(Some(value));
+
+        label.set_valign(gtk::Align::Center);
+        label.set_xalign(0.0);
+        label.set_yalign(0.0);
+        label.set_can_focus(false);
+        label.set_wrap_mode(pango::WrapMode::Word);
+        label.set_wrap(true);
+        label.set_width_chars(45);
+        label.set_max_width_chars(45);
+
+        label
+    }
+
+    //-----------------------------------
     // Setup widgets
     //-----------------------------------
     fn setup_widgets(&self) {
+        let imp = self.imp();
+
+        // Populate switches popover
+        [
+            ("-fast", "Increase the speed and attack rate of monsters, requires the -warp parameter"),
+            ("-nomonsters", "Disable spawning of monsters, requires the -warp parameter."),
+            ("-nomusic", "Disable background music"),
+            ("-nosfx", "Disable sound effects"),
+            ("-nosound", "Disable music and sound effects"),
+            ("-respawn", "Monsters return a few seconds after being killed, requires the -warp parameter"),
+            ("-skill s", "Select difficulty level s (1 to 5), will warp to the first level of the game (if no other -warp parameter is specified)"),
+            ("-warp m", "Start the game on level m (1 to 32) (Doom2)"),
+            ("-warp e m", "Start the game on episode e (1 to 4) map m (1 to 9) (Doom1)"),
+            ("-width x -height y", "Specify the desired screen resolution")
+        ]
+        .iter()
+        .enumerate()
+        .for_each(|(i, (key, value))| {
+            imp.switches_grid.attach(&self.key_button(key), 0, i as i32, 1, 1);
+            imp.switches_grid.attach(&self.value_label(value), 1, i as i32, 1, 1);
+        });
+
         // Set initial focus on engine combo row
-        self.imp().engine_row.get().grab_focus();
+        imp.engine_row.get().grab_focus();
     }
 
     //-----------------------------------
