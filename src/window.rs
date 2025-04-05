@@ -136,7 +136,7 @@ impl LauncherWindow {
         imp.prefs_dialog.connect_iwad_folder_notify(clone!(
             #[weak] imp,
             move |prefs_dialog| {
-                imp.iwad_row.init_from_folder(&prefs_dialog.iwad_folder());
+                imp.iwad_row.init_from_folder(&env_expand(&prefs_dialog.iwad_folder()));
         
                 imp.launch_button.set_sensitive(imp.engine_row.selected_item().is_some() && imp.iwad_row.selected_iwad().is_some());
             }
@@ -146,7 +146,7 @@ impl LauncherWindow {
         imp.prefs_dialog.connect_pwad_folder_notify(clone!(
             #[weak] imp,
             move |prefs_dialog| {
-                imp.pwad_row.set_initial_path(prefs_dialog.pwad_folder());
+                imp.pwad_row.set_initial_folder(prefs_dialog.pwad_folder());
             }
         ));
     }
@@ -161,16 +161,16 @@ impl LauncherWindow {
         let gsettings = gio::Settings::new(APP_ID);
 
         // Init preferences window
-        imp.prefs_dialog.set_iwad_folder(env_expand(&gsettings.string("iwad-folder")));
-        imp.prefs_dialog.set_pwad_folder(env_expand(&gsettings.string("pwad-folder")));
+        imp.prefs_dialog.set_iwad_folder(gsettings.string("iwad-folder"));
+        imp.prefs_dialog.set_pwad_folder(gsettings.string("pwad-folder"));
 
-        imp.prefs_dialog.set_iwad_default_folder(env_expand(&gsetting_default_value(&gsettings,"iwad-folder")));
-        imp.prefs_dialog.set_pwad_default_folder(env_expand(&gsetting_default_value(&gsettings,"pwad-folder")));
+        imp.prefs_dialog.set_iwad_default_folder(gsetting_default_value(&gsettings,"iwad-folder"));
+        imp.prefs_dialog.set_pwad_default_folder(gsetting_default_value(&gsettings,"pwad-folder"));
 
         // Init main window
         imp.engine_row.set_selected_engine_name(&gsettings.string("selected-engine"));
         imp.iwad_row.set_selected_iwad_file(&gsettings.string("selected-iwad"));
-        imp.pwad_row.set_paths(gsettings.strv("pwad-files").into_iter().map(String::from).collect::<Vec<String>>());
+        imp.pwad_row.set_files(gsettings.strv("pwad-files").into_iter().map(String::from).collect::<Vec<String>>());
 
         // Store gsettings
         imp.gsettings.set(gsettings).unwrap();
@@ -195,13 +195,13 @@ impl LauncherWindow {
         // Save main window settings
         set_gsetting(gsettings, "selected-engine", &selected_engine);
         set_gsetting(gsettings, "selected-iwad", &selected_iwad);
-        set_gsetting(gsettings, "pwad-files", &imp.pwad_row.paths());
+        set_gsetting(gsettings, "pwad-files", &imp.pwad_row.files());
 
         // Save preferences window settings
         let prefs = imp.prefs_dialog.imp();
 
-        set_gsetting(gsettings, "iwad-folder", &prefs.iwad_row.path());
-        set_gsetting(gsettings, "pwad-folder", &prefs.pwad_row.path());
+        set_gsetting(gsettings, "iwad-folder", &prefs.iwad_row.files().get(0).cloned().unwrap_or_default());
+        set_gsetting(gsettings, "pwad-folder", &prefs.pwad_row.files().get(0).cloned().unwrap_or_default());
     }
 
     //-----------------------------------

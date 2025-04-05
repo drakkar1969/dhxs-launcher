@@ -101,22 +101,30 @@ impl PreferencesDialog {
         let imp = self.imp();
 
         // Bind properties to widgets
-        self.bind_property("iwad-folder", &imp.iwad_row.get(), "path")
+        self.bind_property("iwad-folder", &imp.iwad_row.get(), "files")
+            .transform_to(|_, folder: String| Some(vec![folder]))
+            .transform_from(|_, files: Vec<String>| {
+                Some(files.get(0).cloned().unwrap_or_default())
+            })
             .sync_create()
             .bidirectional()
             .build();
 
-        self.bind_property("pwad-folder", &imp.pwad_row.get(), "path")
+        self.bind_property("pwad-folder", &imp.pwad_row.get(), "files")
+            .transform_to(|_, folder: String| Some(vec![folder]))
+            .transform_from(|_, files: Vec<String>| {
+                Some(files.get(0).cloned().unwrap_or_default())
+            })
             .sync_create()
             .bidirectional()
             .build();
 
-        self.bind_property("iwad-default-folder", &imp.iwad_row.get(), "default-path")
+        self.bind_property("iwad-default-folder", &imp.iwad_row.get(), "default-file")
             .sync_create()
             .bidirectional()
             .build();
 
-        self.bind_property("pwad-default-folder", &imp.pwad_row.get(), "default-path")
+        self.bind_property("pwad-default-folder", &imp.pwad_row.get(), "default-file")
             .sync_create()
             .bidirectional()
             .build();

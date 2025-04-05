@@ -1,4 +1,6 @@
-use std::cell::{Cell, RefCell, OnceCell};
+use std::cell::{Cell, RefCell};
+use std::borrow::Cow;
+use std::path::Path;
 
 use adw::prelude::ActionRowExt;
 use gtk::{gio, glib};
@@ -53,17 +55,12 @@ mod imp {
         #[property(get, set, nullable, construct)]
         filter: RefCell<Option<gtk::FileFilter>>,
 
-        #[property(name = "initial-path", type = String, get = Self::initial_path, set = Self::set_initial_path)]
-        #[property(get, set, nullable)]
-        initial_folder: RefCell<Option<gio::File>>,
-
-        #[property(name = "default-path", type = String, get = Self::default_path, set = Self::set_default_path)]
-        #[property(get, set, nullable)]
-        default_file: RefCell<Option<gio::File>>,
-
-        #[property(name = "paths", type = Vec<String>, get = Self::paths, set = Self::set_paths)]
-        #[property(name = "path", type = String, get = Self::path, set = Self::set_path)]
-        pub(super) files: OnceCell<gio::ListStore>,
+        #[property(get, set)]
+        initial_folder: RefCell<String>,
+        #[property(get, set)]
+        default_file: RefCell<String>,
+        #[property(get, set)]
+        files: RefCell<Vec<String>>,
     }
 
     //-----------------------------------
@@ -94,7 +91,6 @@ mod imp {
 
             let obj = self.obj();
 
-            obj.setup_widgets();
             obj.setup_signals();
         }
     }
@@ -143,137 +139,6 @@ mod imp {
 
             self.show_reset_button.replace(can_reset);
         }
-
-        //-----------------------------------
-        // Initial path property getter/setter
-        //-----------------------------------
-        fn initial_path(&self) -> String {
-            let initial_folder = self.initial_folder.borrow();
-
-            initial_folder.as_ref()
-                .and_then(|folder| folder.path())
-                .map(|path| path.display().to_string())
-                .unwrap_or_default()
-        }
-
-        fn set_initial_path(&self, path: &str) {
-            self.initial_folder.replace(self.path_to_file(path));
-        }
-
-        //-----------------------------------
-        // Default path property getter/setter
-        //-----------------------------------
-        fn default_path(&self) -> String {
-            let default_file = self.default_file.borrow();
-
-            default_file.as_ref()
-                .and_then(|folder| folder.path())
-                .map(|path| path.display().to_string())
-                .unwrap_or_default()
-        }
-
-        fn set_default_path(&self, path: &str) {
-            self.default_file.replace(self.path_to_file(path));
-        }
-
-        //-----------------------------------
-        // Path property getter/setter
-        //-----------------------------------
-        fn path(&self) -> String {
-            let files = self.files.get().unwrap();
-
-            files.item(0)
-                .and_downcast::<gio::File>()
-                .and_then(|file| file.path())
-                .map(|path| path.display().to_string())
-                .unwrap_or_default()
-        }
-
-        fn set_path(&self, path: &str) {
-            let files = self.files.get().unwrap();
-
-            if let Some(path) = self.path_to_file(path) {
-                files.splice(0, files.n_items(), &[path])
-            } else {
-                files.remove_all();
-            }
-
-            self.set_state();
-        }
-
-        //-----------------------------------
-        // Paths property getter/setter
-        //-----------------------------------
-        fn paths(&self) -> Vec<String> {
-            let files = self.files.get().unwrap();
-
-            files.iter::<gio::File>()
-                .filter_map(|file| {
-                    file.ok()
-                        .and_then(|file| file.path())
-                        .map(|path| path.display().to_string())
-                })
-                .collect::<Vec<String>>()
-        }
-
-        fn set_paths(&self, paths: Vec<String>) {
-            let files = self.files.get().unwrap();
-
-            files.splice(0, files.n_items(), &paths.iter()
-                .filter_map(|path| self.path_to_file(path.as_str()))
-                .collect::<Vec<gio::File>>()
-            );
-
-            self.set_state();
-        }
-
-        //-----------------------------------
-        // Path to file helper function
-        //-----------------------------------
-        fn path_to_file(&self, path: &str) -> Option<gio::File> {
-            if path.is_empty() {
-                return None
-            }
-
-            let file = gio::File::for_path(path);
-
-            file.query_exists(None::<&gio::Cancellable>).then_some(file)
-        }
-
-        //-----------------------------------
-        // Set state helper function
-        //-----------------------------------
-        pub(super) fn set_state(&self) {
-            let files = self.files.get().unwrap();
-
-            let n_files = files.n_items();
-
-            let label = match n_files {
-                0 => {
-                    "(None)".to_string()
-                },
-                1 => {
-                    let file = files.item(0).and_downcast::<gio::File>();
-                    file
-                        .and_then(|file| file.basename())
-                        .map(|name| name.display().to_string())
-                        .or_else(|| Some("(None)".to_string()))
-                        .unwrap()
-                },
-                _ => {
-                    format!("({n_files} files)")
-                }
-            };
-
-            self.select_label.set_label(&label);
-
-            self.reset_button.set_sensitive(n_files > 0);
-
-            let obj = self.obj();
-
-            obj.notify_path();
-            obj.notify_paths();
-        }
     }
 }
 
@@ -295,12 +160,27 @@ impl FileSelectRow {
     }
 
     //-----------------------------------
-    // Setup widgets
+    // Path to file helper function
     //-----------------------------------
-    fn setup_widgets(&self) {
-        let model = gio::ListStore::new::<gio::File>();
+    fn path_to_file(&self, path: &str) -> Option<gio::File> {
+        if path.is_empty() {
+            None
+        } else {
+            let path = shellexpand::full(path)
+                .unwrap_or(Cow::Borrowed(path))
+                .to_string();
 
-        self.imp().files.set(model).unwrap();
+            Some(gio::File::for_path(path))
+        }
+    }
+
+    //---------------------------------------
+    // File to path function
+    //---------------------------------------
+    fn file_to_path(&self, file: &gio::File) -> String {
+        file.path()
+            .map(|path| path.display().to_string())
+            .unwrap_or_default()
     }
 
     //-----------------------------------
@@ -309,10 +189,38 @@ impl FileSelectRow {
     fn setup_signals(&self) {
         let imp = self.imp();
 
+        // Files property notify signal
+        self.connect_files_notify(clone!(
+            #[weak] imp,
+            move |row| {
+                let files = row.files();
+
+                let n_files = files.len();
+
+                let label = match n_files {
+                    0 => {
+                        "(None)"
+                    },
+                    1 => {
+                        Path::new(&files[0]).file_name()
+                            .and_then(|filename| filename.to_str())
+                            .or_else(|| Some("(None)"))
+                            .unwrap()
+                    },
+                    _ => {
+                        &format!("({n_files} files)")
+                    }
+                };
+
+                imp.select_label.set_label(&label);
+
+                imp.reset_button.set_sensitive(n_files > 0);
+            }
+        ));
+
         // Select button clicked signal
         self.connect_activated(clone!(
             #[weak(rename_to = row)] self,
-            #[weak] imp,
             move |_| {
                 // Create dialog
                 let dialog = gtk::FileDialog::builder()
@@ -338,12 +246,12 @@ impl FileSelectRow {
                 }
 
                 // Set initial location for dialog
-                let files = imp.files.get().unwrap();
+                let files = row.files();
 
-                if files.n_items() > 0 {
-                    dialog.set_initial_file(files.item(0).and_downcast::<gio::File>().as_ref());
+                if files.len() > 0 {
+                    dialog.set_initial_file(row.path_to_file(&files[0]).as_ref());
                 } else {
-                    dialog.set_initial_folder(row.initial_folder().as_ref());
+                    dialog.set_initial_folder(row.path_to_file(row.initial_folder().as_ref()).as_ref());
                 }
 
                 // Get root window
@@ -355,42 +263,34 @@ impl FileSelectRow {
                 match row.select_mode() {
                     SelectMode::File => {
                         dialog.open(Some(&root), None::<&gio::Cancellable>, clone!(
-                            #[weak] imp,
+                            #[weak] row,
                             move |result| {
                                 if let Ok(file) = result {
-                                    let files = imp.files.get().unwrap();
-
-                                    files.splice(0, files.n_items(), &[file]);
-
-                                    imp.set_state();
+                                    row.set_files(vec![row.file_to_path(&file)]);
                                 }
                             }
                         ));
                     },
                     SelectMode::Multiple => {
                         dialog.open_multiple(Some(&root), None::<&gio::Cancellable>, clone!(
-                            #[weak] imp,
+                            #[weak] row,
                             move |result| {
                                 if let Ok(file_list) = result {
-                                    let files = imp.files.get().unwrap();
-
-                                    files.splice(0, files.n_items(), &file_list.iter::<gio::File>().flatten().collect::<Vec<gio::File>>());
-
-                                    imp.set_state();
+                                    row.set_files(file_list.iter::<gio::File>()
+                                        .flatten()
+                                        .map(|file| row.file_to_path(&file))
+                                        .collect::<Vec<String>>()
+                                    )
                                 }
                             }
                         ));
                     },
                     SelectMode::Folder => {
                         dialog.select_folder(Some(&root), None::<&gio::Cancellable>, clone!(
-                            #[weak] imp,
+                            #[weak] row,
                             move |result| {
                                 if let Ok(folder) = result {
-                                    let files = imp.files.get().unwrap();
-
-                                    files.splice(0, files.n_items(), &[folder]);
-
-                                    imp.set_state();
+                                    row.set_files(vec![row.file_to_path(&folder)]);
                                 }
                             }
                         ));
@@ -412,17 +312,13 @@ impl FileSelectRow {
     // Public reset_to_default function
     //-----------------------------------
     pub fn reset_to_default(&self) {
-        let imp = self.imp();
+        let default_file = self.default_file();
 
-        let files = imp.files.get().unwrap();
-
-        if let Some(default_file) = self.default_file() {
-            files.splice(0, files.n_items(), &[default_file]);
+        if default_file.is_empty() {
+            self.set_files(vec![]);
         } else {
-            files.remove_all();
+            self.set_files(vec![default_file]);
         }
-
-        imp.set_state();
     }
 }
 
