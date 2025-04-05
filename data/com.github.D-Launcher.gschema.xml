@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+  <schema id="com.github.D-Launcher" path="/com/github/D-Launcher/">
+    <key name="iwad-folder" type="s">
+      <default>'$HOME/.config/zandronum/iwads'</default>
+      <summary>Folder to search for game (IWAD) files</summary>
+    </key>
+  </schema>
+</schemalist>

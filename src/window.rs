@@ -1,12 +1,16 @@
+use std::cell::OnceCell;
+
 use gtk::{gio, glib, gdk};
 use adw::subclass::prelude::*;
 use adw::prelude::*;
 use glib::clone;
 
+use crate::APP_ID;
 use crate::LauncherApplication;
 use crate::engine_combo_row::EngineComboRow;
 use crate::iwad_combo_row::IWadComboRow;
 use crate::preferences_dialog::PreferencesDialog;
+use crate::utils::{env_expand, gsetting_default_value};
 
 //------------------------------------------------------------------------------
 // MODULE: LauncherWindow
@@ -27,6 +31,8 @@ mod imp {
 
         #[template_child]
         pub prefs_dialog: TemplateChild<PreferencesDialog>,
+
+        pub gsettings: OnceCell<gio::Settings>,
     }
 
     //-----------------------------------
@@ -59,6 +65,10 @@ mod imp {
 
             let obj = self.obj();
 
+            obj.setup_signals();
+
+            obj.load_gsettings();
+
             obj.setup_actions();
         }
     }
@@ -85,6 +95,41 @@ impl LauncherWindow {
     //-----------------------------------
     pub fn new(app: &LauncherApplication) -> Self {
         glib::Object::builder().property("application", app).build()
+    }
+
+    //-----------------------------------
+    // Setup signals
+    //-----------------------------------
+    fn setup_signals(&self) {
+        let imp = self.imp();
+
+        // Preferences window IWAD folders property notify signal
+        imp.prefs_dialog.connect_iwad_folder_notify(clone!(
+            #[weak] imp,
+            move |prefs_dialog| {
+                imp.iwad_comborow.init_from_folder(&prefs_dialog.iwad_folder());
+        
+    //         imp.launch_button.set_sensitive(imp.iwad_comborow.selected_iwad().is_some());
+            }
+        ));
+    }
+
+    //-----------------------------------
+    // Load gsettings
+    //-----------------------------------
+    fn load_gsettings(&self) {
+        let imp = self.imp();
+
+        // Create gsettings
+        let gsettings = gio::Settings::new(APP_ID);
+
+        // Init preferences window
+        imp.prefs_dialog.set_iwad_folder(env_expand(&gsettings.string("iwad-folder")));
+
+        imp.prefs_dialog.set_iwad_default_folder(env_expand(&gsetting_default_value(&gsettings,"iwad-folder")));
+
+        // Store gsettings
+        imp.gsettings.set(gsettings).unwrap();
     }
 
     //-----------------------------------

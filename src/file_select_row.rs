@@ -1,12 +1,10 @@
 use std::cell::{Cell, RefCell, OnceCell};
-use std::sync::OnceLock;
 
 use adw::prelude::ActionRowExt;
 use gtk::{gio, glib};
 use adw::subclass::prelude::*;
 use gtk::prelude::*;
 use glib::clone;
-use glib::subclass::Signal;
 
 //------------------------------------------------------------------------------
 // ENUM: SelectMode
@@ -89,19 +87,6 @@ mod imp {
     #[glib::derived_properties]
     impl ObjectImpl for FileSelectRow {
         //-----------------------------------
-        // Custom signals
-        //-----------------------------------
-        fn signals() -> &'static [Signal] {
-            static SIGNALS: OnceLock<Vec<Signal>> = OnceLock::new();
-            SIGNALS.get_or_init(|| {
-                vec![
-                    Signal::builder("changed")
-                        .build(),
-                ]
-            })
-        }
-
-        //-----------------------------------
         // Constructor
         //-----------------------------------
         fn constructed(&self) {
@@ -150,7 +135,7 @@ mod imp {
         }
 
         //-----------------------------------
-        // Show reset buttob property setter
+        // Show reset button property setter
         //-----------------------------------
         fn set_show_reset_button(&self, can_reset: bool) {
             self.reset_button.set_visible(can_reset);
@@ -250,11 +235,7 @@ mod imp {
                 return None
             }
 
-            let file = if let Ok(path_exp) = shellexpand::full(&path) {
-                gio::File::for_path(path_exp.to_string())
-            } else {
-                gio::File::for_path(path)
-            };
+            let file = gio::File::for_path(path);
 
             file.query_exists(None::<&gio::Cancellable>).then_some(file)
         }
@@ -288,7 +269,10 @@ mod imp {
 
             self.reset_button.set_sensitive(n_files > 0);
 
-            self.obj().emit_by_name::<()>("changed", &[]);
+            let obj = self.obj();
+
+            obj.notify_path();
+            obj.notify_paths();
         }
     }
 }

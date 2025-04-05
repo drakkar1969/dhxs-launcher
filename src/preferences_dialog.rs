@@ -1,6 +1,6 @@
 use std::cell::RefCell;
 
-use gtk::glib;
+use gtk::{gio, glib};
 use adw::subclass::prelude::*;
 use adw::prelude::*;
 use glib::clone;
@@ -23,8 +23,14 @@ mod imp {
         #[template_child]
         pub iwad_row: TemplateChild<FileSelectRow>,
 
+        #[template_child]
+        pub reset_button: TemplateChild<adw::ButtonRow>,
+
         #[property(get, set)]
         iwad_folder: RefCell<String>,
+
+        #[property(get, set)]
+        iwad_default_folder: RefCell<String>,
     }
 
     //-----------------------------------
@@ -56,6 +62,7 @@ mod imp {
             let obj = self.obj();
 
             obj.setup_widgets();
+            obj.setup_signals();
         }
     }
 
@@ -92,6 +99,47 @@ impl PreferencesDialog {
             .sync_create()
             .bidirectional()
             .build();
+
+        self.bind_property("iwad-default-folder", &imp.iwad_row.get(), "default-path")
+            .sync_create()
+            .bidirectional()
+            .build();
+    }
+
+    //-----------------------------------
+    // Setup signals
+    //-----------------------------------
+    fn setup_signals(&self) {
+        let imp = self.imp();
+
+        // Preferences reset button clicked signal
+        imp.reset_button.connect_activated(clone!(
+            #[weak(rename_to = window)] self,
+            #[weak] imp,
+            move |_| {
+                let reset_dialog = adw::AlertDialog::builder()
+                    .heading("Reset Paths?")
+                    .body("Reset all paths to their default values.")
+                    .default_response("reset")
+                    .build();
+
+                reset_dialog.add_responses(&[("cancel", "_Cancel"), ("reset", "_Reset")]);
+                reset_dialog.set_response_appearance("reset", adw::ResponseAppearance::Destructive);
+
+                reset_dialog.choose(
+                    &window,
+                    None::<&gio::Cancellable>,
+                    clone!(
+                        #[weak] imp,
+                        move |response| {
+                            if response == "reset" {
+                                imp.iwad_row.reset_to_default();
+                            }
+                        }
+                    )
+                );
+            }
+        ));
     }
 }
 
