@@ -65,6 +65,8 @@ mod imp {
 
             let obj = self.obj();
 
+            obj.setup_widgets();
+
             obj.setup_signals();
 
             obj.load_gsettings();
@@ -95,6 +97,14 @@ impl LauncherWindow {
     //-----------------------------------
     pub fn new(app: &LauncherApplication) -> Self {
         glib::Object::builder().property("application", app).build()
+    }
+
+    //-----------------------------------
+    // Setup widgets
+    //-----------------------------------
+    fn setup_widgets(&self) {
+        // Set initial focus on engine combo row
+        self.imp().engine_comborow.get().grab_focus();
     }
 
     //-----------------------------------
