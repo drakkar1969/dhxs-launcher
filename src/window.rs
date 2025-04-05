@@ -11,7 +11,7 @@ use crate::engine_combo_row::EngineComboRow;
 use crate::iwad_combo_row::IWadComboRow;
 use crate::file_select_row::FileSelectRow;
 use crate::preferences_dialog::PreferencesDialog;
-use crate::utils::{env_expand, gsetting_default_value, set_gsetting};
+use crate::utils::env_expand;
 
 //------------------------------------------------------------------------------
 // MODULE: LauncherWindow
@@ -164,6 +164,27 @@ impl LauncherWindow {
     }
 
     //-----------------------------------
+    // Gsetting default value helper function
+    //-----------------------------------
+    pub fn gsetting_default_value(gsettings: &gio::Settings, key: &str) -> String {
+        gsettings.default_value(key).unwrap().to_string().replace('\'', "")
+    }
+
+    //---------------------------------------
+    // Set gsetting helper function
+    //---------------------------------------
+    pub fn set_gsetting<T: FromVariant + ToVariant + PartialEq>(gsettings: &gio::Settings, key: &str, value: &T) {
+        let default: T = gsettings.default_value(key)
+            .expect("Could not get gsettings default value")
+            .get::<T>()
+            .expect("Could not retrieve value from variant");
+
+        if !(default == *value && default == gsettings.get(key)) {
+            gsettings.set(key, value.to_variant()).unwrap();
+        }
+    }
+
+    //-----------------------------------
     // Load gsettings
     //-----------------------------------
     fn load_gsettings(&self) {
@@ -176,8 +197,8 @@ impl LauncherWindow {
         imp.prefs_dialog.set_iwad_folder(gsettings.string("iwad-folder"));
         imp.prefs_dialog.set_pwad_folder(gsettings.string("pwad-folder"));
 
-        imp.prefs_dialog.set_iwad_default_folder(gsetting_default_value(&gsettings,"iwad-folder"));
-        imp.prefs_dialog.set_pwad_default_folder(gsetting_default_value(&gsettings,"pwad-folder"));
+        imp.prefs_dialog.set_iwad_default_folder(Self::gsetting_default_value(&gsettings,"iwad-folder"));
+        imp.prefs_dialog.set_pwad_default_folder(Self::gsetting_default_value(&gsettings,"pwad-folder"));
 
         // Init main window
         imp.engine_row.set_selected_engine_name(&gsettings.string("selected-engine"));
@@ -205,15 +226,15 @@ impl LauncherWindow {
             .map_or("".to_string(), |iwad| iwad.iwad());
 
         // Save main window settings
-        set_gsetting(gsettings, "selected-engine", &selected_engine);
-        set_gsetting(gsettings, "selected-iwad", &selected_iwad);
-        set_gsetting(gsettings, "pwad-files", &imp.pwad_row.files());
+        Self::set_gsetting(gsettings, "selected-engine", &selected_engine);
+        Self::set_gsetting(gsettings, "selected-iwad", &selected_iwad);
+        Self::set_gsetting(gsettings, "pwad-files", &imp.pwad_row.files());
 
         // Save preferences window settings
         let prefs = imp.prefs_dialog.imp();
 
-        set_gsetting(gsettings, "iwad-folder", &prefs.iwad_row.files().get(0).cloned().unwrap_or_default());
-        set_gsetting(gsettings, "pwad-folder", &prefs.pwad_row.files().get(0).cloned().unwrap_or_default());
+        Self::set_gsetting(gsettings, "iwad-folder", &prefs.iwad_row.files().get(0).cloned().unwrap_or_default());
+        Self::set_gsetting(gsettings, "pwad-folder", &prefs.pwad_row.files().get(0).cloned().unwrap_or_default());
     }
 
     //-----------------------------------
