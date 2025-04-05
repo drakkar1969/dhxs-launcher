@@ -10,6 +10,7 @@
         <property name="spacing">12</property>
         <child>
           <object class="GtkLabel" id="select_label">
+            <property name="margin-start">24</property>
             <property name="label">(None)</property>
             <style>
               <class name="heading"/>
