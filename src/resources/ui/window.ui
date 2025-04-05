@@ -71,6 +71,13 @@
                         </property>
                       </object>
                     </child>
+                    <child>
+                      <object class="AdwEntryRow" id="switches_row">
+                        <property name="title">Additional _Switches (e.g. -warp 7 -skill 3)</property>
+                        <property name="use-underline">true</property>
+                        <property name="activates-default">false</property>
+                      </object>
+                    </child>
                   </object>
                 </child>
                 <child>

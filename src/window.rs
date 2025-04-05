@@ -32,6 +32,8 @@ mod imp {
         pub iwad_row: TemplateChild<IWadComboRow>,
         #[template_child]
         pub pwad_row: TemplateChild<FileSelectRow>,
+        #[template_child]
+        pub switches_row: TemplateChild<adw::EntryRow>,
 
         #[template_child]
         pub launch_button: TemplateChild<gtk::Button>,
@@ -204,6 +206,7 @@ impl LauncherWindow {
         imp.engine_row.set_selected_engine_name(&gsettings.string("selected-engine"));
         imp.iwad_row.set_selected_iwad_file(&gsettings.string("selected-iwad"));
         imp.pwad_row.set_files(gsettings.strv("pwad-files").into_iter().map(String::from).collect::<Vec<String>>());
+        imp.switches_row.set_text(&gsettings.string("extra-switches"));
 
         // Store gsettings
         imp.gsettings.set(gsettings).unwrap();
@@ -229,6 +232,7 @@ impl LauncherWindow {
         Self::set_gsetting(gsettings, "selected-engine", &selected_engine);
         Self::set_gsetting(gsettings, "selected-iwad", &selected_iwad);
         Self::set_gsetting(gsettings, "pwad-files", &imp.pwad_row.files());
+        Self::set_gsetting(gsettings, "extra-switches", &imp.switches_row.text().to_string());
 
         // Save preferences window settings
         let prefs = imp.prefs_dialog.imp();
@@ -268,6 +272,7 @@ impl LauncherWindow {
                                     imp.engine_row.set_selected(0);
                                     imp.iwad_row.set_selected(0);
                                     imp.pwad_row.reset_to_default();
+                                    imp.switches_row.set_text("");
                                 }
                             }
                         )
