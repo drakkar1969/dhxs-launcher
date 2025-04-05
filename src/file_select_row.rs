@@ -1,5 +1,4 @@
 use std::cell::{Cell, RefCell};
-use std::borrow::Cow;
 use std::path::Path;
 
 use adw::prelude::ActionRowExt;
@@ -7,6 +6,8 @@ use gtk::{gio, glib};
 use adw::subclass::prelude::*;
 use gtk::prelude::*;
 use glib::clone;
+
+use crate::utils::env_expand;
 
 //------------------------------------------------------------------------------
 // ENUM: SelectMode
@@ -163,15 +164,7 @@ impl FileSelectRow {
     // Path to file helper function
     //-----------------------------------
     fn path_to_file(&self, path: &str) -> Option<gio::File> {
-        if path.is_empty() {
-            None
-        } else {
-            let path = shellexpand::full(path)
-                .unwrap_or(Cow::Borrowed(path))
-                .to_string();
-
-            Some(gio::File::for_path(path))
-        }
+        (!path.is_empty()).then_some(gio::File::for_path(env_expand(path)))
     }
 
     //---------------------------------------
