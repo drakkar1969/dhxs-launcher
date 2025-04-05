@@ -101,6 +101,12 @@
   <menu id="main_menu">
     <section>
       <item>
+        <attribute name="label">Reset to Defaults</attribute>
+        <attribute name="action">win.reset-widgets</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
         <attribute name="label">About D-Launcher</attribute>
         <attribute name="action">app.show-about</attribute>
       </item>

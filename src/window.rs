@@ -54,6 +54,9 @@ mod imp {
         fn class_init(klass: &mut Self::Class) {
             klass.bind_template();
 
+            // Add reset widgets shortcut
+            klass.add_binding_action(gdk::Key::R, gdk::ModifierType::CONTROL_MASK, "win.reset-widgets");
+
             // Add show preferences shortcut
             klass.add_binding_action(gdk::Key::comma, gdk::ModifierType::CONTROL_MASK, "win.show-preferences");
         }
@@ -207,6 +210,39 @@ impl LauncherWindow {
     fn setup_actions(&self) {
         let imp = self.imp();
 
+        // Add reset widgets action
+        let reset_action = gio::ActionEntry::builder("reset-widgets")
+            .activate(clone!(
+                #[weak(rename_to = window)] self,
+                #[weak] imp,
+                move |_, _, _| {
+                    let reset_dialog = adw::AlertDialog::builder()
+                        .heading("Reset Parameters?")
+                        .body("Reset all parameters to their default values.")
+                        .default_response("reset")
+                        .build();
+
+                    reset_dialog.add_responses(&[("cancel", "_Cancel"), ("reset", "_Reset")]);
+                    reset_dialog.set_response_appearance("reset", adw::ResponseAppearance::Destructive);
+        
+                    reset_dialog.choose(
+                        &window,
+                        None::<&gio::Cancellable>,
+                        clone!(
+                            #[weak] imp,
+                            move |response| {
+                                if response == "reset" {
+                                    imp.engine_row.set_selected(0);
+                                    imp.iwad_row.set_selected(0);
+                                    imp.pwad_row.reset_to_default();
+                                }
+                            }
+                        )
+                    );
+                }
+            ))
+            .build();
+
         // Add show preferences action
         let prefs_action = gio::ActionEntry::builder("show-preferences")
             .activate(clone!(
@@ -218,6 +254,6 @@ impl LauncherWindow {
             ))
             .build();
         // Add actions to window
-        self.add_action_entries([prefs_action]);
+        self.add_action_entries([reset_action, prefs_action]);
     }
 }
