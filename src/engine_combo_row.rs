@@ -1,3 +1,4 @@
+use std::cell::OnceCell;
 use std::path::Path;
 
 use gtk::{gio, glib};
@@ -21,6 +22,8 @@ mod imp {
     pub struct EngineComboRow {
         #[template_child]
         pub model: TemplateChild<gio::ListStore>,
+
+        pub engine_list: OnceCell<Vec<EngineObject>>,
     }
 
     //-----------------------------------
@@ -84,7 +87,7 @@ impl EngineComboRow {
     fn setup_data(&self) {
         let imp = self.imp();
 
-        let mut engines: Vec<EngineObject> = vec![
+        let engine_list: Vec<EngineObject> = vec![
             EngineObject::new(
                 "PrBoom+",
                 "An advanced, Vanilla-compatible Doom engine based on PrBoom",
@@ -129,13 +132,28 @@ impl EngineComboRow {
             ),
         ];
 
-        engines.sort_unstable_by_key(|engine| engine.name());
+        imp.engine_list.set(engine_list).unwrap();
+    }
 
-        imp.model.splice(0, imp.model.n_items(), &engines.into_iter()
+    //-----------------------------------
+    // Public init for IWAD function
+    //-----------------------------------
+    pub fn init_for_iwad(&self, iwad_flag: IWADFlags) {
+        let imp = self.imp();
+
+        // Get list of installed engines compatible with IWAD
+        let engine_list = imp.engine_list.get().unwrap();
+
+        let mut engine_objects = engine_list.clone().into_iter()
             .filter(|engine| {
-                Path::new(&engine.path()).try_exists().unwrap_or_default()
+                Path::new(&engine.path()).try_exists().unwrap_or_default() &&
+                engine.games().contains(iwad_flag)
             }
-        ).collect::<Vec<EngineObject>>());
+        ).collect::<Vec<EngineObject>>();
+
+        engine_objects.sort_unstable_by_key(|engine| engine.name());
+
+        imp.model.splice(0, imp.model.n_items(), &engine_objects);
     }
 
     //-----------------------------------

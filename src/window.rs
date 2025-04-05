@@ -149,6 +149,18 @@ impl LauncherWindow {
                 imp.pwad_row.set_initial_folder(prefs_dialog.pwad_folder());
             }
         ));
+
+        // IWAD combo selected item property notify signal
+        imp.iwad_row.connect_selected_item_notify(clone!(
+            #[weak] imp,
+            move |iwad_row| {
+                if let Some(selected_iwad) = iwad_row.selected_iwad() {
+                    imp.engine_row.init_for_iwad(selected_iwad.flag());
+
+                    imp.launch_button.set_sensitive(imp.engine_row.selected_item().is_some() && imp.iwad_row.selected_iwad().is_some());
+                }
+            }
+        ));
     }
 
     //-----------------------------------

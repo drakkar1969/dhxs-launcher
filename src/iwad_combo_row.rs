@@ -1,5 +1,4 @@
 use std::cell::OnceCell;
-use std::collections::HashMap;
 
 use gtk::{gio, glib};
 use adw::subclass::prelude::*;
@@ -24,7 +23,7 @@ mod imp {
         #[template_child]
         pub model: TemplateChild<gio::ListStore>,
 
-        pub iwad_map: OnceCell<HashMap<&'static str, (IWADFlags, &'static str)>>,
+        pub iwad_list: OnceCell<Vec<IWadObject>>,
     }
 
     //-----------------------------------
@@ -88,44 +87,18 @@ impl IWadComboRow {
     fn setup_data(&self) {
         let imp = self.imp();
 
-        let iwad_map: HashMap<&str, (IWADFlags, &str)> = [
-            (
-                "doom.wad",
-                (IWADFlags::DOOM, "The Ultimate Doom")
-            ),
-            (
-                "doom2.wad",
-                (IWADFlags::DOOM, "Doom II: Hell on Earth")
-            ),
-            (
-                "plutonia.wad",
-                (IWADFlags::DOOM, "Final Doom - The Plutonia Experiment")
-            ),
-            (
-                "tnt.wad",
-                (IWADFlags::DOOM, "Final Doom - TNT: Evilution")
-            ),
-            (
-                "freedoom1.wad",
-                (IWADFlags::DOOM, "Freedoom Phase 1")
-            ),
-            (
-                "freedoom2.wad",
-                (IWADFlags::DOOM, "Freedoom Phase 2")
-            ),
-            (
-                "heretic.wad",
-                (IWADFlags::HERETIC, "Heretic")
-            ),
-            (
-                "hexen.wad",
-                (IWADFlags::HEXEN, "Hexen")
-            )
-        ]
-        .into_iter()
-        .collect();
+        let iwad_list: Vec<IWadObject> = vec![
+            IWadObject::new(IWADFlags::DOOM, "The Ultimate Doom", "doom.wad"),
+            IWadObject::new(IWADFlags::DOOM, "Doom II: Hell on Earth", "doom2.wad"),
+            IWadObject::new(IWADFlags::DOOM, "Final Doom - The Plutonia Experiment", "plutonia.wad"),
+            IWadObject::new(IWADFlags::DOOM, "Final Doom - TNT: Evilution", "tnt.wad"),
+            IWadObject::new(IWADFlags::DOOM, "Freedoom Phase 1", "freedoom1.wad"),
+            IWadObject::new(IWADFlags::DOOM, "Freedoom Phase 2", "freedoom2.wad"),
+            IWadObject::new(IWADFlags::HERETIC, "Heretic", "heretic.wad"),
+            IWadObject::new(IWADFlags::HEXEN, "Hexen", "hexen.wad"),
+        ];
 
-        imp.iwad_map.set(iwad_map).unwrap();
+        imp.iwad_list.set(iwad_list).unwrap();
     }
 
     //-----------------------------------
@@ -142,7 +115,7 @@ impl IWadComboRow {
 
         if let Ok(entries) = glob_with(&format!("{folder}/*.wad"), options) {
             // Get list of IWADs in folder
-            let iwad_map = imp.iwad_map.get().unwrap();
+            let iwad_list = imp.iwad_list.get().unwrap();
 
             let mut iwad_objects = entries.into_iter()
                 .flatten()
@@ -151,8 +124,8 @@ impl IWadComboRow {
                         .and_then(|filename| filename.to_str())
                         .unwrap_or_default();
 
-                    iwad_map.get(filename)
-                        .map(|(flag, name)| IWadObject::new(*flag, name, filename))
+                    iwad_list.clone().into_iter()
+                        .find(|iwad| iwad.iwad() == filename)
                 })
                 .collect::<Vec<_>>();
 
