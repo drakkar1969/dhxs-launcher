@@ -83,7 +83,7 @@ impl EngineComboRow {
     fn setup_data(&self) {
         let imp = self.imp();
 
-        let engines: Vec<EngineObject> = vec![
+        let mut engines: Vec<EngineObject> = vec![
             EngineObject::new(
                 "PrBoom+",
                 "An advanced, Vanilla-compatible Doom engine based on PrBoom",
@@ -111,9 +111,33 @@ impl EngineComboRow {
             ),
         ];
 
+        engines.sort_unstable_by_key(|engine| engine.name());
+
         imp.model.splice(0, imp.model.n_items(), &engines.into_iter().filter(|engine| {
             Path::new(&engine.path()).try_exists().unwrap_or_default()
         }).collect::<Vec<EngineObject>>());
+    }
+
+    //-----------------------------------
+    // Public selected engine function
+    //-----------------------------------
+    pub fn selected_engine(&self) -> Option<EngineObject> {
+        self.selected_item()
+            .and_downcast::<EngineObject>()
+    }
+
+    //-----------------------------------
+    // Public set selected engine name function
+    //-----------------------------------
+    pub fn set_selected_engine_name(&self, name: &str) {
+        let index = self.imp().model.find_with_equal_func(|engine| {
+            let engine = engine.downcast_ref::<EngineObject>()
+                .expect("Must be a 'IWadObject'");
+
+            engine.name() == name
+        });
+
+        self.set_selected(index.unwrap_or_default());
     }
 }
 

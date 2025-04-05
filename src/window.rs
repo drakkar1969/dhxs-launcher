@@ -165,6 +165,7 @@ impl LauncherWindow {
         imp.prefs_dialog.set_pwad_default_folder(env_expand(&gsetting_default_value(&gsettings,"pwad-folder")));
 
         // Init main window
+        imp.engine_row.set_selected_engine_name(&gsettings.string("selected-engine"));
         imp.iwad_row.set_selected_iwad_file(&gsettings.string("selected-iwad"));
         imp.pwad_row.set_paths(gsettings.strv("pwad-files").into_iter().map(String::from).collect::<Vec<String>>());
 
@@ -180,11 +181,16 @@ impl LauncherWindow {
 
         let gsettings = imp.gsettings.get().unwrap();
 
+        // Get selected engine
+        let selected_engine = imp.engine_row.selected_engine()
+            .map_or("".to_string(), |engine| engine.name());
+
         // Get selected IWAD
         let selected_iwad = imp.iwad_row.selected_iwad()
             .map_or("".to_string(), |iwad| iwad.iwad());
 
         // Save main window settings
+        set_gsetting(gsettings, "selected-engine", &selected_engine);
         set_gsetting(gsettings, "selected-iwad", &selected_iwad);
         set_gsetting(gsettings, "pwad-files", &imp.pwad_row.paths());
 

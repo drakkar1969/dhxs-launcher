@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist>
   <schema id="com.github.D-Launcher" path="/com/github/D-Launcher/">
+    <key name="selected-engine" type="s">
+      <default>''</default>
+      <summary>Selected Doom engine</summary>
+    </key>
     <key name="selected-iwad" type="s">
       <default>''</default>
       <summary>Selected game (IWAD) file</summary>
