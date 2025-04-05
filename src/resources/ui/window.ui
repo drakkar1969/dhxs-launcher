@@ -19,89 +19,84 @@
           </object>
         </child>
         <property name="content">
-          <object class="AdwClamp">
-            <property name="tightening-threshold">580</property>
+          <object class="GtkBox">
+            <property name="orientation">vertical</property>
+            <property name="margin-start">24</property>
+            <property name="margin-end">24</property>
+            <property name="margin-top">24</property>
+            <property name="margin-bottom">28</property>
+            <property name="spacing">28</property>
             <child>
-              <object class="GtkBox">
-                <property name="orientation">vertical</property>
-                <property name="margin-start">24</property>
-                <property name="margin-end">24</property>
-                <property name="margin-top">24</property>
-                <property name="margin-bottom">28</property>
-                <property name="spacing">28</property>
+              <object class="AdwPreferencesGroup">
+                <property name="title">Doom Engine</property>
                 <child>
-                  <object class="AdwPreferencesGroup">
-                    <property name="title">Doom Engine</property>
-                    <child>
-                      <object class="EngineComboRow" id="engine_row">
-                        <property name="title">_Engine</property>
-                        <property name="title-lines">1</property>
-                        <property name="use-underline">true</property>
-                      </object>
-                    </child>
-                  </object>
-                </child>
-                <child>
-                  <object class="AdwPreferencesGroup">
-                    <property name="title">Launch Parameters</property>
-                    <child>
-                      <object class="IWadComboRow" id="iwad_row">
-                        <property name="title">_Game</property>
-                        <property name="title-lines">1</property>
-                        <property name="use-underline">true</property>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="FileSelectRow" id="pwad_row">
-                        <property name="title">Optional _PWAD Files</property>
-                        <property name="title-lines">1</property>
-                        <property name="use-underline">true</property>
-                        <property name="select-mode">multiple</property>
-                        <property name="show-reset-button">true</property>
-                        <property name="dialog-title">WAD Files</property>
-                        <property name="filter">
-                          <object class="GtkFileFilter">
-                            <property name="name">WAD/PK3/PK7 files</property>
-                            <mime-types>
-                              <mime-type>application/x-doom-wad</mime-type>
-                              <mime-type>application/zip</mime-type>
-                              <mime-type>application/x-7z-compressed</mime-type>
-                            </mime-types>
-                          </object>
-                        </property>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="AdwEntryRow" id="switches_row">
-                        <property name="title">Additional _Switches</property>
-                        <property name="use-underline">true</property>
-                        <property name="activates-default">false</property>
-                        <child>
-                          <object class="GtkMenuButton" id="switches_button">
-                            <property name="icon-name">view-more-symbolic</property>
-                            <property name="valign">center</property>
-                            <property name="popover">switches_popover</property>
-                            <style>
-                              <class name="flat"/>
-                            </style>
-                          </object>
-                        </child>
-                      </object>
-                    </child>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkButton" id="launch_button">
-                    <property name="label">_Launch Doom</property>
-                    <property name="halign">center</property>
+                  <object class="EngineComboRow" id="engine_row">
+                    <property name="title">_Engine</property>
+                    <property name="title-lines">1</property>
                     <property name="use-underline">true</property>
-                    <property name="action-name">win.launch-zandronum</property>
-                    <style>
-                      <class name="suggested-action"/>
-                      <class name="pill"/>
-                    </style>
                   </object>
                 </child>
+              </object>
+            </child>
+            <child>
+              <object class="AdwPreferencesGroup">
+                <property name="title">Launch Parameters</property>
+                <child>
+                  <object class="IWadComboRow" id="iwad_row">
+                    <property name="title">_Game</property>
+                    <property name="title-lines">1</property>
+                    <property name="use-underline">true</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="FileSelectRow" id="pwad_row">
+                    <property name="title">Optional _PWAD Files</property>
+                    <property name="title-lines">1</property>
+                    <property name="use-underline">true</property>
+                    <property name="select-mode">multiple</property>
+                    <property name="show-reset-button">true</property>
+                    <property name="dialog-title">WAD Files</property>
+                    <property name="filter">
+                      <object class="GtkFileFilter">
+                        <property name="name">WAD/PK3/PK7 files</property>
+                        <mime-types>
+                          <mime-type>application/x-doom-wad</mime-type>
+                          <mime-type>application/zip</mime-type>
+                          <mime-type>application/x-7z-compressed</mime-type>
+                        </mime-types>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+                <child>
+                  <object class="AdwEntryRow" id="switches_row">
+                    <property name="title">Additional _Switches</property>
+                    <property name="use-underline">true</property>
+                    <property name="activates-default">false</property>
+                    <child>
+                      <object class="GtkMenuButton" id="switches_button">
+                        <property name="icon-name">view-more-symbolic</property>
+                        <property name="valign">center</property>
+                        <property name="popover">switches_popover</property>
+                        <style>
+                          <class name="flat"/>
+                        </style>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton" id="launch_button">
+                <property name="label">_Launch Doom</property>
+                <property name="halign">center</property>
+                <property name="use-underline">true</property>
+                <property name="action-name">win.launch-zandronum</property>
+                <style>
+                  <class name="suggested-action"/>
+                  <class name="pill"/>
+                </style>
               </object>
             </child>
           </object>
