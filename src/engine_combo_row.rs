@@ -92,7 +92,7 @@ impl EngineComboRow {
             EngineObject::new(
                 "Woof!",
                 "Woof! is a continuation of Lee Killough's Doom source port MBF targeted at modern systems",
-                ""
+                "/usr/bin/woof"
             ),
             EngineObject::new(
                 "Nugget Doom",
