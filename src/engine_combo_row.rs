@@ -109,6 +109,16 @@ impl EngineComboRow {
                 "Historically-accurate Doom, Heretic, Hexen, and Strife port",
                 ""
             ),
+            EngineObject::new(
+                "Crispy Doom",
+                "Vanilla-compatible enhanced Doom engine",
+                ""
+            ),
+            EngineObject::new(
+                "DSDA-Doom",
+                "Fork of PrBoom+ with extra tooling for demo recording and playback, with a focus on speedrunning",
+                ""
+            ),
         ];
 
         engines.sort_unstable_by_key(|engine| engine.name());
