@@ -5,6 +5,7 @@ use adw::subclass::prelude::*;
 use adw::prelude::*;
 
 use crate::engine_object::EngineObject;
+use crate::iwad_object::IWADFlags;
 
 //------------------------------------------------------------------------------
 // MODULE: EngineComboRow
@@ -87,45 +88,54 @@ impl EngineComboRow {
             EngineObject::new(
                 "PrBoom+",
                 "An advanced, Vanilla-compatible Doom engine based on PrBoom",
+                IWADFlags::DOOM,
                 ""
             ),
             EngineObject::new(
                 "Woof!",
                 "Woof! is a continuation of Lee Killough's Doom source port MBF targeted at modern systems",
+                IWADFlags::DOOM,
                 "/usr/bin/woof"
             ),
             EngineObject::new(
                 "Nugget Doom",
                 "Fork of Woof! with additional features",
+                IWADFlags::empty(),
                 ""
             ),
             EngineObject::new(
                 "GZDoom",
                 "Feature centric port for all Doom engine games",
+                IWADFlags::DOOM | IWADFlags::HERETIC | IWADFlags::HEXEN,
                 "/usr/bin/gzdoom"
             ),
             EngineObject::new(
                 "Chocolate Doom",
                 "Historically-accurate Doom, Heretic, Hexen, and Strife port",
+                IWADFlags::DOOM | IWADFlags::HERETIC | IWADFlags::HEXEN,
                 ""
             ),
             EngineObject::new(
                 "Crispy Doom",
                 "Vanilla-compatible enhanced Doom engine",
+                IWADFlags::DOOM | IWADFlags::HERETIC | IWADFlags::HEXEN,
                 ""
             ),
             EngineObject::new(
                 "DSDA-Doom",
                 "Fork of PrBoom+ with extra tooling for demo recording and playback, with a focus on speedrunning",
+                IWADFlags::DOOM | IWADFlags::HERETIC | IWADFlags::HEXEN,
                 ""
             ),
         ];
 
         engines.sort_unstable_by_key(|engine| engine.name());
 
-        imp.model.splice(0, imp.model.n_items(), &engines.into_iter().filter(|engine| {
-            Path::new(&engine.path()).try_exists().unwrap_or_default()
-        }).collect::<Vec<EngineObject>>());
+        imp.model.splice(0, imp.model.n_items(), &engines.into_iter()
+            .filter(|engine| {
+                Path::new(&engine.path()).try_exists().unwrap_or_default()
+            }
+        ).collect::<Vec<EngineObject>>());
     }
 
     //-----------------------------------

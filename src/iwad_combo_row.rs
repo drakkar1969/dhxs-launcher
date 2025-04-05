@@ -7,7 +7,7 @@ use adw::prelude::*;
 
 use glob::{glob_with, MatchOptions};
 
-use crate::iwad_object::IWadObject;
+use crate::iwad_object::{IWADFlags, IWadObject};
 
 //------------------------------------------------------------------------------
 // MODULE: IWadComboRow
@@ -24,7 +24,7 @@ mod imp {
         #[template_child]
         pub model: TemplateChild<gio::ListStore>,
 
-        pub iwad_map: OnceCell<HashMap<&'static str, &'static str>>,
+        pub iwad_map: OnceCell<HashMap<&'static str, (IWADFlags, &'static str)>>,
     }
 
     //-----------------------------------
@@ -88,38 +88,38 @@ impl IWadComboRow {
     fn setup_data(&self) {
         let imp = self.imp();
 
-        let iwad_map: HashMap<&str, &str> = [
+        let iwad_map: HashMap<&str, (IWADFlags, &str)> = [
             (
                 "doom.wad",
-                "The Ultimate Doom"
+                (IWADFlags::DOOM, "The Ultimate Doom")
             ),
             (
                 "doom2.wad",
-                "Doom II: Hell on Earth"
+                (IWADFlags::DOOM, "Doom II: Hell on Earth")
             ),
             (
                 "plutonia.wad",
-                "Final Doom - The Plutonia Experiment"
+                (IWADFlags::DOOM, "Final Doom - The Plutonia Experiment")
             ),
             (
                 "tnt.wad",
-                "Final Doom - TNT: Evilution"
+                (IWADFlags::DOOM, "Final Doom - TNT: Evilution")
             ),
             (
                 "freedoom1.wad",
-                "Freedoom Phase 1"
+                (IWADFlags::DOOM, "Freedoom Phase 1")
             ),
             (
                 "freedoom2.wad",
-                "Freedoom Phase 2"
+                (IWADFlags::DOOM, "Freedoom Phase 2")
             ),
             (
                 "heretic.wad",
-                "Heretic"
+                (IWADFlags::HERETIC, "Heretic")
             ),
             (
                 "hexen.wad",
-                "Hexen"
+                (IWADFlags::HEXEN, "Hexen")
             )
         ]
         .into_iter()
@@ -152,7 +152,7 @@ impl IWadComboRow {
                         .unwrap_or_default();
 
                     iwad_map.get(filename)
-                        .map(|name| IWadObject::new(name, filename))
+                        .map(|(flag, name)| IWadObject::new(*flag, name, filename))
                 })
                 .collect::<Vec<_>>();
 

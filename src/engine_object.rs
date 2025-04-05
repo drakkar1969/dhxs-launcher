@@ -1,8 +1,10 @@
-use std::cell::RefCell;
+use std::cell::{Cell, RefCell};
 
 use gtk::glib;
 use gtk::subclass::prelude::*;
 use gtk::prelude::ObjectExt;
+
+use crate::iwad_object::IWADFlags;
 
 //------------------------------------------------------------------------------
 // MODULE: EngineObject
@@ -20,6 +22,8 @@ mod imp {
         name: RefCell<String>,
         #[property(get, set)]
         description: RefCell<String>,
+        #[property(get, set)]
+        games: Cell<IWADFlags>,
         #[property(get, set)]
         path: RefCell<String>,
     }
@@ -48,11 +52,12 @@ impl EngineObject {
     //-----------------------------------
     // New function
     //-----------------------------------
-    pub fn new(name: &str, description: &str, path: &str) -> Self {
+    pub fn new(name: &str, description: &str, games: IWADFlags, path: &str) -> Self {
         // Build IWadObject
         glib::Object::builder()
             .property("name", name)
             .property("description", description)
+            .property("games", games)
             .property("path", path)
             .build()
     }
