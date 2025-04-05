@@ -25,9 +25,9 @@ mod imp {
     #[template(resource = "/com/github/D-Launcher/ui/window.ui")]
     pub struct LauncherWindow {
         #[template_child]
-        pub engine_comborow: TemplateChild<EngineComboRow>,
+        pub engine_row: TemplateChild<EngineComboRow>,
         #[template_child]
-        pub iwad_comborow: TemplateChild<IWadComboRow>,
+        pub iwad_row: TemplateChild<IWadComboRow>,
 
         #[template_child]
         pub prefs_dialog: TemplateChild<PreferencesDialog>,
@@ -104,7 +104,7 @@ impl LauncherWindow {
     //-----------------------------------
     fn setup_widgets(&self) {
         // Set initial focus on engine combo row
-        self.imp().engine_comborow.get().grab_focus();
+        self.imp().engine_row.get().grab_focus();
     }
 
     //-----------------------------------
@@ -117,7 +117,7 @@ impl LauncherWindow {
         imp.prefs_dialog.connect_iwad_folder_notify(clone!(
             #[weak] imp,
             move |prefs_dialog| {
-                imp.iwad_comborow.init_from_folder(&prefs_dialog.iwad_folder());
+                imp.iwad_row.init_from_folder(&prefs_dialog.iwad_folder());
         
     //         imp.launch_button.set_sensitive(imp.iwad_comborow.selected_iwad().is_some());
             }

@@ -33,14 +33,14 @@
                   <object class="AdwPreferencesGroup">
                     <property name="title">Doom Settings</property>
                     <child>
-                      <object class="EngineComboRow" id="engine_comborow">
+                      <object class="EngineComboRow" id="engine_row">
                         <property name="title">_Engine</property>
                         <property name="title-lines">1</property>
                         <property name="use-underline">true</property>
                       </object>
                     </child>
                     <child>
-                      <object class="IWadComboRow" id="iwad_comborow">
+                      <object class="IWadComboRow" id="iwad_row">
                         <property name="title">_Game</property>
                         <property name="title-lines">1</property>
                         <property name="use-underline">true</property>
