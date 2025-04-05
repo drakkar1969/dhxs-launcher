@@ -155,6 +155,10 @@ impl LauncherWindow {
         imp.prefs_dialog.set_iwad_default_folder(env_expand(&gsetting_default_value(&gsettings,"iwad-folder")));
         imp.prefs_dialog.set_pwad_default_folder(env_expand(&gsetting_default_value(&gsettings,"pwad-folder")));
 
+        // Init main window
+        imp.iwad_row.set_selected_iwad_file(&gsettings.string("selected-iwad"));
+        imp.pwad_row.set_paths(gsettings.strv("pwad-files").into_iter().map(String::from).collect::<Vec<String>>());
+
         // Store gsettings
         imp.gsettings.set(gsettings).unwrap();
     }

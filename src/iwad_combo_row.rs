@@ -168,6 +168,20 @@ impl IWadComboRow {
         self.selected_item()
             .and_downcast::<IWadObject>()
     }
+
+    //-----------------------------------
+    // Public set selected iwad file function
+    //-----------------------------------
+    pub fn set_selected_iwad_file(&self, file: &str) {
+        let index = self.imp().model.find_with_equal_func(|iwad| {
+            let iwad = iwad.downcast_ref::<IWadObject>()
+                .expect("Must be a 'IWadObject'");
+
+            iwad.iwad() == file
+        });
+
+        self.set_selected(index.unwrap_or_default());
+    }
 }
 
 impl Default for IWadComboRow {
