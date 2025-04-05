@@ -92,42 +92,49 @@ impl EngineComboRow {
                 "Chocolate Doom",
                 "Historically-accurate Doom, Heretic, Hexen, and Strife port",
                 IWADFlags::DOOM | IWADFlags::HERETIC | IWADFlags::HEXEN,
+                5,
                 "/usr/bin/chocolate-doom"
             ),
             EngineObject::new(
                 "Crispy Doom",
                 "Vanilla-compatible enhanced Doom engine",
                 IWADFlags::DOOM | IWADFlags::HERETIC | IWADFlags::HEXEN,
+                5,
                 "/usr/bin/crispy-doom"
             ),
             EngineObject::new(
                 "DSDA-Doom",
                 "Fork of PrBoom+ with extra tooling for demo recording and playback, with a focus on speedrunning",
                 IWADFlags::DOOM | IWADFlags::HERETIC | IWADFlags::HEXEN,
+                5,
                 "/usr/bin/dsda-doom"
             ),
             EngineObject::new(
                 "GZDoom",
                 "Feature centric port for all Doom engine games",
                 IWADFlags::DOOM | IWADFlags::HERETIC | IWADFlags::HEXEN,
+                2,
                 "/usr/bin/gzdoom"
             ),
             EngineObject::new(
                 "Nugget Doom",
                 "Fork of Woof! with additional features",
                 IWADFlags::DOOM,
+                5,
                 "/usr/bin/nugget-doom"
             ),
             EngineObject::new(
                 "VKDoom",
                 "VKDoom is a source port based on the DOOM engine with a focus on Vulkan and modern computers",
                 IWADFlags::DOOM | IWADFlags::HERETIC | IWADFlags::HEXEN,
+                2,
                 "/usr/bin/vkdoom"
             ),
             EngineObject::new(
                 "Woof!",
                 "Woof! is a continuation of Lee Killough's Doom source port MBF targeted at modern systems",
                 IWADFlags::DOOM,
+                5,
                 "/usr/bin/woof"
             ),
         ];

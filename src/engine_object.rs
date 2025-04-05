@@ -25,6 +25,8 @@ mod imp {
         #[property(get, set)]
         games: Cell<IWADFlags>,
         #[property(get, set)]
+        compatibility: Cell<u32>,
+        #[property(get, set)]
         path: RefCell<String>,
     }
 
@@ -52,12 +54,13 @@ impl EngineObject {
     //-----------------------------------
     // New function
     //-----------------------------------
-    pub fn new(name: &str, description: &str, games: IWADFlags, path: &str) -> Self {
+    pub fn new(name: &str, description: &str, games: IWADFlags, compatibility: u32, path: &str) -> Self {
         // Build IWadObject
         glib::Object::builder()
             .property("name", name)
             .property("description", description)
             .property("games", games)
+            .property("compatibility", compatibility)
             .property("path", path)
             .build()
     }
