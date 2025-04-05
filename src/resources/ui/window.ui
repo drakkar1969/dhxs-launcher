@@ -107,6 +107,12 @@
     </section>
     <section>
       <item>
+        <attribute name="label">Preferences</attribute>
+        <attribute name="action">win.show-preferences</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
         <attribute name="label">About D-Launcher</attribute>
         <attribute name="action">app.show-about</attribute>
       </item>
