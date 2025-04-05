@@ -7,7 +7,7 @@ use adw::subclass::prelude::*;
 use gtk::prelude::*;
 use glib::clone;
 
-use crate::utils::env_expand;
+use crate::utils::{file_to_path, path_to_file};
 
 //------------------------------------------------------------------------------
 // ENUM: SelectMode
@@ -161,22 +161,6 @@ impl FileSelectRow {
     }
 
     //-----------------------------------
-    // Path to file helper function
-    //-----------------------------------
-    fn path_to_file(&self, path: &str) -> Option<gio::File> {
-        (!path.is_empty()).then_some(gio::File::for_path(env_expand(path)))
-    }
-
-    //---------------------------------------
-    // File to path function
-    //---------------------------------------
-    fn file_to_path(&self, file: &gio::File) -> String {
-        file.path()
-            .map(|path| path.display().to_string())
-            .unwrap_or_default()
-    }
-
-    //-----------------------------------
     // Setup signals
     //-----------------------------------
     fn setup_signals(&self) {
@@ -242,9 +226,9 @@ impl FileSelectRow {
                 let files = row.files();
 
                 if files.len() > 0 {
-                    dialog.set_initial_file(row.path_to_file(&files[0]).as_ref());
+                    dialog.set_initial_file(path_to_file(&files[0]).as_ref());
                 } else {
-                    dialog.set_initial_folder(row.path_to_file(row.initial_folder().as_ref()).as_ref());
+                    dialog.set_initial_folder(path_to_file(row.initial_folder().as_ref()).as_ref());
                 }
 
                 // Get root window
@@ -259,7 +243,7 @@ impl FileSelectRow {
                             #[weak] row,
                             move |result| {
                                 if let Ok(file) = result {
-                                    row.set_files(vec![row.file_to_path(&file)]);
+                                    row.set_files(vec![file_to_path(&file)]);
                                 }
                             }
                         ));
@@ -271,7 +255,7 @@ impl FileSelectRow {
                                 if let Ok(file_list) = result {
                                     row.set_files(file_list.iter::<gio::File>()
                                         .flatten()
-                                        .map(|file| row.file_to_path(&file))
+                                        .map(|file| file_to_path(&file))
                                         .collect::<Vec<String>>()
                                     )
                                 }
@@ -283,7 +267,7 @@ impl FileSelectRow {
                             #[weak] row,
                             move |result| {
                                 if let Ok(folder) = result {
-                                    row.set_files(vec![row.file_to_path(&folder)]);
+                                    row.set_files(vec![file_to_path(&folder)]);
                                 }
                             }
                         ));
