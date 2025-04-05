@@ -2,7 +2,7 @@
 <interface>
   <!--// PreferencesDialog template //-->
   <template class="PreferencesDialog" parent="AdwPreferencesDialog">
-    <!-- <property name="title">Preferences</property> -->
+    <property name="presentation-mode">bottom-sheet</property>
     <child>
       <object class="AdwPreferencesPage">
         <child>
