@@ -129,7 +129,7 @@ impl IWadComboRow {
     }
 
     //-----------------------------------
-    // Init from folder function
+    // Public init from folder function
     //-----------------------------------
     pub fn init_from_folder(&self, folder: &str) {
         let imp = self.imp();
@@ -159,6 +159,14 @@ impl IWadComboRow {
             // Add IWADs to combo row
             imp.model.splice(0, imp.model.n_items(), &iwad_objects);
         }
+    }
+
+    //-----------------------------------
+    // Public selected iwad function
+    //-----------------------------------
+    pub fn selected_iwad(&self) -> Option<IWadObject> {
+        self.selected_item()
+            .and_downcast::<IWadObject>()
     }
 }
 

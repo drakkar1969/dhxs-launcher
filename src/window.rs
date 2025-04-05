@@ -34,6 +34,9 @@ mod imp {
         pub pwad_row: TemplateChild<FileSelectRow>,
 
         #[template_child]
+        pub launch_button: TemplateChild<gtk::Button>,
+
+        #[template_child]
         pub prefs_dialog: TemplateChild<PreferencesDialog>,
 
         pub gsettings: OnceCell<gio::Settings>,
@@ -123,7 +126,7 @@ impl LauncherWindow {
             move |prefs_dialog| {
                 imp.iwad_row.init_from_folder(&prefs_dialog.iwad_folder());
         
-    //         imp.launch_button.set_sensitive(imp.iwad_comborow.selected_iwad().is_some());
+                imp.launch_button.set_sensitive(imp.engine_row.selected_item().is_some() && imp.iwad_row.selected_iwad().is_some());
             }
         ));
 
