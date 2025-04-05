@@ -31,7 +31,7 @@
                 <property name="spacing">28</property>
                 <child>
                   <object class="AdwPreferencesGroup">
-                    <property name="title">Doom Settings</property>
+                    <property name="title">Doom Engine</property>
                     <child>
                       <object class="EngineComboRow" id="engine_row">
                         <property name="title">_Engine</property>
@@ -39,6 +39,11 @@
                         <property name="use-underline">true</property>
                       </object>
                     </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="AdwPreferencesGroup">
+                    <property name="title">Launch Parameters</property>
                     <child>
                       <object class="IWadComboRow" id="iwad_row">
                         <property name="title">_Game</property>
