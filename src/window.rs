@@ -11,7 +11,7 @@ use crate::engine_combo_row::EngineComboRow;
 use crate::iwad_combo_row::IWadComboRow;
 use crate::file_select_row::FileSelectRow;
 use crate::preferences_dialog::PreferencesDialog;
-use crate::utils::{env_expand, gsetting_default_value};
+use crate::utils::{env_expand, gsetting_default_value, set_gsetting};
 
 //------------------------------------------------------------------------------
 // MODULE: LauncherWindow
@@ -83,7 +83,16 @@ mod imp {
     }
 
     impl WidgetImpl for LauncherWindow {}
-    impl WindowImpl for LauncherWindow {}
+    impl WindowImpl for LauncherWindow {
+        //-----------------------------------
+        // Window close handler
+        //-----------------------------------
+        fn close_request(&self) -> glib::Propagation {
+            self.obj().save_gsettings();
+
+            glib::Propagation::Proceed
+        }
+    }
     impl ApplicationWindowImpl for LauncherWindow {}
     impl AdwApplicationWindowImpl for LauncherWindow {}
 }
@@ -161,6 +170,29 @@ impl LauncherWindow {
 
         // Store gsettings
         imp.gsettings.set(gsettings).unwrap();
+    }
+
+    //-----------------------------------
+    // Save gsettings
+    //-----------------------------------
+    fn save_gsettings(&self) {
+        let imp = self.imp();
+
+        let gsettings = imp.gsettings.get().unwrap();
+
+        // Get selected IWAD
+        let selected_iwad = imp.iwad_row.selected_iwad()
+            .map_or("".to_string(), |iwad| iwad.iwad());
+
+        // Save main window settings
+        set_gsetting(gsettings, "selected-iwad", &selected_iwad);
+        set_gsetting(gsettings, "pwad-files", &imp.pwad_row.paths());
+
+        // Save preferences window settings
+        let prefs = imp.prefs_dialog.imp();
+
+        set_gsetting(gsettings, "iwad-folder", &prefs.iwad_row.path());
+        set_gsetting(gsettings, "pwad-folder", &prefs.pwad_row.path());
     }
 
     //-----------------------------------
