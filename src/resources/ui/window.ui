@@ -20,6 +20,7 @@
         </child>
         <property name="content">
           <object class="GtkBox">
+            <property name="width-request">480</property>
             <property name="orientation">vertical</property>
             <property name="margin-start">24</property>
             <property name="margin-end">24</property>
