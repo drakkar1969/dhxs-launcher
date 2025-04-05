@@ -144,7 +144,7 @@ impl IWadComboRow {
             // Get list of IWADs in folder
             let iwad_map = imp.iwad_map.get().unwrap();
 
-            let iwad_objects = entries.into_iter()
+            let mut iwad_objects = entries.into_iter()
                 .flatten()
                 .filter_map(|entry| {
                     let filename = entry.file_name()
@@ -155,6 +155,8 @@ impl IWadComboRow {
                         .map(|name| IWadObject::new(name, filename))
                 })
                 .collect::<Vec<_>>();
+
+            iwad_objects.sort_unstable_by_key(|iwad| iwad.name());
 
             // Add IWADs to combo row
             imp.model.splice(0, imp.model.n_items(), &iwad_objects);
