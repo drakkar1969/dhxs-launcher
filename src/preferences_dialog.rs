@@ -22,15 +22,21 @@ mod imp {
     pub struct PreferencesDialog {
         #[template_child]
         pub iwad_row: TemplateChild<FileSelectRow>,
+        #[template_child]
+        pub pwad_row: TemplateChild<FileSelectRow>,
 
         #[template_child]
         pub reset_button: TemplateChild<adw::ButtonRow>,
 
         #[property(get, set)]
         iwad_folder: RefCell<String>,
+        #[property(get, set)]
+        pwad_folder: RefCell<String>,
 
         #[property(get, set)]
         iwad_default_folder: RefCell<String>,
+        #[property(get, set)]
+        pwad_default_folder: RefCell<String>,
     }
 
     //-----------------------------------
@@ -100,7 +106,17 @@ impl PreferencesDialog {
             .bidirectional()
             .build();
 
+        self.bind_property("pwad-folder", &imp.pwad_row.get(), "path")
+            .sync_create()
+            .bidirectional()
+            .build();
+
         self.bind_property("iwad-default-folder", &imp.iwad_row.get(), "default-path")
+            .sync_create()
+            .bidirectional()
+            .build();
+
+        self.bind_property("pwad-default-folder", &imp.pwad_row.get(), "default-path")
             .sync_create()
             .bidirectional()
             .build();
@@ -134,6 +150,7 @@ impl PreferencesDialog {
                         move |response| {
                             if response == "reset" {
                                 imp.iwad_row.reset_to_default();
+                                imp.pwad_row.reset_to_default();
                             }
                         }
                     )

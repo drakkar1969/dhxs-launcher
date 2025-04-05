@@ -9,6 +9,7 @@ use crate::APP_ID;
 use crate::LauncherApplication;
 use crate::engine_combo_row::EngineComboRow;
 use crate::iwad_combo_row::IWadComboRow;
+use crate::file_select_row::FileSelectRow;
 use crate::preferences_dialog::PreferencesDialog;
 use crate::utils::{env_expand, gsetting_default_value};
 
@@ -26,8 +27,11 @@ mod imp {
     pub struct LauncherWindow {
         #[template_child]
         pub engine_row: TemplateChild<EngineComboRow>,
+
         #[template_child]
         pub iwad_row: TemplateChild<IWadComboRow>,
+        #[template_child]
+        pub pwad_row: TemplateChild<FileSelectRow>,
 
         #[template_child]
         pub prefs_dialog: TemplateChild<PreferencesDialog>,
@@ -113,13 +117,21 @@ impl LauncherWindow {
     fn setup_signals(&self) {
         let imp = self.imp();
 
-        // Preferences window IWAD folders property notify signal
+        // Preferences window IWAD folder property notify signal
         imp.prefs_dialog.connect_iwad_folder_notify(clone!(
             #[weak] imp,
             move |prefs_dialog| {
                 imp.iwad_row.init_from_folder(&prefs_dialog.iwad_folder());
         
     //         imp.launch_button.set_sensitive(imp.iwad_comborow.selected_iwad().is_some());
+            }
+        ));
+
+        // Preferences window PWAD folder property notify signal
+        imp.prefs_dialog.connect_pwad_folder_notify(clone!(
+            #[weak] imp,
+            move |prefs_dialog| {
+                imp.pwad_row.set_initial_path(prefs_dialog.pwad_folder());
             }
         ));
     }
@@ -135,8 +147,10 @@ impl LauncherWindow {
 
         // Init preferences window
         imp.prefs_dialog.set_iwad_folder(env_expand(&gsettings.string("iwad-folder")));
+        imp.prefs_dialog.set_pwad_folder(env_expand(&gsettings.string("pwad-folder")));
 
         imp.prefs_dialog.set_iwad_default_folder(env_expand(&gsetting_default_value(&gsettings,"iwad-folder")));
+        imp.prefs_dialog.set_pwad_default_folder(env_expand(&gsetting_default_value(&gsettings,"pwad-folder")));
 
         // Store gsettings
         imp.gsettings.set(gsettings).unwrap();
