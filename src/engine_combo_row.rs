@@ -1,4 +1,3 @@
-use std::cell::OnceCell;
 use std::path::Path;
 
 use gtk::{gio, glib};
@@ -22,8 +21,6 @@ mod imp {
     pub struct EngineComboRow {
         #[template_child]
         pub model: TemplateChild<gio::ListStore>,
-
-        pub engine_list: OnceCell<Vec<EngineObject>>,
     }
 
     //-----------------------------------
@@ -52,8 +49,6 @@ mod imp {
         //-----------------------------------
         fn constructed(&self) {
             self.parent_constructed();
-
-            self.obj().setup_data();
         }
     }
 
@@ -82,76 +77,14 @@ impl EngineComboRow {
     }
 
     //-----------------------------------
-    // Setup data
-    //-----------------------------------
-    fn setup_data(&self) {
-        let imp = self.imp();
-
-        let engine_list: Vec<EngineObject> = vec![
-            EngineObject::new(
-                "Chocolate Doom",
-                "Historically-accurate Doom, Heretic, Hexen, and Strife port",
-                IWADFlags::DOOM | IWADFlags::HERETIC | IWADFlags::HEXEN,
-                5,
-                "/usr/bin/chocolate-doom"
-            ),
-            EngineObject::new(
-                "Crispy Doom",
-                "Vanilla-compatible enhanced Doom engine",
-                IWADFlags::DOOM | IWADFlags::HERETIC | IWADFlags::HEXEN,
-                5,
-                "/usr/bin/crispy-doom"
-            ),
-            EngineObject::new(
-                "DSDA-Doom",
-                "Fork of PrBoom+ with extra tooling for demo recording and playback, with a focus on speedrunning",
-                IWADFlags::DOOM | IWADFlags::HERETIC | IWADFlags::HEXEN,
-                5,
-                "/usr/bin/dsda-doom"
-            ),
-            EngineObject::new(
-                "GZDoom",
-                "Feature centric port for all Doom engine games",
-                IWADFlags::DOOM | IWADFlags::HERETIC | IWADFlags::HEXEN,
-                2,
-                "/usr/bin/gzdoom"
-            ),
-            EngineObject::new(
-                "Nugget Doom",
-                "Fork of Woof! with additional features",
-                IWADFlags::DOOM,
-                5,
-                "/usr/bin/nugget-doom"
-            ),
-            EngineObject::new(
-                "VKDoom",
-                "VKDoom is a source port based on the DOOM engine with a focus on Vulkan and modern computers",
-                IWADFlags::DOOM | IWADFlags::HERETIC | IWADFlags::HEXEN,
-                2,
-                "/usr/bin/vkdoom"
-            ),
-            EngineObject::new(
-                "Woof!",
-                "Woof! is a continuation of Lee Killough's Doom source port MBF targeted at modern systems",
-                IWADFlags::DOOM,
-                5,
-                "/usr/bin/woof"
-            ),
-        ];
-
-        imp.engine_list.set(engine_list).unwrap();
-    }
-
-    //-----------------------------------
     // Public init for IWAD function
     //-----------------------------------
-    pub fn init_for_iwad(&self, iwad_flag: IWADFlags) {
+    pub fn init_for_iwad(&self, engine_list: &[EngineObject], iwad_flag: IWADFlags) {
         let imp = self.imp();
 
         // Get list of installed engines compatible with IWAD
-        let engine_list = imp.engine_list.get().unwrap();
-
-        let mut engine_objects = engine_list.clone().into_iter()
+        let mut engine_objects = engine_list.into_iter()
+            .map(|engine| engine.clone())
             .filter(|engine| {
                 Path::new(&engine.path()).try_exists().unwrap_or_default() &&
                 engine.games().contains(iwad_flag)

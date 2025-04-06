@@ -8,7 +8,9 @@ use glib::clone;
 use crate::APP_ID;
 use crate::LauncherApplication;
 use crate::engine_combo_row::EngineComboRow;
+use crate::engine_object::EngineObject;
 use crate::iwad_combo_row::IWadComboRow;
+use crate::iwad_object::{IWadObject, IWADFlags};
 use crate::file_select_row::FileSelectRow;
 use crate::preferences_dialog::PreferencesDialog;
 use crate::utils::env_expand;
@@ -45,6 +47,9 @@ mod imp {
         pub prefs_dialog: TemplateChild<PreferencesDialog>,
 
         pub gsettings: OnceCell<gio::Settings>,
+
+        pub iwads: OnceCell<Vec<IWadObject>>,
+        pub engines: OnceCell<Vec<EngineObject>>,
     }
 
     //-----------------------------------
@@ -79,6 +84,9 @@ mod imp {
             self.parent_constructed();
 
             let obj = self.obj();
+
+            obj.setup_iwads();
+            obj.setup_engines();
 
             obj.setup_widgets();
 
@@ -121,6 +129,87 @@ impl LauncherWindow {
     //-----------------------------------
     pub fn new(app: &LauncherApplication) -> Self {
         glib::Object::builder().property("application", app).build()
+    }
+
+    //-----------------------------------
+    // Setup IWADs
+    //-----------------------------------
+    fn setup_iwads(&self) {
+        let imp = self.imp();
+
+        let iwads: Vec<IWadObject> = vec![
+            IWadObject::new(IWADFlags::DOOM, "The Ultimate Doom", "doom.wad"),
+            IWadObject::new(IWADFlags::DOOM, "Doom II: Hell on Earth", "doom2.wad"),
+            IWadObject::new(IWADFlags::DOOM, "Final Doom - The Plutonia Experiment", "plutonia.wad"),
+            IWadObject::new(IWADFlags::DOOM, "Final Doom - TNT: Evilution", "tnt.wad"),
+            IWadObject::new(IWADFlags::DOOM, "Freedoom Phase 1", "freedoom1.wad"),
+            IWadObject::new(IWADFlags::DOOM, "Freedoom Phase 2", "freedoom2.wad"),
+            IWadObject::new(IWADFlags::HERETIC, "Heretic", "heretic.wad"),
+            IWadObject::new(IWADFlags::HEXEN, "Hexen", "hexen.wad"),
+        ];
+
+        imp.iwads.set(iwads).unwrap();
+    }
+
+    //-----------------------------------
+    // Setup engines
+    //-----------------------------------
+    fn setup_engines(&self) {
+        let imp = self.imp();
+
+        let engines: Vec<EngineObject> = vec![
+            EngineObject::new(
+                "Chocolate Doom",
+                "Historically-accurate Doom, Heretic, Hexen, and Strife port",
+                IWADFlags::DOOM | IWADFlags::HERETIC | IWADFlags::HEXEN,
+                5,
+                "/usr/bin/chocolate-doom"
+            ),
+            EngineObject::new(
+                "Crispy Doom",
+                "Vanilla-compatible enhanced Doom engine",
+                IWADFlags::DOOM | IWADFlags::HERETIC | IWADFlags::HEXEN,
+                5,
+                "/usr/bin/crispy-doom"
+            ),
+            EngineObject::new(
+                "DSDA-Doom",
+                "Fork of PrBoom+ with extra tooling for demo recording and playback, with a focus on speedrunning",
+                IWADFlags::DOOM | IWADFlags::HERETIC | IWADFlags::HEXEN,
+                5,
+                "/usr/bin/dsda-doom"
+            ),
+            EngineObject::new(
+                "GZDoom",
+                "Feature centric port for all Doom engine games",
+                IWADFlags::DOOM | IWADFlags::HERETIC | IWADFlags::HEXEN,
+                2,
+                "/usr/bin/gzdoom"
+            ),
+            EngineObject::new(
+                "Nugget Doom",
+                "Fork of Woof! with additional features",
+                IWADFlags::DOOM,
+                5,
+                "/usr/bin/nugget-doom"
+            ),
+            EngineObject::new(
+                "VKDoom",
+                "VKDoom is a source port based on the DOOM engine with a focus on Vulkan and modern computers",
+                IWADFlags::DOOM | IWADFlags::HERETIC | IWADFlags::HEXEN,
+                2,
+                "/usr/bin/vkdoom"
+            ),
+            EngineObject::new(
+                "Woof!",
+                "Woof! is a continuation of Lee Killough's Doom source port MBF targeted at modern systems",
+                IWADFlags::DOOM,
+                5,
+                "/usr/bin/woof"
+            ),
+        ];
+
+        imp.engines.set(engines).unwrap();
     }
 
     //-----------------------------------
@@ -207,7 +296,9 @@ impl LauncherWindow {
         imp.prefs_dialog.connect_iwad_folder_notify(clone!(
             #[weak] imp,
             move |prefs_dialog| {
-                imp.iwad_row.init_from_folder(&env_expand(&prefs_dialog.iwad_folder()));
+                let iwads = imp.iwads.get().unwrap();
+
+                imp.iwad_row.init_from_folder(iwads, &env_expand(&prefs_dialog.iwad_folder()));
         
                 imp.launch_button.set_sensitive(imp.engine_row.selected_item().is_some() && imp.iwad_row.selected_iwad().is_some());
             }
@@ -226,7 +317,9 @@ impl LauncherWindow {
             #[weak] imp,
             move |iwad_row| {
                 if let Some(selected_iwad) = iwad_row.selected_iwad() {
-                    imp.engine_row.init_for_iwad(selected_iwad.flag());
+                    let engines = imp.engines.get().unwrap();
+
+                    imp.engine_row.init_for_iwad(engines, selected_iwad.flag());
 
                     imp.launch_button.set_sensitive(imp.engine_row.selected_item().is_some() && imp.iwad_row.selected_iwad().is_some());
                 }

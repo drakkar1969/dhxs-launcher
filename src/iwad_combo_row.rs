@@ -1,12 +1,10 @@
-use std::cell::OnceCell;
-
 use gtk::{gio, glib};
 use adw::subclass::prelude::*;
 use adw::prelude::*;
 
 use glob::{glob_with, MatchOptions};
 
-use crate::iwad_object::{IWADFlags, IWadObject};
+use crate::iwad_object::IWadObject;
 
 //------------------------------------------------------------------------------
 // MODULE: IWadComboRow
@@ -22,8 +20,6 @@ mod imp {
     pub struct IWadComboRow {
         #[template_child]
         pub model: TemplateChild<gio::ListStore>,
-
-        pub iwad_list: OnceCell<Vec<IWadObject>>,
     }
 
     //-----------------------------------
@@ -52,8 +48,6 @@ mod imp {
         //-----------------------------------
         fn constructed(&self) {
             self.parent_constructed();
-
-            self.obj().setup_data();
         }
     }
 
@@ -82,29 +76,9 @@ impl IWadComboRow {
     }
 
     //-----------------------------------
-    // Setup data
-    //-----------------------------------
-    fn setup_data(&self) {
-        let imp = self.imp();
-
-        let iwad_list: Vec<IWadObject> = vec![
-            IWadObject::new(IWADFlags::DOOM, "The Ultimate Doom", "doom.wad"),
-            IWadObject::new(IWADFlags::DOOM, "Doom II: Hell on Earth", "doom2.wad"),
-            IWadObject::new(IWADFlags::DOOM, "Final Doom - The Plutonia Experiment", "plutonia.wad"),
-            IWadObject::new(IWADFlags::DOOM, "Final Doom - TNT: Evilution", "tnt.wad"),
-            IWadObject::new(IWADFlags::DOOM, "Freedoom Phase 1", "freedoom1.wad"),
-            IWadObject::new(IWADFlags::DOOM, "Freedoom Phase 2", "freedoom2.wad"),
-            IWadObject::new(IWADFlags::HERETIC, "Heretic", "heretic.wad"),
-            IWadObject::new(IWADFlags::HEXEN, "Hexen", "hexen.wad"),
-        ];
-
-        imp.iwad_list.set(iwad_list).unwrap();
-    }
-
-    //-----------------------------------
     // Public init from folder function
     //-----------------------------------
-    pub fn init_from_folder(&self, folder: &str) {
+    pub fn init_from_folder(&self, iwad_list: &[IWadObject], folder: &str) {
         let imp = self.imp();
 
         let options = MatchOptions {
@@ -115,8 +89,6 @@ impl IWadComboRow {
 
         if let Ok(entries) = glob_with(&format!("{folder}/*.wad"), options) {
             // Get list of IWADs in folder
-            let iwad_list = imp.iwad_list.get().unwrap();
-
             let mut iwad_objects = entries.into_iter()
                 .flatten()
                 .filter_map(|entry| {
@@ -124,10 +96,11 @@ impl IWadComboRow {
                         .and_then(|filename| filename.to_str())
                         .unwrap_or_default();
 
-                    iwad_list.clone().into_iter()
+                    iwad_list.into_iter()
                         .find(|iwad| iwad.iwad() == filename)
+                        .cloned()
                 })
-                .collect::<Vec<_>>();
+                .collect::<Vec<IWadObject>>();
 
             iwad_objects.sort_unstable_by_key(|iwad| iwad.name());
 
