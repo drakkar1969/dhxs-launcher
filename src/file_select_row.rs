@@ -181,15 +181,14 @@ impl FileSelectRow {
                     1 => {
                         Path::new(&files[0]).file_name()
                             .and_then(|filename| filename.to_str())
-                            .or_else(|| Some("(None)"))
-                            .unwrap()
+                            .unwrap_or("(None)")
                     },
                     _ => {
                         &format!("({n_files} files)")
                     }
                 };
 
-                imp.select_label.set_label(&label);
+                imp.select_label.set_label(label);
 
                 imp.reset_button.set_sensitive(n_files > 0);
             }
@@ -225,7 +224,7 @@ impl FileSelectRow {
                 // Set initial location for dialog
                 let files = row.files();
 
-                if files.len() > 0 {
+                if !files.is_empty() {
                     dialog.set_initial_file(path_to_file(&files[0]).as_ref());
                 } else {
                     dialog.set_initial_folder(path_to_file(row.initial_folder().as_ref()).as_ref());

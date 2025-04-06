@@ -104,7 +104,7 @@ impl PreferencesDialog {
         self.bind_property("iwad-folder", &imp.iwad_row.get(), "files")
             .transform_to(|_, folder: String| Some(vec![folder]))
             .transform_from(|_, files: Vec<String>| {
-                Some(files.get(0).cloned().unwrap_or_default())
+                Some(files.first().cloned().unwrap_or_default())
             })
             .sync_create()
             .bidirectional()
@@ -113,7 +113,7 @@ impl PreferencesDialog {
         self.bind_property("pwad-folder", &imp.pwad_row.get(), "files")
             .transform_to(|_, folder: String| Some(vec![folder]))
             .transform_from(|_, files: Vec<String>| {
-                Some(files.get(0).cloned().unwrap_or_default())
+                Some(files.first().cloned().unwrap_or_default())
             })
             .sync_create()
             .bidirectional()

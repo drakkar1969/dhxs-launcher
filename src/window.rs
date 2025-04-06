@@ -399,8 +399,8 @@ impl LauncherWindow {
         // Save preferences window settings
         let prefs = imp.prefs_dialog.imp();
 
-        Self::set_gsetting(gsettings, "iwad-folder", &prefs.iwad_row.files().get(0).cloned().unwrap_or_default());
-        Self::set_gsetting(gsettings, "pwad-folder", &prefs.pwad_row.files().get(0).cloned().unwrap_or_default());
+        Self::set_gsetting(gsettings, "iwad-folder", &prefs.iwad_row.files().first().cloned().unwrap_or_default());
+        Self::set_gsetting(gsettings, "pwad-folder", &prefs.pwad_row.files().first().cloned().unwrap_or_default());
     }
 
     //-----------------------------------

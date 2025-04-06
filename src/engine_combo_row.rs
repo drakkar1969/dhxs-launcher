@@ -83,13 +83,14 @@ impl EngineComboRow {
         let imp = self.imp();
 
         // Get list of installed engines compatible with IWAD
-        let mut engine_objects = engine_list.into_iter()
-            .map(|engine| engine.clone())
+        let mut engine_objects = engine_list.iter()
             .filter(|engine| {
                 Path::new(&engine.path()).try_exists().unwrap_or_default() &&
                 engine.games().contains(iwad_flag)
             }
-        ).collect::<Vec<EngineObject>>();
+        )
+        .cloned()
+        .collect::<Vec<EngineObject>>();
 
         engine_objects.sort_unstable_by_key(|engine| engine.name());
 

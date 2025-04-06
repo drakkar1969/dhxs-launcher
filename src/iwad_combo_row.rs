@@ -96,10 +96,10 @@ impl IWadComboRow {
                         .and_then(|filename| filename.to_str())
                         .unwrap_or_default();
 
-                    iwad_list.into_iter()
+                    iwad_list.iter()
                         .find(|iwad| iwad.iwad() == filename)
-                        .cloned()
                 })
+                .cloned()
                 .collect::<Vec<IWadObject>>();
 
             iwad_objects.sort_unstable_by_key(|iwad| iwad.name());
