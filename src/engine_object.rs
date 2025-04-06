@@ -7,6 +7,23 @@ use gtk::prelude::ObjectExt;
 use crate::iwad_object::IWADFlags;
 
 //------------------------------------------------------------------------------
+// ENUM: EngineID
+//------------------------------------------------------------------------------
+#[derive(Default, Debug, Eq, PartialEq, Clone, Copy, glib::Enum)]
+#[repr(u32)]
+#[enum_type(name = "EngineID")]
+pub enum EngineID {
+    #[default]
+    ChocolateDoom,
+    CrispyDoom,
+    DSDADoom,
+    GZDoom,
+    NuggetDoom,
+    VKDoom,
+    Woof,
+}
+
+//------------------------------------------------------------------------------
 // MODULE: EngineObject
 //------------------------------------------------------------------------------
 mod imp {
@@ -18,6 +35,8 @@ mod imp {
     #[derive(Default, glib::Properties)]
     #[properties(wrapper_type = super::EngineObject)]
     pub struct EngineObject {
+        #[property(get, set, builder(EngineID::default()))]
+        id: Cell<EngineID>,
         #[property(get, set)]
         name: RefCell<String>,
         #[property(get, set)]
@@ -54,9 +73,10 @@ impl EngineObject {
     //-----------------------------------
     // New function
     //-----------------------------------
-    pub fn new(name: &str, description: &str, games: IWADFlags, compatibility: u32, path: &str) -> Self {
+    pub fn new(id: EngineID, name: &str, description: &str, games: IWADFlags, compatibility: u32, path: &str) -> Self {
         // Build IWadObject
         glib::Object::builder()
+            .property("id", id)
             .property("name", name)
             .property("description", description)
             .property("games", games)

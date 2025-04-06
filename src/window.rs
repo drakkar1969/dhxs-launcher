@@ -8,7 +8,7 @@ use glib::clone;
 use crate::APP_ID;
 use crate::LauncherApplication;
 use crate::engine_combo_row::EngineComboRow;
-use crate::engine_object::EngineObject;
+use crate::engine_object::{EngineObject, EngineID};
 use crate::iwad_combo_row::IWadComboRow;
 use crate::iwad_object::{IWadObject, IWADFlags};
 use crate::file_select_row::FileSelectRow;
@@ -159,6 +159,7 @@ impl LauncherWindow {
 
         let engines: Vec<EngineObject> = vec![
             EngineObject::new(
+                EngineID::ChocolateDoom,
                 "Chocolate Doom",
                 "Historically-accurate Doom, Heretic, Hexen, and Strife port",
                 IWADFlags::DOOM | IWADFlags::HERETIC | IWADFlags::HEXEN,
@@ -166,6 +167,7 @@ impl LauncherWindow {
                 "/usr/bin/chocolate-doom"
             ),
             EngineObject::new(
+                EngineID::CrispyDoom,
                 "Crispy Doom",
                 "Vanilla-compatible enhanced Doom engine",
                 IWADFlags::DOOM | IWADFlags::HERETIC | IWADFlags::HEXEN,
@@ -173,6 +175,7 @@ impl LauncherWindow {
                 "/usr/bin/crispy-doom"
             ),
             EngineObject::new(
+                EngineID::DSDADoom,
                 "DSDA-Doom",
                 "Fork of PrBoom+ with extra tooling for demo recording and playback, with a focus on speedrunning",
                 IWADFlags::DOOM | IWADFlags::HERETIC | IWADFlags::HEXEN,
@@ -180,6 +183,7 @@ impl LauncherWindow {
                 "/usr/bin/dsda-doom"
             ),
             EngineObject::new(
+                EngineID::GZDoom,
                 "GZDoom",
                 "Feature centric port for all Doom engine games",
                 IWADFlags::DOOM | IWADFlags::HERETIC | IWADFlags::HEXEN,
@@ -187,6 +191,7 @@ impl LauncherWindow {
                 "/usr/bin/gzdoom"
             ),
             EngineObject::new(
+                EngineID::NuggetDoom,
                 "Nugget Doom",
                 "Fork of Woof! with additional features",
                 IWADFlags::DOOM,
@@ -194,6 +199,7 @@ impl LauncherWindow {
                 "/usr/bin/nugget-doom"
             ),
             EngineObject::new(
+                EngineID::VKDoom,
                 "VKDoom",
                 "VKDoom is a source port based on the DOOM engine with a focus on Vulkan and modern computers",
                 IWADFlags::DOOM | IWADFlags::HERETIC | IWADFlags::HEXEN,
@@ -201,6 +207,7 @@ impl LauncherWindow {
                 "/usr/bin/vkdoom"
             ),
             EngineObject::new(
+                EngineID::Woof,
                 "Woof!",
                 "Woof! is a continuation of Lee Killough's Doom source port MBF targeted at modern systems",
                 IWADFlags::DOOM,
