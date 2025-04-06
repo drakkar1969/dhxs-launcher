@@ -133,6 +133,7 @@ impl LauncherWindow {
 
         button.set_label(key);
         button.set_valign(gtk::Align::Center);
+        button.set_css_classes(&["pill"]);
 
         button.connect_clicked(clone!(
             #[weak] imp,
