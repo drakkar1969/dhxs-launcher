@@ -298,7 +298,7 @@ impl LauncherWindow {
             move |prefs_dialog| {
                 let iwads = imp.iwads.get().unwrap();
 
-                imp.iwad_row.init_from_folder(iwads, &env_expand(&prefs_dialog.iwad_folder()));
+                imp.iwad_row.init_for_folder(iwads, &env_expand(&prefs_dialog.iwad_folder()));
         
                 imp.launch_button.set_sensitive(imp.engine_row.selected_item().is_some() && imp.iwad_row.selected_iwad().is_some());
             }
