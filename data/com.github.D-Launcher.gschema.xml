@@ -18,11 +18,11 @@
       <summary>Extra switches to pass to Doom</summary>
     </key>
     <key name="iwad-folder" type="s">
-      <default>'$HOME/.config/zandronum/iwads'</default>
+      <default>'$HOME/.config/d-launcher/iwads'</default>
       <summary>Folder to search for game (IWAD) files</summary>
     </key>
     <key name="pwad-folder" type="s">
-      <default>'$HOME/.config/zandronum/pwads'</default>
+      <default>'$HOME/.config/d-launcher/pwads'</default>
       <summary>Folder to search for additional files</summary>
     </key>
   </schema>
