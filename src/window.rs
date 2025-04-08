@@ -1,4 +1,6 @@
 use std::cell::OnceCell;
+use std::path::Path;
+use std::process::Command;
 
 use gtk::{gio, glib, gdk, pango};
 use adw::subclass::prelude::*;
@@ -176,7 +178,9 @@ impl LauncherWindow {
                 "Historically-accurate Doom, Heretic, Hexen, and Strife port",
                 IWADFlags::DOOM | IWADFlags::HERETIC | IWADFlags::HEXEN,
                 5,
-                "/usr/bin/chocolate-doom"
+                "/usr/bin/chocolate-doom",
+                Some("/usr/bin/chocolate-heretic"),
+                Some("/usr/bin/chocolate-hexen")
             ),
             EngineObject::new(
                 EngineID::CrispyDoom,
@@ -184,7 +188,9 @@ impl LauncherWindow {
                 "Vanilla-compatible enhanced Doom engine",
                 IWADFlags::DOOM | IWADFlags::HERETIC | IWADFlags::HEXEN,
                 5,
-                "/usr/bin/crispy-doom"
+                "/usr/bin/crispy-doom",
+                Some("/usr/bin/crispy-heretic"),
+                Some("/usr/bin/crispy-hexen")
             ),
             EngineObject::new(
                 EngineID::DSDADoom,
@@ -192,7 +198,9 @@ impl LauncherWindow {
                 "Fork of PrBoom+ with extra tooling for demo recording and playback, with a focus on speedrunning",
                 IWADFlags::DOOM | IWADFlags::HERETIC | IWADFlags::HEXEN,
                 5,
-                "/usr/bin/dsda-doom"
+                "/usr/bin/dsda-doom",
+                None,
+                None
             ),
             EngineObject::new(
                 EngineID::GZDoom,
@@ -200,7 +208,9 @@ impl LauncherWindow {
                 "Feature centric port for all Doom engine games",
                 IWADFlags::DOOM | IWADFlags::HERETIC | IWADFlags::HEXEN,
                 2,
-                "/usr/bin/gzdoom"
+                "/usr/bin/gzdoom",
+                None,
+                None
             ),
             EngineObject::new(
                 EngineID::NuggetDoom,
@@ -208,7 +218,9 @@ impl LauncherWindow {
                 "Fork of Woof! with additional features",
                 IWADFlags::DOOM,
                 5,
-                "/usr/bin/nugget-doom"
+                "/usr/bin/nugget-doom",
+                None,
+                None
             ),
             EngineObject::new(
                 EngineID::VKDoom,
@@ -216,7 +228,9 @@ impl LauncherWindow {
                 "VKDoom is a source port based on the DOOM engine with a focus on Vulkan and modern computers",
                 IWADFlags::DOOM | IWADFlags::HERETIC | IWADFlags::HEXEN,
                 2,
-                "/usr/bin/vkdoom"
+                "/usr/bin/vkdoom",
+                None,
+                None
             ),
             EngineObject::new(
                 EngineID::Woof,
@@ -224,7 +238,9 @@ impl LauncherWindow {
                 "Woof! is a continuation of Lee Killough's Doom source port MBF targeted at modern systems",
                 IWADFlags::DOOM,
                 5,
-                "/usr/bin/woof"
+                "/usr/bin/woof",
+                None,
+                None
             ),
         ];
 
@@ -494,6 +510,55 @@ impl LauncherWindow {
     // Launch Doom function
     //-----------------------------------
     fn launch_doom(&self) -> LaunchResult {
-        LaunchResult::Error("TEST ERROR")
+        let imp = self.imp();
+
+        // Return with error if no engine selected
+        let Some(engine) = imp.engine_row.selected_engine() else {
+            return LaunchResult::Error("Doom Engine not specified")
+        };
+
+        // Return with error if no game (IWAD file) selected
+        let Some(iwad) = imp.iwad_row.selected_iwad() else {
+            return LaunchResult::Error("Game (IWAD file) not specified")
+        };
+
+        // Get executable file
+        let exec_file = match iwad.flag() {
+            IWADFlags::DOOM => {
+                engine.path()
+            },
+            IWADFlags::HERETIC => {
+                engine.heretic_path().unwrap_or(engine.path())
+            },
+            IWADFlags::HEXEN => {
+                engine.hexen_path().unwrap_or(engine.path())
+            },
+            _ => unreachable!()
+        };
+
+        // Return with error if executable file does not exist
+        if !Path::new(&env_expand(&exec_file)).try_exists().unwrap_or_default() {
+            return LaunchResult::Error("Executable file not found")
+        }
+
+        // Return with error if IWAD file does not exist
+        let iwad_file = Path::new(&env_expand(&imp.prefs_dialog.iwad_folder())).join(iwad.iwad());
+
+        if !iwad_file.try_exists().unwrap_or_default() {
+            return LaunchResult::Error("Game (IWAD file) not found")
+        }
+
+        // Build Doom command line
+        let cmd_line = format!("{} -iwad {}", exec_file, iwad_file.display());
+
+        // Launch Doom
+        if let Some(params) = shlex::split(&cmd_line).filter(|params| !params.is_empty()) {
+            Command::new(&params[0])
+                .args(&params[1..])
+                .spawn()
+                .unwrap();
+        }
+
+        LaunchResult::Success
     }
 }

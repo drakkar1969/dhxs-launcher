@@ -47,6 +47,10 @@ mod imp {
         compatibility: Cell<u32>,
         #[property(get, set)]
         path: RefCell<String>,
+        #[property(get, set, nullable)]
+        heretic_path: RefCell<Option<String>>,
+        #[property(get, set, nullable)]
+        hexen_path: RefCell<Option<String>>,
     }
 
     //-----------------------------------
@@ -73,7 +77,7 @@ impl EngineObject {
     //-----------------------------------
     // New function
     //-----------------------------------
-    pub fn new(id: EngineID, name: &str, description: &str, games: IWADFlags, compatibility: u32, path: &str) -> Self {
+    pub fn new(id: EngineID, name: &str, description: &str, games: IWADFlags, compatibility: u32, path: &str, heretic_path: Option<&str>, hexen_path: Option<&str>) -> Self {
         // Build IWadObject
         glib::Object::builder()
             .property("id", id)
@@ -82,6 +86,8 @@ impl EngineObject {
             .property("games", games)
             .property("compatibility", compatibility)
             .property("path", path)
+            .property("heretic-path", heretic_path)
+            .property("hexen-path", hexen_path)
             .build()
     }
 }
