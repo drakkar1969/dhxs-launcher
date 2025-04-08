@@ -16,6 +16,14 @@ use crate::preferences_dialog::PreferencesDialog;
 use crate::utils::env_expand;
 
 //------------------------------------------------------------------------------
+// ENUM: LaunchResult
+//------------------------------------------------------------------------------
+enum LaunchResult<'a> {
+    Success,
+    Error(&'a str)
+}
+
+//------------------------------------------------------------------------------
 // MODULE: LauncherWindow
 //------------------------------------------------------------------------------
 mod imp {
@@ -69,6 +77,10 @@ mod imp {
 
             // Add show preferences shortcut
             klass.add_binding_action(gdk::Key::comma, gdk::ModifierType::CONTROL_MASK, "win.show-preferences");
+
+            // Add launch Doom shortcuts
+            klass.add_binding_action(gdk::Key::Return, gdk::ModifierType::CONTROL_MASK, "win.launch-doom");
+            klass.add_binding_action(gdk::Key::KP_Enter, gdk::ModifierType::CONTROL_MASK, "win.launch-doom");
         }
 
         fn instance_init(obj: &glib::subclass::InitializingObject<Self>) {
@@ -445,7 +457,43 @@ impl LauncherWindow {
                 }
             ))
             .build();
+
+        // Add launch Doom action
+        let launch_action = gio::ActionEntry::builder("launch-doom")
+            .activate(clone!(
+                #[weak(rename_to = window)] self,
+                move |_, _, _| {
+                    window.set_sensitive(false);
+
+                    match window.launch_doom() {
+                        LaunchResult::Error(error_msg) => {
+                            window.set_sensitive(true);
+
+                            let error_dialog = adw::AlertDialog::new(
+                                Some("Error"),
+                                Some(error_msg)
+                            );
+
+                            error_dialog.add_responses(&[("ok", "_Ok")]);
+
+                            error_dialog.present(Some(&window));
+                        },
+                        LaunchResult::Success => {
+                            window.close();
+                        }
+                    }
+                }
+            ))
+            .build();
+
         // Add actions to window
-        self.add_action_entries([reset_action, prefs_action]);
+        self.add_action_entries([reset_action, prefs_action, launch_action]);
+    }
+
+    //-----------------------------------
+    // Launch Doom function
+    //-----------------------------------
+    fn launch_doom(&self) -> LaunchResult {
+        LaunchResult::Error("TEST ERROR")
     }
 }

@@ -93,7 +93,7 @@
                 <property name="label">_Launch Doom</property>
                 <property name="halign">center</property>
                 <property name="use-underline">true</property>
-                <property name="action-name">win.launch-zandronum</property>
+                <property name="action-name">win.launch-doom</property>
                 <style>
                   <class name="suggested-action"/>
                   <class name="pill"/>
