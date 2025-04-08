@@ -485,10 +485,10 @@ impl LauncherWindow {
                         LaunchResult::Error(error_msg) => {
                             window.set_sensitive(true);
 
-                            let error_dialog = adw::AlertDialog::new(
-                                Some("Error"),
-                                Some(error_msg)
-                            );
+                            let error_dialog = adw::AlertDialog::builder()
+                                .heading("Error")
+                                .body(error_msg)
+                                .build();
 
                             error_dialog.add_responses(&[("ok", "_Ok")]);
 
