@@ -20,9 +20,9 @@ use crate::utils::env_expand;
 //------------------------------------------------------------------------------
 // ENUM: LaunchResult
 //------------------------------------------------------------------------------
-enum LaunchResult<'a> {
+enum LaunchResult {
     Success,
-    Error(&'a str)
+    Error(String)
 }
 
 //------------------------------------------------------------------------------
@@ -488,6 +488,7 @@ impl LauncherWindow {
                             let error_dialog = adw::AlertDialog::builder()
                                 .heading("Error")
                                 .body(error_msg)
+                                .body_use_markup(true)
                                 .build();
 
                             error_dialog.add_responses(&[("ok", "_Ok")]);
@@ -514,16 +515,16 @@ impl LauncherWindow {
 
         // Return with error if no engine selected
         let Some(engine) = imp.engine_row.selected_engine() else {
-            return LaunchResult::Error("Doom Engine not specified")
+            return LaunchResult::Error("Doom Engine not specified.".to_string())
         };
 
         // Return with error if no game (IWAD file) selected
         let Some(iwad) = imp.iwad_row.selected_iwad() else {
-            return LaunchResult::Error("Game (IWAD file) not specified")
+            return LaunchResult::Error("Game not specified.".to_string())
         };
 
         // Get executable file
-        let exec_file = match iwad.flag() {
+        let exec_file = env_expand(&match iwad.flag() {
             IWADFlags::DOOM => {
                 engine.path()
             },
@@ -534,18 +535,19 @@ impl LauncherWindow {
                 engine.hexen_path().unwrap_or(engine.path())
             },
             _ => unreachable!()
-        };
+        });
 
         // Return with error if executable file does not exist
-        if !Path::new(&env_expand(&exec_file)).try_exists().unwrap_or_default() {
-            return LaunchResult::Error("Executable file not found")
+        if !Path::new(&exec_file).try_exists().unwrap_or_default() {
+            return LaunchResult::Error(format!("Executable file <b>{}</b> not found.", exec_file))
         }
 
         // Return with error if IWAD file does not exist
         let iwad_file = Path::new(&env_expand(&imp.prefs_dialog.iwad_folder())).join(iwad.iwad());
 
         if !iwad_file.try_exists().unwrap_or_default() {
-            return LaunchResult::Error("Game (IWAD file) not found")
+            return LaunchResult::Error(format!("IWAD file <b>{}</b> not found.",
+                iwad_file.file_name().and_then(|s| s.to_str()).unwrap_or_default()))
         }
 
         // Get optional PWAD files
