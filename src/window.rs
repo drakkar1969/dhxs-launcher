@@ -46,6 +46,8 @@ mod imp {
         pub(super) pwad_row: TemplateChild<FileSelectRow>,
         #[template_child]
         pub(super) switches_row: TemplateChild<adw::EntryRow>,
+        #[template_child]
+        pub(super) graphics_row: TemplateChild<adw::SwitchRow>,
 
         #[template_child]
         pub(super) switches_grid: TemplateChild<gtk::Grid>,
@@ -384,13 +386,12 @@ impl LauncherWindow {
         imp.prefs_dialog.set_iwad_default_folder(Self::gsetting_default_value(&gsettings,"iwad-folder"));
         imp.prefs_dialog.set_pwad_default_folder(Self::gsetting_default_value(&gsettings,"pwad-folder"));
 
-        imp.prefs_dialog.set_hires_graphics(gsettings.boolean("hires-graphics"));
-
         // Init main window
         imp.engine_row.set_selected_engine_name(&gsettings.string("selected-engine"));
         imp.iwad_row.set_selected_iwad_file(&gsettings.string("selected-iwad"));
         imp.pwad_row.set_files(gsettings.strv("pwad-files").into_iter().map(String::from).collect::<Vec<String>>());
         imp.switches_row.set_text(&gsettings.string("extra-switches"));
+        imp.graphics_row.set_active(gsettings.boolean("hires-graphics"));
 
         // Store gsettings
         imp.gsettings.set(gsettings).unwrap();
@@ -417,11 +418,11 @@ impl LauncherWindow {
         Self::set_gsetting(gsettings, "selected-iwad", &selected_iwad);
         Self::set_gsetting(gsettings, "pwad-files", &imp.pwad_row.files());
         Self::set_gsetting(gsettings, "extra-switches", &imp.switches_row.text().to_string());
+        Self::set_gsetting(gsettings, "hires-graphics", &imp.graphics_row.is_active());
 
         // Save preferences window settings
         Self::set_gsetting(gsettings, "iwad-folder", &imp.prefs_dialog.iwad_folder());
         Self::set_gsetting(gsettings, "pwad-folder", &imp.prefs_dialog.pwad_folder());
-        Self::set_gsetting(gsettings, "hires-graphics", &imp.prefs_dialog.hires_graphics());
     }
 
     //-----------------------------------
@@ -456,6 +457,7 @@ impl LauncherWindow {
                                     imp.iwad_row.set_selected(0);
                                     imp.pwad_row.reset_to_default();
                                     imp.switches_row.set_text("");
+                                    imp.graphics_row.set_active(false);
                                 }
                             }
                         )
