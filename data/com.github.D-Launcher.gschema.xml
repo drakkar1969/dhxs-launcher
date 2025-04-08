@@ -15,7 +15,7 @@
     </key>
     <key name="extra-switches" type="s">
       <default>''</default>
-      <summary>Extra switches to pass to Zandronum</summary>
+      <summary>Extra switches to pass to Doom</summary>
     </key>
     <key name="iwad-folder" type="s">
       <default>'$HOME/.config/zandronum/iwads'</default>
