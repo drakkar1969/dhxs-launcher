@@ -384,6 +384,8 @@ impl LauncherWindow {
         imp.prefs_dialog.set_iwad_default_folder(Self::gsetting_default_value(&gsettings,"iwad-folder"));
         imp.prefs_dialog.set_pwad_default_folder(Self::gsetting_default_value(&gsettings,"pwad-folder"));
 
+        imp.prefs_dialog.set_hires_graphics(gsettings.boolean("hires-graphics"));
+
         // Init main window
         imp.engine_row.set_selected_engine_name(&gsettings.string("selected-engine"));
         imp.iwad_row.set_selected_iwad_file(&gsettings.string("selected-iwad"));
@@ -421,6 +423,7 @@ impl LauncherWindow {
 
         Self::set_gsetting(gsettings, "iwad-folder", &prefs.iwad_row.files().first().cloned().unwrap_or_default());
         Self::set_gsetting(gsettings, "pwad-folder", &prefs.pwad_row.files().first().cloned().unwrap_or_default());
+        Self::set_gsetting(gsettings, "hires-graphics", &imp.prefs_dialog.hires_graphics());
     }
 
     //-----------------------------------

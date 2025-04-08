@@ -7,7 +7,7 @@
       <object class="AdwPreferencesPage">
         <child>
           <object class="AdwPreferencesGroup">
-            <property name="title">Application Paths</property>
+            <property name="title">User Paths</property>
             <child>
               <object class="FileSelectRow" id="iwad_row">
                 <property name="title">_IWAD Folder</property>
@@ -30,9 +30,20 @@
         </child>
         <child>
           <object class="AdwPreferencesGroup">
+            <property name="title">Hi-Res Graphics</property>
+            <child>
+              <object class="AdwSwitchRow" id="hires_row">
+                <property name="title">Enable _High Resolution Graphics</property>
+                <property name="use-underline">true</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
             <child>
               <object class="AdwButtonRow" id="reset_button">
-                <property name="title">_Reset Paths</property>
+                <property name="title">_Reset Preferences</property>
                 <property name="use-underline">true</property>
                 <style>
                   <class name="destructive-action"/>

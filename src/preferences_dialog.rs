@@ -1,4 +1,4 @@
-use std::cell::RefCell;
+use std::cell::{Cell, RefCell};
 
 use gtk::{gio, glib};
 use adw::subclass::prelude::*;
@@ -24,6 +24,8 @@ mod imp {
         pub iwad_row: TemplateChild<FileSelectRow>,
         #[template_child]
         pub pwad_row: TemplateChild<FileSelectRow>,
+        #[template_child]
+        pub hires_row: TemplateChild<adw::SwitchRow>,
 
         #[template_child]
         pub reset_button: TemplateChild<adw::ButtonRow>,
@@ -37,6 +39,9 @@ mod imp {
         iwad_default_folder: RefCell<String>,
         #[property(get, set)]
         pwad_default_folder: RefCell<String>,
+
+        #[property(get, set)]
+        hires_graphics: Cell<bool>,
     }
 
     //-----------------------------------
@@ -128,6 +133,11 @@ impl PreferencesDialog {
             .sync_create()
             .bidirectional()
             .build();
+
+        self.bind_property("hires-graphics", &imp.hires_row.get(), "active")
+            .sync_create()
+            .bidirectional()
+            .build();
     }
 
     //-----------------------------------
@@ -142,8 +152,8 @@ impl PreferencesDialog {
             #[weak] imp,
             move |_| {
                 let reset_dialog = adw::AlertDialog::builder()
-                    .heading("Reset Paths?")
-                    .body("Reset all paths to their default values.")
+                    .heading("Reset Preferences?")
+                    .body("Reset all preferences to their default values.")
                     .default_response("reset")
                     .build();
 
@@ -159,6 +169,7 @@ impl PreferencesDialog {
                             if response == "reset" {
                                 imp.iwad_row.reset_to_default();
                                 imp.pwad_row.reset_to_default();
+                                imp.hires_row.set_active(false);
                             }
                         }
                     )
