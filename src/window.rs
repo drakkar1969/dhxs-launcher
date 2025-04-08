@@ -555,10 +555,11 @@ impl LauncherWindow {
             .join(" ");
 
         // Build Doom command line
-        let cmd_line = format!("{} -iwad {} -file {}",
-            exec_file,
-            iwad_file.display(),
-            pwad_files
+        let cmd_line = format!("{exec} -iwad {iwad} -file {pwads} {switches}",
+            exec=exec_file,
+            iwad=iwad_file.display(),
+            pwads=pwad_files,
+            switches=imp.switches_row.text()
         );
 
         // Launch Doom
