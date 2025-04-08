@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
+  <gresource prefix="/com/github/D-Launcher/icons/scalable/actions/">
+    <file alias="info-outline-symbolic.svg">icons/info-outline-symbolic.svg</file>
+  </gresource>
   <gresource prefix="/com/github/D-Launcher">
     <file compressed="true">ui/engine_combo/entry-item.ui</file>
     <file compressed="true">ui/engine_combo/list-item.ui</file>

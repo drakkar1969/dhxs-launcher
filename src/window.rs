@@ -222,30 +222,16 @@ impl LauncherWindow {
     //-----------------------------------
     // Label helper functions
     //-----------------------------------
-    fn key_button(&self, key: &str) -> gtk::Button {
-        let imp = self.imp();
+    fn key_label(&self, key: &str) -> gtk::Label {
+        let label = gtk::Label::new(Some(key));
+        label.set_vexpand(true);
+        label.set_xalign(0.0);
+        label.set_yalign(0.0);
+        label.set_can_focus(false);
+        label.set_selectable(true);
+        label.set_css_classes(&["heading"]);
 
-        let button = gtk::Button::new();
-
-        button.set_label(key);
-        button.set_valign(gtk::Align::Center);
-        button.set_css_classes(&["pill"]);
-
-        button.connect_clicked(clone!(
-            #[weak] imp,
-            move |button| {
-                let mut text = imp.switches_row.text().to_string();
-
-                text += &format!("{}{}",
-                    if text.is_empty() { "" } else { " " },
-                    button.label().unwrap_or_default()
-                );
-
-                imp.switches_row.set_text(&text);
-            }
-        ));
-
-        button
+        label
     }
 
     fn value_label(&self, value: &str) -> gtk::Label {
@@ -278,14 +264,13 @@ impl LauncherWindow {
             ("-nosound", "Disable music and sound effects"),
             ("-respawn", "Monsters return a few seconds after being killed, requires the -warp parameter"),
             ("-skill s", "Select difficulty level s (1 to 5), will warp to the first level of the game (if no other -warp parameter is specified)"),
-            ("-warp m", "Start the game on level m (1 to 32) (Doom2)"),
-            ("-warp e m", "Start the game on episode e (1 to 4) map m (1 to 9) (Doom1)"),
+            ("-warp m\n-warp e m", "Start the game on level m (1 to 32) (Doom2)\nStart the game on episode e (1 to 4) map m (1 to 9) (Doom1)"),
             ("-width x -height y", "Specify the desired screen resolution")
         ]
         .iter()
         .enumerate()
         .for_each(|(i, (key, value))| {
-            imp.switches_grid.attach(&self.key_button(key), 0, i as i32, 1, 1);
+            imp.switches_grid.attach(&self.key_label(key), 0, i as i32, 1, 1);
             imp.switches_grid.attach(&self.value_label(value), 1, i as i32, 1, 1);
         });
 
