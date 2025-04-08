@@ -19,7 +19,7 @@ mod imp {
     #[template(resource = "/com/github/D-Launcher/ui/iwad_combo_row.ui")]
     pub struct IWadComboRow {
         #[template_child]
-        pub model: TemplateChild<gio::ListStore>,
+        pub(super) model: TemplateChild<gio::ListStore>,
     }
 
     //-----------------------------------

@@ -21,14 +21,14 @@ mod imp {
     #[template(resource = "/com/github/D-Launcher/ui/preferences_dialog.ui")]
     pub struct PreferencesDialog {
         #[template_child]
-        pub iwad_row: TemplateChild<FileSelectRow>,
+        pub(super) iwad_row: TemplateChild<FileSelectRow>,
         #[template_child]
-        pub pwad_row: TemplateChild<FileSelectRow>,
+        pub(super) pwad_row: TemplateChild<FileSelectRow>,
         #[template_child]
-        pub hires_row: TemplateChild<adw::SwitchRow>,
+        pub(super) hires_row: TemplateChild<adw::SwitchRow>,
 
         #[template_child]
-        pub reset_button: TemplateChild<adw::ButtonRow>,
+        pub(super) reset_button: TemplateChild<adw::ButtonRow>,
 
         #[property(get, set)]
         iwad_folder: RefCell<String>,

@@ -38,23 +38,23 @@ mod imp {
     #[template(resource = "/com/github/D-Launcher/ui/window.ui")]
     pub struct LauncherWindow {
         #[template_child]
-        pub engine_row: TemplateChild<EngineComboRow>,
+        pub(super) engine_row: TemplateChild<EngineComboRow>,
 
         #[template_child]
-        pub iwad_row: TemplateChild<IWadComboRow>,
+        pub(super) iwad_row: TemplateChild<IWadComboRow>,
         #[template_child]
-        pub pwad_row: TemplateChild<FileSelectRow>,
+        pub(super) pwad_row: TemplateChild<FileSelectRow>,
         #[template_child]
-        pub switches_row: TemplateChild<adw::EntryRow>,
+        pub(super) switches_row: TemplateChild<adw::EntryRow>,
 
         #[template_child]
-        pub switches_grid: TemplateChild<gtk::Grid>,
+        pub(super) switches_grid: TemplateChild<gtk::Grid>,
 
         #[template_child]
-        pub launch_button: TemplateChild<gtk::Button>,
+        pub(super) launch_button: TemplateChild<gtk::Button>,
 
         #[template_child]
-        pub prefs_dialog: TemplateChild<PreferencesDialog>,
+        pub(super) prefs_dialog: TemplateChild<PreferencesDialog>,
 
         pub gsettings: OnceCell<gio::Settings>,
 
@@ -419,10 +419,8 @@ impl LauncherWindow {
         Self::set_gsetting(gsettings, "extra-switches", &imp.switches_row.text().to_string());
 
         // Save preferences window settings
-        let prefs = imp.prefs_dialog.imp();
-
-        Self::set_gsetting(gsettings, "iwad-folder", &prefs.iwad_row.files().first().cloned().unwrap_or_default());
-        Self::set_gsetting(gsettings, "pwad-folder", &prefs.pwad_row.files().first().cloned().unwrap_or_default());
+        Self::set_gsetting(gsettings, "iwad-folder", &imp.prefs_dialog.iwad_folder());
+        Self::set_gsetting(gsettings, "pwad-folder", &imp.prefs_dialog.pwad_folder());
         Self::set_gsetting(gsettings, "hires-graphics", &imp.prefs_dialog.hires_graphics());
     }
 

@@ -20,7 +20,7 @@ mod imp {
     #[template(resource = "/com/github/D-Launcher/ui/engine_combo_row.ui")]
     pub struct EngineComboRow {
         #[template_child]
-        pub model: TemplateChild<gio::ListStore>,
+        pub(super) model: TemplateChild<gio::ListStore>,
     }
 
     //-----------------------------------

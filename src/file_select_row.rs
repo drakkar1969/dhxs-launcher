@@ -36,13 +36,13 @@ mod imp {
     #[template(resource = "/com/github/D-Launcher/ui/file_select_row.ui")]
     pub struct FileSelectRow {
         #[template_child]
-        pub select_label: TemplateChild<gtk::Label>,
+        pub(super) select_label: TemplateChild<gtk::Label>,
         #[template_child]
-        pub select_image: TemplateChild<gtk::Image>,
+        pub(super) select_image: TemplateChild<gtk::Image>,
         #[template_child]
-        pub separator: TemplateChild<gtk::Separator>,
+        pub(super) separator: TemplateChild<gtk::Separator>,
         #[template_child]
-        pub reset_button: TemplateChild<gtk::Button>,
+        pub(super) reset_button: TemplateChild<gtk::Button>,
 
         #[property(get, set = Self::set_select, construct, builder(SelectMode::default()))]
         select_mode: Cell<SelectMode>,
