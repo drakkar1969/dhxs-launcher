@@ -548,8 +548,18 @@ impl LauncherWindow {
             return LaunchResult::Error("Game (IWAD file) not found")
         }
 
+        // Get optional PWAD files
+        let pwad_files = imp.pwad_row.files().into_iter()
+            .filter(|file| Path::new(&env_expand(file)).try_exists().unwrap_or_default())
+            .collect::<Vec<String>>()
+            .join(" ");
+
         // Build Doom command line
-        let cmd_line = format!("{} -iwad {}", exec_file, iwad_file.display());
+        let cmd_line = format!("{} -iwad {} -file {}",
+            exec_file,
+            iwad_file.display(),
+            pwad_files
+        );
 
         // Launch Doom
         if let Some(params) = shlex::split(&cmd_line).filter(|params| !params.is_empty()) {
