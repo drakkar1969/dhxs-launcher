@@ -4,24 +4,7 @@ use gtk::glib;
 use gtk::subclass::prelude::*;
 use gtk::prelude::ObjectExt;
 
-use crate::data::IWadID;
-
-//------------------------------------------------------------------------------
-// ENUM: EngineID
-//------------------------------------------------------------------------------
-#[derive(Default, Debug, Eq, PartialEq, Clone, Copy, glib::Enum)]
-#[repr(u32)]
-#[enum_type(name = "EngineID")]
-pub enum EngineID {
-    #[default]
-    ChocolateDoom,
-    CrispyDoom,
-    DSDADoom,
-    GZDoom,
-    NuggetDoom,
-    VKDoom,
-    Woof,
-}
+use crate::data::{EngineData, EngineID, IWadID};
 
 //------------------------------------------------------------------------------
 // MODULE: EngineObject
@@ -77,17 +60,17 @@ impl EngineObject {
     //-----------------------------------
     // New function
     //-----------------------------------
-    pub fn new(id: EngineID, name: &str, description: &str, games: IWadID, compatibility: u32, path: &str, heretic_path: Option<&str>, hexen_path: Option<&str>) -> Self {
+    pub fn new(data: &EngineData) -> Self {
         // Build IWadObject
         glib::Object::builder()
-            .property("id", id)
-            .property("name", name)
-            .property("description", description)
-            .property("games", games)
-            .property("compatibility", compatibility)
-            .property("path", path)
-            .property("heretic-path", heretic_path)
-            .property("hexen-path", hexen_path)
+            .property("id", data.id())
+            .property("name", data.name())
+            .property("description", data.description())
+            .property("games", data.games())
+            .property("compatibility", data.compatibility())
+            .property("path", data.path())
+            .property("heretic-path", data.heretic_path())
+            .property("hexen-path", data.hexen_path())
             .build()
     }
 }

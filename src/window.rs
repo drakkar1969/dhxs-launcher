@@ -11,12 +11,12 @@ use glib::clone;
 use crate::APP_ID;
 use crate::LauncherApplication;
 use crate::engine_combo_row::EngineComboRow;
-use crate::engine_object::{EngineObject, EngineID};
+use crate::engine_object::EngineObject;
 use crate::iwad_combo_row::IWadComboRow;
 use crate::file_select_row::FileSelectRow;
 use crate::preferences_dialog::PreferencesDialog;
 use crate::utils::env_expand;
-use crate::data::{IWadID, IWadData, IWAD_HASHMAP};
+use crate::data::{IWadID, IWadData, IWAD_HASHMAP, ENGINE_ARRAY};
 
 //------------------------------------------------------------------------------
 // ENUM: LaunchResult
@@ -62,7 +62,7 @@ mod imp {
         pub gsettings: OnceCell<gio::Settings>,
 
         pub iwad_hashmap: OnceCell<HashMap<u32, IWadData>>,
-        pub engines: OnceCell<Vec<EngineObject>>,
+        pub engine_vec: OnceCell<Vec<EngineObject>>,
     }
 
     //-----------------------------------
@@ -157,80 +157,11 @@ impl LauncherWindow {
         imp.iwad_hashmap.set(HashMap::from(IWAD_HASHMAP)).unwrap();
 
         // Init engine data
-        let engines: Vec<EngineObject> = vec![
-            EngineObject::new(
-                EngineID::ChocolateDoom,
-                "Chocolate Doom",
-                "Historically-accurate Doom, Heretic, Hexen, and Strife port",
-                IWadID::ALL,
-                5,
-                "/usr/bin/chocolate-doom",
-                Some("/usr/bin/chocolate-heretic"),
-                Some("/usr/bin/chocolate-hexen")
-            ),
-            EngineObject::new(
-                EngineID::CrispyDoom,
-                "Crispy Doom",
-                "Vanilla-compatible enhanced Doom engine",
-                IWadID::ALL,
-                5,
-                "/usr/bin/crispy-doom",
-                Some("/usr/bin/crispy-heretic"),
-                Some("/usr/bin/crispy-hexen")
-            ),
-            EngineObject::new(
-                EngineID::DSDADoom,
-                "DSDA-Doom",
-                "Fork of PrBoom+ with extra tooling for demo recording and playback, with a focus on speedrunning",
-                IWadID::ALL,
-                5,
-                "/usr/bin/dsda-doom",
-                None,
-                None
-            ),
-            EngineObject::new(
-                EngineID::GZDoom,
-                "GZDoom",
-                "Feature centric port for all Doom engine games",
-                IWadID::ALL,
-                2,
-                "/usr/bin/gzdoom",
-                None,
-                None
-            ),
-            EngineObject::new(
-                EngineID::NuggetDoom,
-                "Nugget Doom",
-                "Fork of Woof! with additional features",
-                IWadID::DOOMONLY,
-                5,
-                "/usr/bin/nugget-doom",
-                None,
-                None
-            ),
-            EngineObject::new(
-                EngineID::VKDoom,
-                "VKDoom",
-                "VKDoom is a source port based on the DOOM engine with a focus on Vulkan and modern computers",
-                IWadID::ALL,
-                2,
-                "/usr/bin/vkdoom",
-                None,
-                None
-            ),
-            EngineObject::new(
-                EngineID::Woof,
-                "Woof!",
-                "Woof! is a continuation of Lee Killough's Doom source port MBF targeted at modern systems",
-                IWadID::DOOMONLY,
-                5,
-                "/usr/bin/woof",
-                None,
-                None
-            ),
-        ];
-
-        imp.engines.set(engines).unwrap();
+        imp.engine_vec.set(
+            ENGINE_ARRAY.into_iter()
+                .map(|data| EngineObject::new(&data))
+                .collect::<Vec<EngineObject>>()
+        ).unwrap();
     }
 
     //-----------------------------------
@@ -323,7 +254,7 @@ impl LauncherWindow {
             #[weak] imp,
             move |iwad_row| {
                 if let Some(selected_iwad) = iwad_row.selected_iwad() {
-                    let engines = imp.engines.get().unwrap();
+                    let engines = imp.engine_vec.get().unwrap();
 
                     imp.engine_row.init_for_iwad(engines, selected_iwad.id());
 
