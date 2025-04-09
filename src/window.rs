@@ -325,7 +325,7 @@ impl LauncherWindow {
                 if let Some(selected_iwad) = iwad_row.selected_iwad() {
                     let engines = imp.engines.get().unwrap();
 
-                    imp.engine_row.init_for_iwad(engines, selected_iwad.flag());
+                    imp.engine_row.init_for_iwad(engines, selected_iwad.id());
 
                     imp.launch_button.set_sensitive(imp.engine_row.selected_item().is_some() && imp.iwad_row.selected_iwad().is_some());
                 }
@@ -511,7 +511,7 @@ impl LauncherWindow {
         };
 
         // Get executable file
-        let exec_file = env_expand(&match iwad.flag() {
+        let exec_file = env_expand(&match iwad.id() {
             IWadID::DOOM => {
                 engine.path()
             },

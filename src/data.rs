@@ -29,14 +29,14 @@ impl Default for IWadID {
 //------------------------------------------------------------------------------
 #[derive(Debug)]
 pub struct IWadData {
-    flag: IWadID,
+    id: IWadID,
     name: &'static str,
     version: &'static str,
 }
 
 impl IWadData {
-    pub fn flag(&self) -> IWadID {
-        self.flag
+    pub fn id(&self) -> IWadID {
+        self.id
     }
 
     pub fn name(&self) -> &str {
@@ -54,26 +54,26 @@ impl IWadData {
 pub const IWAD_HASHMAP: [(u32, IWadData); 6] = [
     (
         0xbf0eaac0,
-        IWadData { flag: IWadID::DOOM, name: "Doom - The Ultimate Doom", version: "v1.9ud" }
+        IWadData { id: IWadID::DOOM, name: "Doom - The Ultimate Doom", version: "v1.9ud" }
     ),
     (
         0xec8725db,
-        IWadData { flag: IWadID::DOOM2, name: "Doom2", version: "v1.9" }
+        IWadData { id: IWadID::DOOM2, name: "Doom2", version: "v1.9" }
     ),
     (
         0xd4bb05c0,
-        IWadData { flag: IWadID::TNT, name: "Final Doom - TNT: Evilution", version: "v1.9 Fix" }
+        IWadData { id: IWadID::TNT, name: "Final Doom - TNT: Evilution", version: "v1.9 Fix" }
     ),
     (
         0x15cd1448,
-        IWadData { flag: IWadID::PLUTONIA, name: "Final Doom - The Plutonia Experiment", version: "v1.9 Fix" }
+        IWadData { id: IWadID::PLUTONIA, name: "Final Doom - The Plutonia Experiment", version: "v1.9 Fix" }
     ),
     (
         0x5b16049e,
-        IWadData { flag: IWadID::HERETIC, name: "Heretic", version: "v1.3" }
+        IWadData { id: IWadID::HERETIC, name: "Heretic", version: "v1.3" }
     ),
     (
         0xdca9114c,
-        IWadData { flag: IWadID::HEXEN, name: "Hexen", version: "v1.1" }
+        IWadData { id: IWadID::HEXEN, name: "Hexen", version: "v1.1" }
     ),
 ];

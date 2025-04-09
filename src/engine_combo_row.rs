@@ -79,14 +79,14 @@ impl EngineComboRow {
     //-----------------------------------
     // Public init for IWAD function
     //-----------------------------------
-    pub fn init_for_iwad(&self, engine_list: &[EngineObject], iwad_flag: IWadID) {
+    pub fn init_for_iwad(&self, engine_list: &[EngineObject], iwad_id: IWadID) {
         let imp = self.imp();
 
         // Get list of installed engines compatible with IWAD
         let mut engine_objects = engine_list.iter()
             .filter(|engine| {
                 Path::new(&engine.path()).try_exists().unwrap_or_default() &&
-                engine.games().contains(iwad_flag)
+                engine.games().contains(iwad_id)
             }
         )
         .cloned()

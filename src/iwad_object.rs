@@ -20,7 +20,7 @@ mod imp {
     #[properties(wrapper_type = super::IWadObject)]
     pub struct IWadObject {
         #[property(get, set)]
-        flag: Cell<IWadID>,
+        id: Cell<IWadID>,
         #[property(get, set)]
         name: RefCell<String>,
         #[property(get, set)]
@@ -70,7 +70,7 @@ impl IWadObject {
     pub fn new(data: &IWadData, filename: &str) -> Self {
         // Build IWadObject
         glib::Object::builder()
-            .property("flag", data.flag())
+            .property("id", data.id())
             .property("name", data.name())
             .property("version", data.version())
             .property("filename", filename)
