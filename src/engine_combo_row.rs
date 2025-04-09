@@ -5,7 +5,7 @@ use adw::subclass::prelude::*;
 use adw::prelude::*;
 
 use crate::engine_object::EngineObject;
-use crate::data::IWadFlags;
+use crate::data::IWadID;
 
 //------------------------------------------------------------------------------
 // MODULE: EngineComboRow
@@ -79,7 +79,7 @@ impl EngineComboRow {
     //-----------------------------------
     // Public init for IWAD function
     //-----------------------------------
-    pub fn init_for_iwad(&self, engine_list: &[EngineObject], iwad_flag: IWadFlags) {
+    pub fn init_for_iwad(&self, engine_list: &[EngineObject], iwad_flag: IWadID) {
         let imp = self.imp();
 
         // Get list of installed engines compatible with IWAD

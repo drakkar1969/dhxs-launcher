@@ -4,7 +4,7 @@ use gtk::glib;
 use gtk::subclass::prelude::*;
 use gtk::prelude::ObjectExt;
 
-use crate::data::IWadFlags;
+use crate::data::IWadID;
 
 //------------------------------------------------------------------------------
 // ENUM: EngineID
@@ -42,7 +42,7 @@ mod imp {
         #[property(get, set)]
         description: RefCell<String>,
         #[property(get, set)]
-        games: Cell<IWadFlags>,
+        games: Cell<IWadID>,
         #[property(get, set)]
         compatibility: Cell<u32>,
         #[property(get, set)]
@@ -77,7 +77,7 @@ impl EngineObject {
     //-----------------------------------
     // New function
     //-----------------------------------
-    pub fn new(id: EngineID, name: &str, description: &str, games: IWadFlags, compatibility: u32, path: &str, heretic_path: Option<&str>, hexen_path: Option<&str>) -> Self {
+    pub fn new(id: EngineID, name: &str, description: &str, games: IWadID, compatibility: u32, path: &str, heretic_path: Option<&str>, hexen_path: Option<&str>) -> Self {
         // Build IWadObject
         glib::Object::builder()
             .property("id", id)
