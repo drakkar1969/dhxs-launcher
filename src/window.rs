@@ -102,8 +102,7 @@ mod imp {
 
             let obj = self.obj();
 
-            obj.setup_iwads();
-            obj.setup_engines();
+            obj.setup_data();
 
             obj.setup_widgets();
 
@@ -149,18 +148,15 @@ impl LauncherWindow {
     }
 
     //-----------------------------------
-    // Setup IWADs
+    // Setup data
     //-----------------------------------
-    fn setup_iwads(&self) {
-        self.imp().iwad_hashmap.set(HashMap::from(IWAD_HASHMAP)).unwrap();
-    }
-
-    //-----------------------------------
-    // Setup engines
-    //-----------------------------------
-    fn setup_engines(&self) {
+    fn setup_data(&self) {
         let imp = self.imp();
 
+        // Init IWAD data
+        imp.iwad_hashmap.set(HashMap::from(IWAD_HASHMAP)).unwrap();
+
+        // Init engine data
         let engines: Vec<EngineObject> = vec![
             EngineObject::new(
                 EngineID::ChocolateDoom,
