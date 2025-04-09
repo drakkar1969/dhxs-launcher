@@ -19,6 +19,11 @@ use crate::utils::env_expand;
 use crate::data::{IWadID, IWadData, IWAD_HASHMAP, ENGINE_ARRAY};
 
 //------------------------------------------------------------------------------
+// CONST VARIABLES
+//------------------------------------------------------------------------------
+const GRAPHICS_PATH: &str = "/usr/share/dlauncher/graphics/";
+
+//------------------------------------------------------------------------------
 // ENUM: LaunchResult
 //------------------------------------------------------------------------------
 enum LaunchResult {
@@ -218,6 +223,11 @@ impl LauncherWindow {
             imp.switches_grid.attach(&self.key_label(key), 0, i as i32, 1, 1);
             imp.switches_grid.attach(&self.value_label(value), 1, i as i32, 1, 1);
         });
+
+        // Enable hires graphics switch if 'dlauncher-hires-graphics' package is installed
+        if Path::new(GRAPHICS_PATH).try_exists().unwrap_or_default() {
+            imp.graphics_row.set_sensitive(true);
+        }
 
         // Set initial focus on engine combo row
         imp.engine_row.get().grab_focus();
