@@ -5,7 +5,7 @@ use gtk::glib;
 use gtk::subclass::prelude::*;
 use gtk::prelude::ObjectExt;
 
-use crate::data::{IWADData, IWADFlags};
+use crate::data::{IWadData, IWadFlags};
 
 //------------------------------------------------------------------------------
 // MODULE: IWadObject
@@ -20,7 +20,7 @@ mod imp {
     #[properties(wrapper_type = super::IWadObject)]
     pub struct IWadObject {
         #[property(get, set)]
-        flag: Cell<IWADFlags>,
+        flag: Cell<IWadFlags>,
         #[property(get, set)]
         name: RefCell<String>,
         #[property(get, set)]
@@ -67,7 +67,7 @@ impl IWadObject {
     //-----------------------------------
     // New function
     //-----------------------------------
-    pub fn new(data: &IWADData, filename: &str) -> Self {
+    pub fn new(data: &IWadData, filename: &str) -> Self {
         // Build IWadObject
         glib::Object::builder()
             .property("flag", data.flag())

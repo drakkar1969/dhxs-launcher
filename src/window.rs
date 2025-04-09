@@ -16,7 +16,7 @@ use crate::iwad_combo_row::IWadComboRow;
 use crate::file_select_row::FileSelectRow;
 use crate::preferences_dialog::PreferencesDialog;
 use crate::utils::env_expand;
-use crate::data::{IWADFlags, IWADData, IWAD_HASHMAP};
+use crate::data::{IWadFlags, IWadData, IWAD_HASHMAP};
 
 //------------------------------------------------------------------------------
 // ENUM: LaunchResult
@@ -61,7 +61,7 @@ mod imp {
 
         pub gsettings: OnceCell<gio::Settings>,
 
-        pub iwad_hashmap: OnceCell<HashMap<u32, IWADData>>,
+        pub iwad_hashmap: OnceCell<HashMap<u32, IWadData>>,
         pub engines: OnceCell<Vec<EngineObject>>,
     }
 
@@ -166,7 +166,7 @@ impl LauncherWindow {
                 EngineID::ChocolateDoom,
                 "Chocolate Doom",
                 "Historically-accurate Doom, Heretic, Hexen, and Strife port",
-                IWADFlags::DOOM | IWADFlags::HERETIC | IWADFlags::HEXEN,
+                IWadFlags::DOOM | IWadFlags::HERETIC | IWadFlags::HEXEN,
                 5,
                 "/usr/bin/chocolate-doom",
                 Some("/usr/bin/chocolate-heretic"),
@@ -176,7 +176,7 @@ impl LauncherWindow {
                 EngineID::CrispyDoom,
                 "Crispy Doom",
                 "Vanilla-compatible enhanced Doom engine",
-                IWADFlags::DOOM | IWADFlags::HERETIC | IWADFlags::HEXEN,
+                IWadFlags::DOOM | IWadFlags::HERETIC | IWadFlags::HEXEN,
                 5,
                 "/usr/bin/crispy-doom",
                 Some("/usr/bin/crispy-heretic"),
@@ -186,7 +186,7 @@ impl LauncherWindow {
                 EngineID::DSDADoom,
                 "DSDA-Doom",
                 "Fork of PrBoom+ with extra tooling for demo recording and playback, with a focus on speedrunning",
-                IWADFlags::DOOM | IWADFlags::HERETIC | IWADFlags::HEXEN,
+                IWadFlags::DOOM | IWadFlags::HERETIC | IWadFlags::HEXEN,
                 5,
                 "/usr/bin/dsda-doom",
                 None,
@@ -196,7 +196,7 @@ impl LauncherWindow {
                 EngineID::GZDoom,
                 "GZDoom",
                 "Feature centric port for all Doom engine games",
-                IWADFlags::DOOM | IWADFlags::HERETIC | IWADFlags::HEXEN,
+                IWadFlags::DOOM | IWadFlags::HERETIC | IWadFlags::HEXEN,
                 2,
                 "/usr/bin/gzdoom",
                 None,
@@ -206,7 +206,7 @@ impl LauncherWindow {
                 EngineID::NuggetDoom,
                 "Nugget Doom",
                 "Fork of Woof! with additional features",
-                IWADFlags::DOOM,
+                IWadFlags::DOOM,
                 5,
                 "/usr/bin/nugget-doom",
                 None,
@@ -216,7 +216,7 @@ impl LauncherWindow {
                 EngineID::VKDoom,
                 "VKDoom",
                 "VKDoom is a source port based on the DOOM engine with a focus on Vulkan and modern computers",
-                IWADFlags::DOOM | IWADFlags::HERETIC | IWADFlags::HEXEN,
+                IWadFlags::DOOM | IWadFlags::HERETIC | IWadFlags::HEXEN,
                 2,
                 "/usr/bin/vkdoom",
                 None,
@@ -226,7 +226,7 @@ impl LauncherWindow {
                 EngineID::Woof,
                 "Woof!",
                 "Woof! is a continuation of Lee Killough's Doom source port MBF targeted at modern systems",
-                IWADFlags::DOOM,
+                IWadFlags::DOOM,
                 5,
                 "/usr/bin/woof",
                 None,
@@ -516,13 +516,13 @@ impl LauncherWindow {
 
         // Get executable file
         let exec_file = env_expand(&match iwad.flag() {
-            IWADFlags::DOOM => {
+            IWadFlags::DOOM => {
                 engine.path()
             },
-            IWADFlags::HERETIC => {
+            IWadFlags::HERETIC => {
                 engine.heretic_path().unwrap_or(engine.path())
             },
-            IWADFlags::HEXEN => {
+            IWadFlags::HEXEN => {
                 engine.hexen_path().unwrap_or(engine.path())
             },
             _ => unreachable!()

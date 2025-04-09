@@ -8,7 +8,7 @@ use glob::{glob_with, MatchOptions};
 
 use crate::iwad_object::IWadObject;
 use crate::utils::crc32;
-use crate::data::IWADData;
+use crate::data::IWadData;
 
 //------------------------------------------------------------------------------
 // MODULE: IWadComboRow
@@ -82,7 +82,7 @@ impl IWadComboRow {
     //-----------------------------------
     // Public init for folder function
     //-----------------------------------
-    pub fn init(&self, hash_map: &HashMap<u32, IWADData>, user_folder: &str) {
+    pub fn init(&self, hash_map: &HashMap<u32, IWadData>, user_folder: &str) {
         let imp = self.imp();
 
         let options = MatchOptions {
