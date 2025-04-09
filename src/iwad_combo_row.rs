@@ -82,7 +82,7 @@ impl IWadComboRow {
     //-----------------------------------
     // Public init for folder function
     //-----------------------------------
-    pub fn init(&self, hash_map: &HashMap<u32, IWadData>, user_folder: &str) {
+    pub fn init(&self, hash_map: &HashMap<u32, IWadData>, folders: &[&str], user_folder: &str) {
         let imp = self.imp();
 
         let options = MatchOptions {
@@ -91,24 +91,27 @@ impl IWadComboRow {
             require_literal_leading_dot: false
         };
 
-        if let Ok(entries) = glob_with(&format!("{user_folder}/*.wad"), options) {
-            // Get list of IWADs in folder
-            let mut iwad_objects = entries.into_iter()
-                .flatten()
-                .filter_map(|entry| {
-                    let filename = entry.display().to_string();
+        // Get list of IWADs in folders
+        let mut iwad_objects = folders.iter().chain([&user_folder])
+            .flat_map(|folder| glob_with(&format!("{folder}/*.wad"), options))
+            .flat_map(|paths| {
+                paths.into_iter()
+                    .flatten()
+                    .filter_map(|path| {
+                        let filename = path.display().to_string();
+    
+                        crc32(&filename).ok()
+                            .and_then(|hash| hash_map.get(&hash))
+                            .map(|data| IWadObject::new(data, &filename))
+                    })
+            })
+            .collect::<Vec<_>>();
 
-                    crc32(&filename).ok()
-                        .and_then(|hash| hash_map.get(&hash))
-                        .map(|data| IWadObject::new(data, &filename))
-                })
-                .collect::<Vec<IWadObject>>();
 
-            iwad_objects.sort_unstable_by_key(|iwad| iwad.name());
+        iwad_objects.sort_unstable_by_key(|iwad| iwad.name());
 
-            // Add IWADs to combo row
-            imp.model.splice(0, imp.model.n_items(), &iwad_objects);
-        }
+        // Add IWADs to combo row
+        imp.model.splice(0, imp.model.n_items(), &iwad_objects);
     }
 
     //-----------------------------------

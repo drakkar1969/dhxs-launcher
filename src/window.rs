@@ -21,7 +21,9 @@ use crate::data::{IWadID, IWadData, IWAD_HASHMAP, ENGINE_ARRAY};
 //------------------------------------------------------------------------------
 // CONST VARIABLES
 //------------------------------------------------------------------------------
-const GRAPHICS_PATH: &str = "/usr/share/dlauncher/graphics/";
+const GRAPHICS_PATH: &str = "/usr/share/d-launcher/graphics/";
+
+const IWAD_PATHS: [&str; 1] = ["/usr/share/d-launcher/iwads"];
 
 //------------------------------------------------------------------------------
 // ENUM: LaunchResult
@@ -245,7 +247,7 @@ impl LauncherWindow {
             move |prefs_dialog| {
                 let hash_map = imp.iwad_hashmap.get().unwrap();
 
-                imp.iwad_row.init(hash_map, &env_expand(&prefs_dialog.iwad_folder()));
+                imp.iwad_row.init(hash_map, &IWAD_PATHS, &env_expand(&prefs_dialog.iwad_folder()));
         
                 imp.launch_button.set_sensitive(imp.engine_row.selected_item().is_some() && imp.iwad_row.selected_iwad().is_some());
             }
