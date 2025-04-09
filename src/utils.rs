@@ -1,11 +1,41 @@
 use std::borrow::Cow;
+use std::{fs, io};
+use std::io::Read;
 
 use gtk::gio;
 use gio::prelude::FileExt;
 
+use crc32fast::Hasher;
+
 //------------------------------------------------------------------------------
 // GLOBAL: Functions
 //------------------------------------------------------------------------------
+//---------------------------------------
+// CRC-32 function
+//---------------------------------------
+pub fn crc32(file: &str) -> io::Result<u32> {
+    let file = fs::File::open(file)?;
+
+    let mut buffer = [0; 4096]; // buffer size: 4KB
+    let mut reader = io::BufReader::new(file);
+
+    let mut hasher = Hasher::new();
+    
+    loop {
+        let bytes_read = reader.read(&mut buffer)?;
+
+        if bytes_read == 0 {
+            break;
+        }
+
+        hasher.update(&buffer[..bytes_read]);
+    }
+
+    let result = hasher.finalize();
+
+    Ok(result)
+}
+
 //---------------------------------------
 // Env expand function
 //---------------------------------------

@@ -4,7 +4,7 @@ use gtk::glib;
 use gtk::subclass::prelude::*;
 use gtk::prelude::ObjectExt;
 
-use crate::iwad_object::IWADFlags;
+use crate::data::IWADFlags;
 
 //------------------------------------------------------------------------------
 // ENUM: EngineID

@@ -1,6 +1,7 @@
 use std::cell::OnceCell;
 use std::path::Path;
 use std::process::Command;
+use std::collections::HashMap;
 
 use gtk::{gio, glib, gdk, pango};
 use adw::subclass::prelude::*;
@@ -12,10 +13,10 @@ use crate::LauncherApplication;
 use crate::engine_combo_row::EngineComboRow;
 use crate::engine_object::{EngineObject, EngineID};
 use crate::iwad_combo_row::IWadComboRow;
-use crate::iwad_object::{IWadObject, IWADFlags};
 use crate::file_select_row::FileSelectRow;
 use crate::preferences_dialog::PreferencesDialog;
 use crate::utils::env_expand;
+use crate::data::{IWADFlags, IWADData, IWAD_HASHMAP};
 
 //------------------------------------------------------------------------------
 // ENUM: LaunchResult
@@ -60,7 +61,7 @@ mod imp {
 
         pub gsettings: OnceCell<gio::Settings>,
 
-        pub iwads: OnceCell<Vec<IWadObject>>,
+        pub iwad_hashmap: OnceCell<HashMap<u32, IWADData>>,
         pub engines: OnceCell<Vec<EngineObject>>,
     }
 
@@ -151,20 +152,7 @@ impl LauncherWindow {
     // Setup IWADs
     //-----------------------------------
     fn setup_iwads(&self) {
-        let imp = self.imp();
-
-        let iwads: Vec<IWadObject> = vec![
-            IWadObject::new(IWADFlags::DOOM, "The Ultimate Doom", "doom.wad"),
-            IWadObject::new(IWADFlags::DOOM, "Doom II: Hell on Earth", "doom2.wad"),
-            IWadObject::new(IWADFlags::DOOM, "Final Doom - The Plutonia Experiment", "plutonia.wad"),
-            IWadObject::new(IWADFlags::DOOM, "Final Doom - TNT: Evilution", "tnt.wad"),
-            IWadObject::new(IWADFlags::DOOM, "Freedoom Phase 1", "freedoom1.wad"),
-            IWadObject::new(IWADFlags::DOOM, "Freedoom Phase 2", "freedoom2.wad"),
-            IWadObject::new(IWADFlags::HERETIC, "Heretic", "heretic.wad"),
-            IWadObject::new(IWADFlags::HEXEN, "Hexen", "hexen.wad"),
-        ];
-
-        imp.iwads.set(iwads).unwrap();
+        self.imp().iwad_hashmap.set(HashMap::from(IWAD_HASHMAP)).unwrap();
     }
 
     //-----------------------------------
@@ -318,9 +306,9 @@ impl LauncherWindow {
         imp.prefs_dialog.connect_iwad_folder_notify(clone!(
             #[weak] imp,
             move |prefs_dialog| {
-                let iwads = imp.iwads.get().unwrap();
+                let hash_map = imp.iwad_hashmap.get().unwrap();
 
-                imp.iwad_row.init_for_folder(iwads, &env_expand(&prefs_dialog.iwad_folder()));
+                imp.iwad_row.init(hash_map, &env_expand(&prefs_dialog.iwad_folder()));
         
                 imp.launch_button.set_sensitive(imp.engine_row.selected_item().is_some() && imp.iwad_row.selected_iwad().is_some());
             }
@@ -411,7 +399,7 @@ impl LauncherWindow {
 
         // Get selected IWAD
         let selected_iwad = imp.iwad_row.selected_iwad()
-            .map_or("".to_string(), |iwad| iwad.iwad());
+            .map_or("".to_string(), |iwad| iwad.filename());
 
         // Save main window settings
         Self::set_gsetting(gsettings, "selected-engine", &selected_engine);
@@ -546,11 +534,10 @@ impl LauncherWindow {
         }
 
         // Return with error if IWAD file does not exist
-        let iwad_file = Path::new(&env_expand(&imp.prefs_dialog.iwad_folder())).join(iwad.iwad());
+        let iwad_file = env_expand(&iwad.filename());
 
-        if !iwad_file.try_exists().unwrap_or_default() {
-            return LaunchResult::Error(format!("IWAD file <b>{}</b> not found.",
-                iwad_file.file_name().and_then(|s| s.to_str()).unwrap_or_default()))
+        if !Path::new(&iwad_file).try_exists().unwrap_or_default() {
+            return LaunchResult::Error(format!("IWAD file <b>{}</b> not found.", iwad_file))
         }
 
         // Get optional PWAD files
@@ -562,7 +549,7 @@ impl LauncherWindow {
         // Build Doom command line
         let cmd_line = format!("{exec} -iwad {iwad} -file {pwads} {switches}",
             exec=exec_file,
-            iwad=iwad_file.display(),
+            iwad=iwad_file,
             pwads=pwad_files,
             switches=imp.switches_row.text()
         );

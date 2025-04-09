@@ -1,24 +1,11 @@
 use std::cell::{Cell, RefCell};
+use std::path::Path;
 
 use gtk::glib;
 use gtk::subclass::prelude::*;
 use gtk::prelude::ObjectExt;
 
-//------------------------------------------------------------------------------
-// FLAGS: IWADFlags
-//------------------------------------------------------------------------------
-#[glib::flags(name = "IWADFlags")]
-pub enum IWADFlags {
-    DOOM      = 0b0000_0001,
-    HERETIC   = 0b0000_0010,
-    HEXEN     = 0b0000_0100,
-}
-
-impl Default for IWADFlags {
-    fn default() -> Self {
-        Self::empty()
-    }
-}
+use crate::data::{IWADData, IWADFlags};
 
 //------------------------------------------------------------------------------
 // MODULE: IWadObject
@@ -37,7 +24,12 @@ mod imp {
         #[property(get, set)]
         name: RefCell<String>,
         #[property(get, set)]
-        iwad: RefCell<String>,
+        version: RefCell<String>,
+        #[property(get, set)]
+        filename: RefCell<String>,
+
+        #[property(get = Self::basename)]
+        _basename: RefCell<String>,
     }
 
     //-----------------------------------
@@ -51,6 +43,17 @@ mod imp {
 
     #[glib::derived_properties]
     impl ObjectImpl for IWadObject {}
+
+    impl IWadObject {
+        //-----------------------------------
+        // Basename property getter
+        //-----------------------------------
+        fn basename(&self) -> String {
+            let filename = self.filename.borrow();
+
+            Path::new(filename.as_str()).file_name().unwrap().to_string_lossy().into_owned()
+        }
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -64,12 +67,13 @@ impl IWadObject {
     //-----------------------------------
     // New function
     //-----------------------------------
-    pub fn new(flag: IWADFlags, name: &str, iwad: &str) -> Self {
+    pub fn new(data: &IWADData, filename: &str) -> Self {
         // Build IWadObject
         glib::Object::builder()
-            .property("flag", flag)
-            .property("name", name)
-            .property("iwad", iwad)
+            .property("flag", data.flag())
+            .property("name", data.name())
+            .property("version", data.version())
+            .property("filename", filename)
             .build()
     }
 }

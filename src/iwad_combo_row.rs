@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use gtk::{gio, glib};
 use adw::subclass::prelude::*;
 use adw::prelude::*;
@@ -5,6 +7,8 @@ use adw::prelude::*;
 use glob::{glob_with, MatchOptions};
 
 use crate::iwad_object::IWadObject;
+use crate::utils::crc32;
+use crate::data::IWADData;
 
 //------------------------------------------------------------------------------
 // MODULE: IWadComboRow
@@ -78,7 +82,7 @@ impl IWadComboRow {
     //-----------------------------------
     // Public init for folder function
     //-----------------------------------
-    pub fn init_for_folder(&self, iwad_list: &[IWadObject], folder: &str) {
+    pub fn init(&self, hash_map: &HashMap<u32, IWADData>, user_folder: &str) {
         let imp = self.imp();
 
         let options = MatchOptions {
@@ -87,19 +91,17 @@ impl IWadComboRow {
             require_literal_leading_dot: false
         };
 
-        if let Ok(entries) = glob_with(&format!("{folder}/*.wad"), options) {
+        if let Ok(entries) = glob_with(&format!("{user_folder}/*.wad"), options) {
             // Get list of IWADs in folder
             let mut iwad_objects = entries.into_iter()
                 .flatten()
                 .filter_map(|entry| {
-                    let filename = entry.file_name()
-                        .and_then(|filename| filename.to_str())
-                        .unwrap_or_default();
+                    let filename = entry.display().to_string();
 
-                    iwad_list.iter()
-                        .find(|iwad| iwad.iwad() == filename)
+                    crc32(&filename).ok()
+                        .and_then(|hash| hash_map.get(&hash))
+                        .map(|data| IWadObject::new(data, &filename))
                 })
-                .cloned()
                 .collect::<Vec<IWadObject>>();
 
             iwad_objects.sort_unstable_by_key(|iwad| iwad.name());
@@ -120,12 +122,12 @@ impl IWadComboRow {
     //-----------------------------------
     // Public set selected iwad file function
     //-----------------------------------
-    pub fn set_selected_iwad_file(&self, file: &str) {
+    pub fn set_selected_iwad_file(&self, filename: &str) {
         let index = self.imp().model.find_with_equal_func(|iwad| {
             let iwad = iwad.downcast_ref::<IWadObject>()
                 .expect("Must be a 'IWadObject'");
 
-            iwad.iwad() == file
+            iwad.filename() == filename
         });
 
         self.set_selected(index.unwrap_or_default());

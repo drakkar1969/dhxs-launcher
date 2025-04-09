@@ -5,7 +5,7 @@ use adw::subclass::prelude::*;
 use adw::prelude::*;
 
 use crate::engine_object::EngineObject;
-use crate::iwad_object::IWADFlags;
+use crate::data::IWADFlags;
 
 //------------------------------------------------------------------------------
 // MODULE: EngineComboRow
