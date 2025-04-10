@@ -4,7 +4,7 @@ mod engine_combo_row;
 mod engine_object;
 mod iwad_combo_row;
 mod iwad_object;
-mod file_select_row;
+mod pwad_select_row;
 mod preferences_dialog;
 mod folder_select_row;
 mod utils;

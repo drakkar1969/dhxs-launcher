@@ -13,7 +13,7 @@ use crate::LauncherApplication;
 use crate::engine_combo_row::EngineComboRow;
 use crate::engine_object::EngineObject;
 use crate::iwad_combo_row::IWadComboRow;
-use crate::file_select_row::FileSelectRow;
+use crate::pwad_select_row::PWadSelectRow;
 use crate::preferences_dialog::PreferencesDialog;
 use crate::utils::env_expand;
 use crate::iwad_data::{IWadID, IWadData, IWAD_HASHMAP};
@@ -53,7 +53,7 @@ mod imp {
         #[template_child]
         pub(super) iwad_row: TemplateChild<IWadComboRow>,
         #[template_child]
-        pub(super) pwad_row: TemplateChild<FileSelectRow>,
+        pub(super) pwad_row: TemplateChild<PWadSelectRow>,
         #[template_child]
         pub(super) switches_row: TemplateChild<adw::EntryRow>,
         #[template_child]

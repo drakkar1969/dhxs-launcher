@@ -10,20 +10,7 @@ use glib::clone;
 use crate::utils::{file_to_path, path_to_file};
 
 //------------------------------------------------------------------------------
-// ENUM: SelectMode
-//------------------------------------------------------------------------------
-#[derive(Default, Debug, Eq, PartialEq, Clone, Copy, glib::Enum)]
-#[repr(u32)]
-#[enum_type(name = "SelectMode")]
-pub enum SelectMode {
-    #[default]
-    File = 0,
-    Multiple = 1,
-    Folder = 2,
-}
-
-//------------------------------------------------------------------------------
-// MODULE: FileSelectRow
+// MODULE: PWadSelectRow
 //------------------------------------------------------------------------------
 mod imp {
     use super::*;
@@ -32,29 +19,22 @@ mod imp {
     // Private structure
     //-----------------------------------
     #[derive(Default, gtk::CompositeTemplate, glib::Properties)]
-    #[properties(wrapper_type = super::FileSelectRow)]
-    #[template(resource = "/com/github/D-Launcher/ui/file_select_row.ui")]
-    pub struct FileSelectRow {
+    #[properties(wrapper_type = super::PWadSelectRow)]
+    #[template(resource = "/com/github/D-Launcher/ui/pwad_select_row.ui")]
+    pub struct PWadSelectRow {
         #[template_child]
-        pub(super) select_label: TemplateChild<gtk::Label>,
+        pub(super) label: TemplateChild<gtk::Label>,
         #[template_child]
-        pub(super) select_image: TemplateChild<gtk::Image>,
+        pub(super) image: TemplateChild<gtk::Image>,
         #[template_child]
         pub(super) separator: TemplateChild<gtk::Separator>,
         #[template_child]
         pub(super) reset_button: TemplateChild<gtk::Button>,
 
-        #[property(get, set = Self::set_select, construct, builder(SelectMode::default()))]
-        select_mode: Cell<SelectMode>,
         #[property(get, set = Self::set_icon, nullable, construct)]
         icon: RefCell<Option<String>>,
         #[property(get, set = Self::set_show_reset_button, construct)]
         show_reset_button: Cell<bool>,
-
-        #[property(get, set, default = "Files", construct)]
-        dialog_title: RefCell<String>,
-        #[property(get, set, nullable, construct)]
-        filter: RefCell<Option<gtk::FileFilter>>,
 
         #[property(get, set)]
         initial_folder: RefCell<String>,
@@ -68,9 +48,9 @@ mod imp {
     // Subclass
     //-----------------------------------
     #[glib::object_subclass]
-    impl ObjectSubclass for FileSelectRow {
-        const NAME: &'static str = "FileSelectRow";
-        type Type = super::FileSelectRow;
+    impl ObjectSubclass for PWadSelectRow {
+        const NAME: &'static str = "PWadSelectRow";
+        type Type = super::PWadSelectRow;
         type ParentType = adw::ActionRow;
 
         fn class_init(klass: &mut Self::Class) {
@@ -83,7 +63,7 @@ mod imp {
     }
 
     #[glib::derived_properties]
-    impl ObjectImpl for FileSelectRow {
+    impl ObjectImpl for PWadSelectRow {
         //-----------------------------------
         // Constructor
         //-----------------------------------
@@ -96,36 +76,19 @@ mod imp {
         }
     }
 
-    impl WidgetImpl for FileSelectRow {}
-    impl ListBoxRowImpl for FileSelectRow {}
-    impl PreferencesRowImpl for FileSelectRow {}
-    impl ActionRowImpl for FileSelectRow {}
-    impl FileSelectRow {
-        //-----------------------------------
-        // Select property setter
-        //-----------------------------------
-        fn set_select(&self, select: SelectMode) {
-            if self.icon.borrow().is_none() {
-                if select == SelectMode::Folder {
-                    self.select_image.set_icon_name(Some("folder-symbolic"));
-                } else {
-                    self.select_image.set_icon_name(Some("document-open-symbolic"));
-                }
-            }
-
-            self.select_mode.replace(select);
-        }
-
+    impl WidgetImpl for PWadSelectRow {}
+    impl ListBoxRowImpl for PWadSelectRow {}
+    impl PreferencesRowImpl for PWadSelectRow {}
+    impl ActionRowImpl for PWadSelectRow {}
+    impl PWadSelectRow {
         //-----------------------------------
         // Icon property setter
         //-----------------------------------
         fn set_icon(&self, icon: Option<&str>) {
             if icon.is_some() {
-                self.select_image.set_icon_name(icon);
-            } else if self.select_mode.get() == SelectMode::Folder {
-                self.select_image.set_icon_name(Some("folder-symbolic"));
+                self.image.set_icon_name(icon);
             } else {
-                self.select_image.set_icon_name(Some("document-open-symbolic"));
+                self.image.set_icon_name(Some("media-zip-symbolic"));
             }
 
             self.icon.replace(icon.map(|icon| icon.to_string()));
@@ -144,15 +107,15 @@ mod imp {
 }
 
 //------------------------------------------------------------------------------
-// IMPLEMENTATION: FileSelectRow
+// IMPLEMENTATION: PWadSelectRow
 //------------------------------------------------------------------------------
 glib::wrapper! {
-    pub struct FileSelectRow(ObjectSubclass<imp::FileSelectRow>)
+    pub struct PWadSelectRow(ObjectSubclass<imp::PWadSelectRow>)
         @extends adw::ActionRow, adw::PreferencesRow, gtk::ListBoxRow, gtk::Widget,
         @implements gtk::Accessible, gtk::Actionable, gtk::Buildable, gtk::ConstraintTarget;
 }
 
-impl FileSelectRow {
+impl PWadSelectRow {
     //-----------------------------------
     // New function
     //-----------------------------------
@@ -188,7 +151,7 @@ impl FileSelectRow {
                     }
                 };
 
-                imp.select_label.set_label(label);
+                imp.label.set_label(label);
 
                 imp.reset_button.set_sensitive(n_files > 0);
             }
@@ -200,26 +163,24 @@ impl FileSelectRow {
             move |_| {
                 // Create dialog
                 let dialog = gtk::FileDialog::builder()
-                    .title(row.dialog_title())
+                    .title("PWAD Files")
                     .modal(true)
                     .accept_label("Select")
                     .build();
 
                 // Set filters for dialog
-                if row.select_mode() != SelectMode::Folder {
-                    let all_filter = gtk::FileFilter::new();
-                    all_filter.set_name(Some("All Files"));
-                    all_filter.add_pattern("*");
+                let all_filter = gtk::FileFilter::new();
+                all_filter.set_name(Some("All Files"));
+                all_filter.add_pattern("*");
 
-                    let dialog_filters = gio::ListStore::from_iter([all_filter]);
+                let pwad_filter = gtk::FileFilter::new();
+                pwad_filter.set_name(Some("WAD/PK3/PK7 files"));
+                pwad_filter.add_mime_type("application/x-doom-wad");
+                pwad_filter.add_mime_type("application/zip");
+                pwad_filter.add_mime_type("application/x-7z-compressed");
 
-                    if let Some(filter) = row.filter() {
-                        dialog_filters.append(&filter);
-                    }
-
-                    dialog.set_filters(Some(&dialog_filters));
-                    dialog.set_default_filter(row.filter().as_ref());
-                }
+                dialog.set_default_filter(Some(&pwad_filter));
+                dialog.set_filters(Some(&gio::ListStore::from_iter([pwad_filter, all_filter])));
 
                 // Set initial location for dialog
                 let files = row.files();
@@ -236,42 +197,18 @@ impl FileSelectRow {
                     .expect("Must be a 'Window'");
 
                 // Show dialog
-                match row.select_mode() {
-                    SelectMode::File => {
-                        dialog.open(Some(&root), None::<&gio::Cancellable>, clone!(
-                            #[weak] row,
-                            move |result| {
-                                if let Ok(file) = result {
-                                    row.set_files(vec![file_to_path(&file)]);
-                                }
-                            }
-                        ));
-                    },
-                    SelectMode::Multiple => {
-                        dialog.open_multiple(Some(&root), None::<&gio::Cancellable>, clone!(
-                            #[weak] row,
-                            move |result| {
-                                if let Ok(file_list) = result {
-                                    row.set_files(file_list.iter::<gio::File>()
-                                        .flatten()
-                                        .map(|file| file_to_path(&file))
-                                        .collect::<Vec<String>>()
-                                    )
-                                }
-                            }
-                        ));
-                    },
-                    SelectMode::Folder => {
-                        dialog.select_folder(Some(&root), None::<&gio::Cancellable>, clone!(
-                            #[weak] row,
-                            move |result| {
-                                if let Ok(folder) = result {
-                                    row.set_files(vec![file_to_path(&folder)]);
-                                }
-                            }
-                        ));
+                dialog.open_multiple(Some(&root), None::<&gio::Cancellable>, clone!(
+                    #[weak] row,
+                    move |result| {
+                        if let Ok(file_list) = result {
+                            row.set_files(file_list.iter::<gio::File>()
+                                .flatten()
+                                .map(|file| file_to_path(&file))
+                                .collect::<Vec<String>>()
+                            )
+                        }
                     }
-                }
+                ));
             }
         ));
 
@@ -298,7 +235,7 @@ impl FileSelectRow {
     }
 }
 
-impl Default for FileSelectRow {
+impl Default for PWadSelectRow {
     //-----------------------------------
     // Default constructor
     //-----------------------------------

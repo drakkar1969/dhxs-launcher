@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <!--// FileSelectRow template //-->
-  <template class="FileSelectRow" parent="AdwActionRow">
+  <!--// PWadSelectRow template //-->
+  <template class="PWadSelectRow" parent="AdwActionRow">
     <property name="activatable">true</property>
     <child>
       <object class="GtkBox">
@@ -9,7 +9,7 @@
         <property name="hexpand">false</property>
         <property name="spacing">12</property>
         <child>
-          <object class="GtkLabel" id="select_label">
+          <object class="GtkLabel" id="label">
             <property name="margin-start">24</property>
             <property name="label">(None)</property>
             <style>
@@ -18,7 +18,7 @@
           </object>
         </child>
         <child>
-          <object class="GtkImage" id="select_image"/>
+          <object class="GtkImage" id="image"/>
         </child>
       </object>
     </child>
