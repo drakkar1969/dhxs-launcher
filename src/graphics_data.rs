@@ -3,7 +3,7 @@ use crate::iwad_data::IWadID;
 //------------------------------------------------------------------------------
 // GRAPHICS DATA
 //------------------------------------------------------------------------------
-pub const GRAPHICS_MAP: [(IWadID, &str); 5] = [
+pub const GRAPHICS_MAP: [(IWadID, &str); 7] = [
     (
         IWadID::UDOOM,
         "hires-doom-a.pk3 hires-doom-b.pk3 objects.pk3 monsters.pk3 jfo-udoom.pk3 hud-stuff.pk3"
@@ -23,5 +23,13 @@ pub const GRAPHICS_MAP: [(IWadID, &str); 5] = [
     (
         IWadID::TNT,
         "hires-doom-a.pk3 hires-doom-b.pk3 hires-doom2.pk3hires-tnt.pk3  objects.pk3 monsters.pk3 jfo-tnt.pk3 hud-stuff.pk3"
+    ),
+    (
+        IWadID::HERETIC,
+        "hires-heretic.pk3"
+    ),
+    (
+        IWadID::HEXEN,
+        "hires-hexen.pk3"
     ),
 ];
