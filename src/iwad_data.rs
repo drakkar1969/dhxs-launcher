@@ -6,13 +6,14 @@ use gtk::glib;
 #[glib::flags(name = "IWadID")]
 pub enum IWadID {
     DOOM      = 0b0000_0000_0000_0001,
-    DOOM2     = 0b0000_0000_0000_0010,
-    TNT       = 0b0000_0000_0000_0100,
-    PLUTONIA  = 0b0000_0000_0000_1000,
-    HERETIC   = 0b0000_0000_0001_0000,
-    HEXEN     = 0b0000_0000_0010_0000,
-    FREEDOOM1 = 0b0000_0000_0100_0000,
-    FREEDOOM2 = 0b0000_0000_1000_0000,
+    UDOOM     = 0b0000_0000_0000_0010,
+    DOOM2     = 0b0000_0000_0000_0100,
+    TNT       = 0b0000_0000_0000_1000,
+    PLUTONIA  = 0b0000_0000_0001_0000,
+    HERETIC   = 0b0000_0000_0010_0000,
+    HEXEN     = 0b0000_0000_0100_0000,
+    FREEDOOM1 = 0b0000_0000_1000_0000,
+    FREEDOOM2 = 0b0000_0001_0000_0000,
 
     DOOMONLY  = 0b0000_0000_0000_1111,
     ALL       = 0b0000_0000_1111_1111,
@@ -54,7 +55,7 @@ impl IWadData {
 pub const IWAD_HASHMAP: [(u32, IWadData); 8] = [
     (
         0xbf0eaac0,
-        IWadData { id: IWadID::DOOM, name: "Doom - The Ultimate Doom", version: "v1.9ud" }
+        IWadData { id: IWadID::UDOOM, name: "Doom - The Ultimate Doom", version: "v1.9ud" }
     ),
     (
         0xec8725db,
