@@ -37,6 +37,13 @@
                     <property name="use-underline">true</property>
                   </object>
                 </child>
+                <child>
+                  <object class="AdwSwitchRow" id="graphics_row">
+                    <property name="sensitive">false</property>
+                    <property name="title">Use _Hi-Res Graphics</property>
+                    <property name="use-underline">true</property>
+                  </object>
+                </child>
               </object>
             </child>
             <child>
@@ -72,13 +79,6 @@
                         </style>
                       </object>
                     </child>
-                  </object>
-                </child>
-                <child>
-                  <object class="AdwSwitchRow" id="graphics_row">
-                    <property name="sensitive">false</property>
-                    <property name="title">Use _Hi-Res Graphics</property>
-                    <property name="use-underline">true</property>
                   </object>
                 </child>
               </object>

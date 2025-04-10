@@ -49,6 +49,8 @@ mod imp {
     pub struct LauncherWindow {
         #[template_child]
         pub(super) engine_row: TemplateChild<EngineComboRow>,
+        #[template_child]
+        pub(super) graphics_row: TemplateChild<adw::SwitchRow>,
 
         #[template_child]
         pub(super) iwad_row: TemplateChild<IWadComboRow>,
@@ -56,8 +58,6 @@ mod imp {
         pub(super) pwad_row: TemplateChild<PWadSelectRow>,
         #[template_child]
         pub(super) switches_row: TemplateChild<adw::EntryRow>,
-        #[template_child]
-        pub(super) graphics_row: TemplateChild<adw::SwitchRow>,
 
         #[template_child]
         pub(super) switches_grid: TemplateChild<gtk::Grid>,
