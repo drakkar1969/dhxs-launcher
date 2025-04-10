@@ -31,7 +31,8 @@ pub struct EngineData {
     compatibility: u32,
     path: &'static str,
     heretic_path: Option<&'static str>,
-    hexen_path: Option<&'static str>
+    hexen_path: Option<&'static str>,
+    hires: bool,
 }
 
 impl EngineData {
@@ -66,6 +67,10 @@ impl EngineData {
     pub fn hexen_path(&self) -> Option<&str> {
         self.hexen_path
     }
+
+    pub fn hires(&self) -> bool {
+        self.hires
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -80,7 +85,8 @@ pub const ENGINE_ARRAY: [EngineData; 7] = [
         compatibility: 5,
         path: "/usr/bin/chocolate-doom",
         heretic_path: Some("/usr/bin/chocolate-heretic"),
-        hexen_path: Some("/usr/bin/chocolate-hexen")
+        hexen_path: Some("/usr/bin/chocolate-hexen"),
+        hires: false
     },
     EngineData {
         id: EngineID::CrispyDoom,
@@ -90,7 +96,8 @@ pub const ENGINE_ARRAY: [EngineData; 7] = [
         compatibility: 5,
         path: "/usr/bin/crispy-doom",
         heretic_path: Some("/usr/bin/crispy-heretic"),
-        hexen_path: Some("/usr/bin/crispy-hexen")
+        hexen_path: Some("/usr/bin/crispy-hexen"),
+        hires: false
     },
     EngineData {
         id: EngineID::DSDADoom,
@@ -100,7 +107,8 @@ pub const ENGINE_ARRAY: [EngineData; 7] = [
         compatibility: 5,
         path: "/usr/bin/dsda-doom",
         heretic_path: None,
-        hexen_path: None
+        hexen_path: None,
+        hires: false
     },
     EngineData {
         id: EngineID::GZDoom,
@@ -110,7 +118,8 @@ pub const ENGINE_ARRAY: [EngineData; 7] = [
         compatibility: 2,
         path: "/usr/bin/gzdoom",
         heretic_path: None,
-        hexen_path: None
+        hexen_path: None,
+        hires: true
     },
     EngineData {
         id: EngineID::NuggetDoom,
@@ -120,7 +129,8 @@ pub const ENGINE_ARRAY: [EngineData; 7] = [
         compatibility: 5,
         path: "/usr/bin/nugget-doom",
         heretic_path: None,
-        hexen_path: None
+        hexen_path: None,
+        hires: false
     },
     EngineData {
         id: EngineID::VKDoom,
@@ -130,7 +140,8 @@ pub const ENGINE_ARRAY: [EngineData; 7] = [
         compatibility: 2,
         path: "/usr/bin/vkdoom",
         heretic_path: None,
-        hexen_path: None
+        hexen_path: None,
+        hires: true
     },
     EngineData {
         id: EngineID::Woof,
@@ -140,6 +151,7 @@ pub const ENGINE_ARRAY: [EngineData; 7] = [
         compatibility: 5,
         path: "/usr/bin/woof",
         heretic_path: None,
-        hexen_path: None
+        hexen_path: None,
+        hires: false
     },
 ];

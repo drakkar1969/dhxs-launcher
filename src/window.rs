@@ -74,7 +74,7 @@ mod imp {
         pub engine_vec: OnceCell<Vec<EngineObject>>,
         pub graphics_map: OnceCell<HashMap<IWadID, Vec<String>>>,
 
-        pub graphics_pkg_installed: Cell<bool>,
+        pub graphics_installed: Cell<bool>,
     }
 
     //-----------------------------------
@@ -178,7 +178,7 @@ impl LauncherWindow {
         // Init graphics data
         imp.graphics_map.set(
             GRAPHICS_MAP.into_iter()
-                .map(|(id, files)| (id, files.split(',').map(String::from).collect()))
+                .map(|(id, files)| (id, files.split(' ').map(String::from).collect()))
                 .collect::<HashMap<IWadID, Vec<String>>>()
         ).unwrap();
     }
@@ -240,7 +240,7 @@ impl LauncherWindow {
 
         // Set graphics package installed variable if 'dlauncher-hires-graphics' package is installed
         if Path::new(GRAPHICS_PATH).try_exists().unwrap_or_default() {
-            imp.graphics_pkg_installed.set(true);
+            imp.graphics_installed.set(true);
         }
 
         // Set initial focus on engine combo row
@@ -273,21 +273,56 @@ impl LauncherWindow {
             }
         ));
 
+        // Engine combo selected item property signal
+        imp.engine_row.connect_selected_item_notify(clone!(
+            #[weak] imp,
+            move |engine_row| {
+                let graphics_map = imp.graphics_map.get().unwrap();
+
+                let engine_hires = engine_row.selected_engine()
+                    .map(|engine| engine.hires())
+                    .unwrap_or_default();
+
+                let iwad_id = imp.iwad_row.selected_iwad()
+                    .map(|iwad| iwad.id())
+                    .unwrap_or_default();
+
+                imp.graphics_row.set_sensitive(
+                    imp.graphics_installed.get() &&
+                    engine_hires &&
+                    graphics_map.get(&iwad_id).is_some()
+                );
+            }
+        ));
+
         // IWAD combo selected item property notify signal
         imp.iwad_row.connect_selected_item_notify(clone!(
             #[weak] imp,
             move |iwad_row| {
-                if let Some(selected_iwad) = iwad_row.selected_iwad() {
+                let graphics_map = imp.graphics_map.get().unwrap();
+
+                let engine = imp.engine_row.selected_engine();
+                let engine_hires = imp.engine_row.selected_engine()
+                    .map(|engine| engine.hires())
+                    .unwrap_or_default();
+
+                let iwad = iwad_row.selected_iwad();
+                let iwad_id = iwad_row.selected_iwad()
+                    .map(|iwad| iwad.id())
+                    .unwrap_or_default();
+
+                imp.graphics_row.set_sensitive(
+                    imp.graphics_installed.get() &&
+                    engine_hires &&
+                    graphics_map.get(&iwad_id).is_some()
+                );
+
+                imp.launch_button.set_sensitive(engine.is_some() && iwad.is_some());
+
+                if let Some(iwad) = iwad {
                     let engines = imp.engine_vec.get().unwrap();
 
-                    imp.engine_row.init_for_iwad(engines, selected_iwad.id());
-
-                    let graphics_installed = imp.graphics_pkg_installed.get();
-                    let graphics_map = imp.graphics_map.get().unwrap();
-
-                    imp.graphics_row.set_sensitive(graphics_installed && graphics_map.get(&selected_iwad.id()).is_some());
-
-                    imp.launch_button.set_sensitive(imp.engine_row.selected_item().is_some() && imp.iwad_row.selected_iwad().is_some());
+                    imp.engine_row.init_for_iwad(engines, iwad.id());
                 }
             }
         ));
@@ -497,18 +532,44 @@ impl LauncherWindow {
         }
 
         // Get optional PWAD files
-        let pwad_files = imp.pwad_row.files().into_iter()
-            .filter(|file| Path::new(&env_expand(file)).try_exists().unwrap_or_default())
-            .collect::<Vec<String>>()
-            .join(" ");
+        let pwad_files = imp.pwad_row.files().join(" ");
+
+        // Get hires graphics files if enabled
+        let graphics_files = imp.graphics_map.get().unwrap().get(&iwad.id());
+
+        let engine_hires = imp.engine_row.selected_engine()
+            .map(|engine| engine.hires())
+            .unwrap_or_default();
+
+        let load_graphics = imp.graphics_installed.get() && graphics_files.is_some() && engine_hires && imp.graphics_row.is_active();
+
+        let graphics_files = graphics_files
+            .filter(|_| load_graphics)
+            .map(|files| {
+                files.into_iter()
+                    .map(|file| Path::new(GRAPHICS_PATH).join(file).display().to_string())
+                    .collect::<Vec<_>>()
+                    .join(" ")
+            })
+            .unwrap_or_default();
+
+        // Get extra switches
+        let extra_switches = imp.switches_row.text();
 
         // Build Doom command line
-        let cmd_line = format!("{exec} -iwad {iwad} -file {pwads} {switches}",
-            exec=exec_file,
-            iwad=iwad_file,
-            pwads=pwad_files,
-            switches=imp.switches_row.text()
-        );
+        let mut cmd_line = format!("{exec_file} -iwad {iwad_file}");
+
+        if !pwad_files.is_empty() {
+            cmd_line = format!("{cmd_line} -file {pwad_files}");
+        }
+
+        if !graphics_files.is_empty() {
+            cmd_line = format!("{cmd_line} -file {graphics_files}");
+        }
+
+        if !extra_switches.is_empty() {
+            cmd_line = format!("{cmd_line} {extra_switches}");
+        }
 
         // Launch Doom
         if let Some(params) = shlex::split(&cmd_line).filter(|params| !params.is_empty()) {

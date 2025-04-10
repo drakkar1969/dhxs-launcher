@@ -35,6 +35,8 @@ mod imp {
         heretic_path: RefCell<Option<String>>,
         #[property(get, set, nullable)]
         hexen_path: RefCell<Option<String>>,
+        #[property(get, set)]
+        hires: Cell<bool>,
     }
 
     //-----------------------------------
@@ -72,6 +74,7 @@ impl EngineObject {
             .property("path", data.path())
             .property("heretic-path", data.heretic_path())
             .property("hexen-path", data.hexen_path())
+            .property("hires", data.hires())
             .build()
     }
 }
