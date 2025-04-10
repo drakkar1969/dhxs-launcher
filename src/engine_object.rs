@@ -4,7 +4,8 @@ use gtk::glib;
 use gtk::subclass::prelude::*;
 use gtk::prelude::ObjectExt;
 
-use crate::data::{EngineData, EngineID, IWadID};
+use crate::iwad_data::IWadID;
+use crate::engine_data::{EngineData, EngineID};
 
 //------------------------------------------------------------------------------
 // MODULE: EngineObject

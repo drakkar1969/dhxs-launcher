@@ -16,7 +16,8 @@ use crate::iwad_combo_row::IWadComboRow;
 use crate::file_select_row::FileSelectRow;
 use crate::preferences_dialog::PreferencesDialog;
 use crate::utils::env_expand;
-use crate::data::{IWadID, IWadData, IWAD_HASHMAP, ENGINE_ARRAY};
+use crate::iwad_data::{IWadID, IWadData, IWAD_HASHMAP};
+use crate::engine_data::ENGINE_ARRAY;
 
 //------------------------------------------------------------------------------
 // CONST VARIABLES

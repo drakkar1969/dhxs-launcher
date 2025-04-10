@@ -5,7 +5,7 @@ use gtk::glib;
 use gtk::subclass::prelude::*;
 use gtk::prelude::ObjectExt;
 
-use crate::data::{IWadData, IWadID};
+use crate::iwad_data::{IWadData, IWadID};
 
 //------------------------------------------------------------------------------
 // MODULE: IWadObject

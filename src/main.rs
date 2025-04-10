@@ -7,7 +7,8 @@ mod iwad_object;
 mod file_select_row;
 mod preferences_dialog;
 mod utils;
-mod data;
+mod iwad_data;
+mod engine_data;
 
 use gtk::{gio, glib};
 use gtk::prelude::*;

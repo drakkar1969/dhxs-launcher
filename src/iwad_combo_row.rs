@@ -8,7 +8,7 @@ use glob::{glob_with, MatchOptions};
 
 use crate::iwad_object::IWadObject;
 use crate::utils::crc32;
-use crate::data::IWadData;
+use crate::iwad_data::IWadData;
 
 //------------------------------------------------------------------------------
 // MODULE: IWadComboRow
