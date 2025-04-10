@@ -5,7 +5,7 @@ use adw::subclass::prelude::*;
 use adw::prelude::*;
 use glib::clone;
 
-use crate::file_select_row::FileSelectRow;
+use crate::folder_select_row::FolderSelectRow;
 
 //------------------------------------------------------------------------------
 // MODULE: PreferencesDialog
@@ -21,9 +21,9 @@ mod imp {
     #[template(resource = "/com/github/D-Launcher/ui/preferences_dialog.ui")]
     pub struct PreferencesDialog {
         #[template_child]
-        pub(super) iwad_row: TemplateChild<FileSelectRow>,
+        pub(super) iwad_row: TemplateChild<FolderSelectRow>,
         #[template_child]
-        pub(super) pwad_row: TemplateChild<FileSelectRow>,
+        pub(super) pwad_row: TemplateChild<FolderSelectRow>,
 
         #[template_child]
         pub(super) reset_button: TemplateChild<adw::ButtonRow>,
@@ -101,30 +101,22 @@ impl PreferencesDialog {
         let imp = self.imp();
 
         // Bind properties to widgets
-        self.bind_property("iwad-folder", &imp.iwad_row.get(), "files")
-            .transform_to(|_, folder: String| Some(vec![folder]))
-            .transform_from(|_, files: Vec<String>| {
-                Some(files.first().cloned().unwrap_or_default())
-            })
+        self.bind_property("iwad-folder", &imp.iwad_row.get(), "folder")
             .sync_create()
             .bidirectional()
             .build();
 
-        self.bind_property("pwad-folder", &imp.pwad_row.get(), "files")
-            .transform_to(|_, folder: String| Some(vec![folder]))
-            .transform_from(|_, files: Vec<String>| {
-                Some(files.first().cloned().unwrap_or_default())
-            })
+        self.bind_property("pwad-folder", &imp.pwad_row.get(), "folder")
             .sync_create()
             .bidirectional()
             .build();
 
-        self.bind_property("iwad-default-folder", &imp.iwad_row.get(), "default-file")
+        self.bind_property("iwad-default-folder", &imp.iwad_row.get(), "default-folder")
             .sync_create()
             .bidirectional()
             .build();
 
-        self.bind_property("pwad-default-folder", &imp.pwad_row.get(), "default-file")
+        self.bind_property("pwad-default-folder", &imp.pwad_row.get(), "default-folder")
             .sync_create()
             .bidirectional()
             .build();

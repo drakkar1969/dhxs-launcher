@@ -9,20 +9,18 @@
           <object class="AdwPreferencesGroup">
             <property name="title">User Paths</property>
             <child>
-              <object class="FileSelectRow" id="iwad_row">
+              <object class="FolderSelectRow" id="iwad_row">
                 <property name="title">_IWAD Folder</property>
                 <property name="subtitle">Folder to search for IWAD files</property>
                 <property name="use-underline">true</property>
-                <property name="select-mode">folder</property>
                 <property name="dialog-title">IWAD Folder</property>
               </object>
             </child>
             <child>
-              <object class="FileSelectRow" id="pwad_row">
+              <object class="FolderSelectRow" id="pwad_row">
                 <property name="title">_PWAD Folder</property>
                 <property name="subtitle">Folder to search for optional PWAD files</property>
                 <property name="use-underline">true</property>
-                <property name="select-mode">folder</property>
                 <property name="dialog-title">PWAD Folder</property>
               </object>
             </child>
