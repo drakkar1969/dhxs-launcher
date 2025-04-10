@@ -1,4 +1,4 @@
-use std::cell::OnceCell;
+use std::cell::{Cell, OnceCell};
 use std::path::Path;
 use std::process::Command;
 use std::collections::HashMap;
@@ -18,6 +18,7 @@ use crate::preferences_dialog::PreferencesDialog;
 use crate::utils::env_expand;
 use crate::iwad_data::{IWadID, IWadData, IWAD_HASHMAP};
 use crate::engine_data::ENGINE_ARRAY;
+use crate::graphics_data::GRAPHICS_MAP;
 
 //------------------------------------------------------------------------------
 // CONST VARIABLES
@@ -71,6 +72,9 @@ mod imp {
 
         pub iwad_hashmap: OnceCell<HashMap<u32, IWadData>>,
         pub engine_vec: OnceCell<Vec<EngineObject>>,
+        pub graphics_map: OnceCell<HashMap<IWadID, Vec<String>>>,
+
+        pub graphics_pkg_installed: Cell<bool>,
     }
 
     //-----------------------------------
@@ -170,6 +174,13 @@ impl LauncherWindow {
                 .map(|data| EngineObject::new(&data))
                 .collect::<Vec<EngineObject>>()
         ).unwrap();
+
+        // Init graphics data
+        imp.graphics_map.set(
+            GRAPHICS_MAP.into_iter()
+                .map(|(id, files)| (id, files.split(',').map(String::from).collect()))
+                .collect::<HashMap<IWadID, Vec<String>>>()
+        ).unwrap();
     }
 
     //-----------------------------------
@@ -227,9 +238,9 @@ impl LauncherWindow {
             imp.switches_grid.attach(&self.value_label(value), 1, i as i32, 1, 1);
         });
 
-        // Enable hires graphics switch if 'dlauncher-hires-graphics' package is installed
+        // Set graphics package installed variable if 'dlauncher-hires-graphics' package is installed
         if Path::new(GRAPHICS_PATH).try_exists().unwrap_or_default() {
-            imp.graphics_row.set_sensitive(true);
+            imp.graphics_pkg_installed.set(true);
         }
 
         // Set initial focus on engine combo row
@@ -270,6 +281,11 @@ impl LauncherWindow {
                     let engines = imp.engine_vec.get().unwrap();
 
                     imp.engine_row.init_for_iwad(engines, selected_iwad.id());
+
+                    let graphics_installed = imp.graphics_pkg_installed.get();
+                    let graphics_map = imp.graphics_map.get().unwrap();
+
+                    imp.graphics_row.set_sensitive(graphics_installed && graphics_map.get(&selected_iwad.id()).is_some());
 
                     imp.launch_button.set_sensitive(imp.engine_row.selected_item().is_some() && imp.iwad_row.selected_iwad().is_some());
                 }

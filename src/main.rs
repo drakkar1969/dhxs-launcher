@@ -9,6 +9,7 @@ mod preferences_dialog;
 mod utils;
 mod iwad_data;
 mod engine_data;
+mod graphics_data;
 
 use gtk::{gio, glib};
 use gtk::prelude::*;
