@@ -5,18 +5,22 @@ use gtk::glib;
 //------------------------------------------------------------------------------
 #[glib::flags(name = "IWadID")]
 pub enum IWadID {
-    DOOM      = 0b0000_0000_0000_0001,
-    UDOOM     = 0b0000_0000_0000_0010,
-    DOOM2     = 0b0000_0000_0000_0100,
-    TNT       = 0b0000_0000_0000_1000,
-    PLUTONIA  = 0b0000_0000_0001_0000,
-    HERETIC   = 0b0000_0000_0010_0000,
-    HEXEN     = 0b0000_0000_0100_0000,
-    FREEDOOM1 = 0b0000_0000_1000_0000,
-    FREEDOOM2 = 0b0000_0001_0000_0000,
+    DOOM          = 0b0000_0000_0000_0001,
+    UDOOM         = 0b0000_0000_0000_0010,
+    DOOM2         = 0b0000_0000_0000_0100,
+    TNT           = 0b0000_0000_0000_1000,
+    PLUTONIA      = 0b0000_0000_0001_0000,
+    FREEDOOM1     = 0b0000_0000_0010_0000,
+    FREEDOOM2     = 0b0000_0000_0100_0000,
+    HERETIC       = 0b0000_0000_1000_0000,
+    HEXEN         = 0b0000_0001_0000_0000,
+    HEXENDK       = 0b0000_0010_0000_0000,
+    STRIFE        = 0b0000_0100_0000_0000,
+    STRIFEVOICES  = 0b0000_1000_0000_0000,
 
-    DOOMONLY  = 0b0000_0000_0000_1111,
-    ALL       = 0b0000_0000_1111_1111,
+    DOOM_ONLY     = 0b0000_0000_0111_1111,
+    ALL_NO_STRIFE = 0b0000_0011_1111_1111,
+    ALL           = 0b0000_1111_1111_1111,
 }
 
 impl Default for IWadID {
@@ -52,7 +56,7 @@ impl IWadData {
 //------------------------------------------------------------------------------
 // IWAD DATA
 //------------------------------------------------------------------------------
-pub const IWAD_HASHMAP: [(u32, IWadData); 8] = [
+pub const IWAD_HASHMAP: [(u32, IWadData); 11] = [
     (
         0xbf0eaac0,
         IWadData { id: IWadID::UDOOM, name: "Doom - The Ultimate Doom", version: "v1.9ud" }
@@ -70,6 +74,14 @@ pub const IWAD_HASHMAP: [(u32, IWadData); 8] = [
         IWadData { id: IWadID::PLUTONIA, name: "Final Doom - The Plutonia Experiment", version: "v1.9 Fix" }
     ),
     (
+        0xde6ddb27,
+        IWadData { id: IWadID::FREEDOOM1, name: "FreeDoom: Phase 1", version: "v0.12.1" }
+    ),
+    (
+        0x212e1cf9,
+        IWadData { id: IWadID::FREEDOOM2, name: "FreeDoom: Phase 2", version: "v0.12.1" }
+    ),
+    (
         0x5b16049e,
         IWadData { id: IWadID::HERETIC, name: "Heretic", version: "v1.3" }
     ),
@@ -78,11 +90,15 @@ pub const IWAD_HASHMAP: [(u32, IWadData); 8] = [
         IWadData { id: IWadID::HEXEN, name: "Hexen", version: "v1.1" }
     ),
     (
-        0xde6ddb27,
-        IWadData { id: IWadID::FREEDOOM1, name: "FreeDoom: Phase 1", version: "v0.12.1" }
+        0xfd5eb11d,
+        IWadData { id: IWadID::HEXENDK, name: "Hexen - Deathkings of the Dark Citadel", version: "v1.1" }
     ),
     (
-        0x212e1cf9,
-        IWadData { id: IWadID::FREEDOOM2, name: "FreeDoom: Phase 2", version: "v0.12.1" }
+        0x4234ace5,
+        IWadData { id: IWadID::STRIFE, name: "Strife", version: "v1.2-1.31" }
+    ),
+    (
+        0xcd12ebcf,
+        IWadData { id: IWadID::STRIFEVOICES, name: "Strife Voices", version: "" }
     ),
 ];

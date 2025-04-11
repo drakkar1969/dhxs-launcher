@@ -507,14 +507,17 @@ impl LauncherWindow {
 
         // Get executable file
         let exec_file = env_expand(&match iwad.id() {
-            IWadID::UDOOM | IWadID::DOOM | IWadID::DOOM2 | IWadID::PLUTONIA | IWadID::TNT | IWadID::FREEDOOM1 | IWadID::FREEDOOM2 => {
+            IWadID::DOOM | IWadID::UDOOM | IWadID::DOOM2 | IWadID::PLUTONIA | IWadID::TNT | IWadID::FREEDOOM1 | IWadID::FREEDOOM2 => {
                 engine.path()
             },
             IWadID::HERETIC => {
                 engine.heretic_path().unwrap_or(engine.path())
             },
-            IWadID::HEXEN => {
+            IWadID::HEXEN | IWadID::HEXENDK => {
                 engine.hexen_path().unwrap_or(engine.path())
+            },
+            IWadID::STRIFE | IWadID::STRIFEVOICES => {
+                engine.strife_path().unwrap_or(engine.path())
             },
             _ => unreachable!()
         });

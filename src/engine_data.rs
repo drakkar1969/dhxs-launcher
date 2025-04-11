@@ -32,6 +32,7 @@ pub struct EngineData {
     path: &'static str,
     heretic_path: Option<&'static str>,
     hexen_path: Option<&'static str>,
+    strife_path: Option<&'static str>,
     hires: bool,
 }
 
@@ -68,6 +69,10 @@ impl EngineData {
         self.hexen_path
     }
 
+    pub fn strife_path(&self) -> Option<&str> {
+        self.strife_path
+    }
+
     pub fn hires(&self) -> bool {
         self.hires
     }
@@ -86,6 +91,7 @@ pub const ENGINE_ARRAY: [EngineData; 7] = [
         path: "/usr/bin/chocolate-doom",
         heretic_path: Some("/usr/bin/chocolate-heretic"),
         hexen_path: Some("/usr/bin/chocolate-hexen"),
+        strife_path: Some("/usr/bin/chocolate-strife"),
         hires: false
     },
     EngineData {
@@ -97,17 +103,19 @@ pub const ENGINE_ARRAY: [EngineData; 7] = [
         path: "/usr/bin/crispy-doom",
         heretic_path: Some("/usr/bin/crispy-heretic"),
         hexen_path: Some("/usr/bin/crispy-hexen"),
+        strife_path: Some("/usr/bin/crispy-strife"),
         hires: false
     },
     EngineData {
         id: EngineID::DSDADoom,
         name: "DSDA-Doom",
         description: "Fork of PrBoom+ with extra tooling for demo recording and playback, with a focus on speedrunning",
-        games: IWadID::ALL,
+        games: IWadID::ALL_NO_STRIFE,
         compatibility: 5,
         path: "/usr/bin/dsda-doom",
         heretic_path: None,
         hexen_path: None,
+        strife_path: None,
         hires: false
     },
     EngineData {
@@ -119,17 +127,19 @@ pub const ENGINE_ARRAY: [EngineData; 7] = [
         path: "/usr/bin/gzdoom",
         heretic_path: None,
         hexen_path: None,
+        strife_path: None,
         hires: true
     },
     EngineData {
         id: EngineID::NuggetDoom,
         name: "Nugget Doom",
         description: "Fork of Woof! with additional features",
-        games: IWadID::DOOMONLY,
+        games: IWadID::DOOM_ONLY,
         compatibility: 5,
         path: "/usr/bin/nugget-doom",
         heretic_path: None,
         hexen_path: None,
+        strife_path: None,
         hires: false
     },
     EngineData {
@@ -141,17 +151,19 @@ pub const ENGINE_ARRAY: [EngineData; 7] = [
         path: "/usr/bin/vkdoom",
         heretic_path: None,
         hexen_path: None,
+        strife_path: None,
         hires: true
     },
     EngineData {
         id: EngineID::Woof,
         name: "Woof!",
         description: "Woof! is a continuation of Lee Killough's Doom source port MBF targeted at modern systems",
-        games: IWadID::DOOMONLY,
+        games: IWadID::DOOM_ONLY,
         compatibility: 5,
         path: "/usr/bin/woof",
         heretic_path: None,
         hexen_path: None,
+        strife_path: None,
         hires: false
     },
 ];
