@@ -81,11 +81,11 @@ pub const IWAD_HASHMAP: [(u32, IWadData); 9] = [
     ),
     (
         0x5b16049e,
-        IWadData { id: IWadID::HERETIC, name: "Heretic", version: "v1.3" }
+        IWadData { id: IWadID::HERETIC, name: "Heretic: Shadow of the Serpent Riders", version: "v1.3" }
     ),
     (
         0xdca9114c,
-        IWadData { id: IWadID::HEXEN, name: "Hexen", version: "v1.1" }
+        IWadData { id: IWadID::HEXEN, name: "HeXen: Beyond Heretic", version: "v1.1" }
     ),
     (
         0x4234ace5,
