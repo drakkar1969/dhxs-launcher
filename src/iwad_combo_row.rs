@@ -108,7 +108,7 @@ impl IWadComboRow {
             .collect::<Vec<_>>();
 
 
-        iwad_objects.sort_unstable_by_key(|iwad| iwad.name());
+        iwad_objects.sort_unstable_by_key(|iwad| iwad.name().to_ascii_lowercase());
 
         // Add IWADs to combo row
         imp.model.splice(0, imp.model.n_items(), &iwad_objects);
