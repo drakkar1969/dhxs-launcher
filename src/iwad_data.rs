@@ -14,13 +14,11 @@ pub enum IWadID {
     FREEDOOM2     = 0b0000_0000_0100_0000,
     HERETIC       = 0b0000_0000_1000_0000,
     HEXEN         = 0b0000_0001_0000_0000,
-    HEXENDK       = 0b0000_0010_0000_0000,
-    STRIFE        = 0b0000_0100_0000_0000,
-    STRIFEVOICES  = 0b0000_1000_0000_0000,
+    STRIFE        = 0b0000_0010_0000_0000,
 
     DOOM_ONLY     = 0b0000_0000_0111_1111,
-    ALL_NO_STRIFE = 0b0000_0011_1111_1111,
-    ALL           = 0b0000_1111_1111_1111,
+    ALL_NO_STRIFE = 0b0000_0001_1111_1111,
+    ALL           = 0b0000_0011_1111_1111,
 }
 
 impl Default for IWadID {
@@ -56,7 +54,7 @@ impl IWadData {
 //------------------------------------------------------------------------------
 // IWAD DATA
 //------------------------------------------------------------------------------
-pub const IWAD_HASHMAP: [(u32, IWadData); 11] = [
+pub const IWAD_HASHMAP: [(u32, IWadData); 9] = [
     (
         0xbf0eaac0,
         IWadData { id: IWadID::UDOOM, name: "Doom - The Ultimate Doom", version: "v1.9ud" }
@@ -90,15 +88,7 @@ pub const IWAD_HASHMAP: [(u32, IWadData); 11] = [
         IWadData { id: IWadID::HEXEN, name: "Hexen", version: "v1.1" }
     ),
     (
-        0xfd5eb11d,
-        IWadData { id: IWadID::HEXENDK, name: "Hexen - Deathkings of the Dark Citadel", version: "v1.1" }
-    ),
-    (
         0x4234ace5,
         IWadData { id: IWadID::STRIFE, name: "Strife", version: "v1.2-1.31" }
-    ),
-    (
-        0xcd12ebcf,
-        IWadData { id: IWadID::STRIFEVOICES, name: "Strife Voices", version: "" }
     ),
 ];
