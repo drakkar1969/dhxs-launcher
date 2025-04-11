@@ -513,10 +513,10 @@ impl LauncherWindow {
             IWadID::HERETIC => {
                 engine.heretic_path().unwrap_or(engine.path())
             },
-            IWadID::HEXEN | IWadID::HEXENDK => {
+            IWadID::HEXEN => {
                 engine.hexen_path().unwrap_or(engine.path())
             },
-            IWadID::STRIFE | IWadID::STRIFEVOICES => {
+            IWadID::STRIFE => {
                 engine.strife_path().unwrap_or(engine.path())
             },
             _ => unreachable!()
