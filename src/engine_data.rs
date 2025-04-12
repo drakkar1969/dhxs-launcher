@@ -23,20 +23,20 @@ pub enum EngineID {
 // STRUCT: EngineData
 //------------------------------------------------------------------------------
 #[derive(Debug)]
-pub struct EngineData {
+pub struct EngineData<'a> {
     id: EngineID,
-    name: &'static str,
-    description: &'static str,
+    name: &'a str,
+    description: &'a str,
     games: IWadID,
     compatibility: u32,
-    path: &'static str,
-    heretic_path: Option<&'static str>,
-    hexen_path: Option<&'static str>,
-    strife_path: Option<&'static str>,
+    path: &'a str,
+    heretic_path: Option<&'a str>,
+    hexen_path: Option<&'a str>,
+    strife_path: Option<&'a str>,
     hires_capable: bool,
 }
 
-impl EngineData {
+impl EngineData<'_> {
     pub fn id(&self) -> EngineID {
         self.id
     }
