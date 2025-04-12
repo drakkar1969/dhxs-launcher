@@ -64,8 +64,12 @@ impl IWadData {
 //------------------------------------------------------------------------------
 // IWAD DATA
 //------------------------------------------------------------------------------
-pub const IWAD_HASHMAP: [(u32, IWadData); 11] = [
+pub const IWAD_HASHMAP: [(u32, IWadData); 12] = [
     // DOOM / ULTIMATE DOOM
+    (
+        0x723e60f9,
+        IWadData { id: IWadID::DOOM, name: "Doom", version: "v1.9" }
+    ),
     (
         0xbf0eaac0,
         IWadData { id: IWadID::UDOOM, name: "Doom - The Ultimate Doom", version: "v1.9ud" }
