@@ -65,14 +65,17 @@ impl IWadData {
 // IWAD DATA
 //------------------------------------------------------------------------------
 pub const IWAD_HASHMAP: [(u32, IWadData); 11] = [
+    // DOOM / ULTIMATE DOOM
     (
         0xbf0eaac0,
         IWadData { id: IWadID::UDOOM, name: "Doom - The Ultimate Doom", version: "v1.9ud" }
     ),
+    // DOOM2
     (
         0xec8725db,
         IWadData { id: IWadID::DOOM2, name: "Doom2", version: "v1.9" }
     ),
+    // FINAL DOOM
     (
         0x15cd1448,
         IWadData { id: IWadID::PLUTONIA, name: "Final Doom - The Plutonia Experiment", version: "v1.9 Fix" }
@@ -81,6 +84,7 @@ pub const IWAD_HASHMAP: [(u32, IWadData); 11] = [
         0xd4bb05c0,
         IWadData { id: IWadID::TNT, name: "Final Doom - TNT: Evilution", version: "v1.9 Fix" }
     ),
+    // FREEDOOM
     (
         0xde6ddb27,
         IWadData { id: IWadID::FREEDOOM1, name: "FreeDoom: Phase 1", version: "v0.12.1" }
@@ -97,14 +101,17 @@ pub const IWAD_HASHMAP: [(u32, IWadData); 11] = [
         0xa0bfeb53,
         IWadData { id: IWadID::FREEDOOM2, name: "FreeDoom: Phase 2", version: "v0.13.0" }
     ),
+    // HERETIC
     (
         0x5b16049e,
         IWadData { id: IWadID::HERETIC, name: "Heretic: Shadow of the Serpent Riders", version: "v1.3" }
     ),
+    // HEXEN
     (
         0xdca9114c,
         IWadData { id: IWadID::HEXEN, name: "HeXen: Beyond Heretic", version: "v1.1" }
     ),
+    // STRIFE
     (
         0x4234ace5,
         IWadData { id: IWadID::STRIFE, name: "Strife", version: "v1.2-1.31" }
