@@ -3,7 +3,10 @@ use gtk::glib;
 //------------------------------------------------------------------------------
 // CONST VARIABLES
 //------------------------------------------------------------------------------
-pub const IWAD_PATHS: [&str; 1] = ["/usr/share/d-launcher/iwads"];
+pub const IWAD_PATHS: [&str; 2] = [
+    "/usr/share/d-launcher/iwads",
+    "/usr/share/games/doom"
+];
 
 //------------------------------------------------------------------------------
 // FLAGS: IWadID
