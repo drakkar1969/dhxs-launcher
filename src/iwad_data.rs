@@ -62,7 +62,7 @@ impl IWadData {
 //------------------------------------------------------------------------------
 // IWAD DATA
 //------------------------------------------------------------------------------
-pub const IWAD_HASHMAP: [(u32, IWadData); 9] = [
+pub const IWAD_HASHMAP: [(u32, IWadData); 11] = [
     (
         0xbf0eaac0,
         IWadData { id: IWadID::UDOOM, name: "Doom - The Ultimate Doom", version: "v1.9ud" }
@@ -84,8 +84,16 @@ pub const IWAD_HASHMAP: [(u32, IWadData); 9] = [
         IWadData { id: IWadID::FREEDOOM1, name: "FreeDoom: Phase 1", version: "v0.12.1" }
     ),
     (
+        0xe42df22f,
+        IWadData { id: IWadID::FREEDOOM1, name: "FreeDoom: Phase 1", version: "v0.13.0" }
+    ),
+    (
         0x212e1cf9,
         IWadData { id: IWadID::FREEDOOM2, name: "FreeDoom: Phase 2", version: "v0.12.1" }
+    ),
+    (
+        0xa0bfeb53,
+        IWadData { id: IWadID::FREEDOOM2, name: "FreeDoom: Phase 2", version: "v0.13.0" }
     ),
     (
         0x5b16049e,
