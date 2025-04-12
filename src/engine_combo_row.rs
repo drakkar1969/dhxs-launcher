@@ -3,7 +3,9 @@ use std::path::Path;
 use gtk::{gio, glib};
 use adw::subclass::prelude::*;
 use adw::prelude::*;
+use glib::clone;
 
+use crate::engine_data::ENGINE_ARRAY;
 use crate::engine_object::EngineObject;
 use crate::iwad_data::IWadID;
 
@@ -20,7 +22,14 @@ mod imp {
     #[template(resource = "/com/github/D-Launcher/ui/engine_combo_row.ui")]
     pub struct EngineComboRow {
         #[template_child]
+        pub(super) settings_button: TemplateChild<gtk::MenuButton>,
+        #[template_child]
+        pub(super) settings_hires_switch: TemplateChild<gtk::Switch>,
+
+        #[template_child]
         pub(super) model: TemplateChild<gio::ListStore>,
+        #[template_child]
+        pub(super) filter: TemplateChild<gtk::CustomFilter>,
     }
 
     //-----------------------------------
@@ -49,6 +58,11 @@ mod imp {
         //-----------------------------------
         fn constructed(&self) {
             self.parent_constructed();
+
+            let obj = self.obj();
+
+            obj.setup_signals();
+            obj.setup_engines();
         }
     }
 
@@ -77,24 +91,83 @@ impl EngineComboRow {
     }
 
     //-----------------------------------
-    // Public init for IWAD function
+    // Setup signals
     //-----------------------------------
-    pub fn init_for_iwad(&self, engine_list: &[EngineObject], iwad_id: IWadID) {
+    fn setup_signals(&self) {
         let imp = self.imp();
 
-        // Get list of installed engines compatible with IWAD
-        let mut engine_objects = engine_list.iter()
-            .filter(|engine| {
-                Path::new(&engine.path()).try_exists().unwrap_or_default() &&
-                engine.games().contains(iwad_id)
-            }
-        )
-        .cloned()
-        .collect::<Vec<EngineObject>>();
+        // Selected item property signal
+        self.connect_selected_item_notify(clone!(
+            #[weak(rename_to = row)] self,
+            #[weak] imp,
+            move |_| {
+                if let Some(engine) = row.selected_engine() {
+                    let hires_capable = engine.hires_capable();
+                    let hires_active = engine.settings_hires();
 
-        engine_objects.sort_unstable_by_key(|engine| engine.name());
+                    imp.settings_hires_switch.set_visible(hires_capable);
+                    imp.settings_hires_switch.set_active(hires_capable && hires_active);
+                    imp.settings_button.set_sensitive(hires_capable);
+                } else {
+                    imp.settings_button.set_sensitive(false);
+                }
+            }
+        ));
+
+        // Settings hires switch active property signal
+        imp.settings_hires_switch.connect_active_notify(clone!(
+            #[weak(rename_to = row)] self,
+            move |switch| {
+                if let Some(engine) = row.selected_engine() {
+                    engine.set_settings_hires(switch.is_active());
+                }
+            }
+        ));
+    }
+
+    //-----------------------------------
+    // Setup engines function
+    //-----------------------------------
+    fn setup_engines(&self) {
+        let imp = self.imp();
+
+        // Get list of installed engines
+        let mut engine_objects = ENGINE_ARRAY.into_iter()
+            .filter(|data| Path::new(&data.path()).try_exists().unwrap_or_default())
+            .map(|data| EngineObject::new(&data))
+            .collect::<Vec<EngineObject>>();
+
+        engine_objects.sort_unstable_by_key(|engine| engine.name().to_ascii_lowercase());
 
         imp.model.splice(0, imp.model.n_items(), &engine_objects);
+    }
+
+    //-----------------------------------
+    // Public filter engines function
+    //-----------------------------------
+    pub fn filter_engines(&self, iwad_id: Option<IWadID>) {
+        let imp = self.imp();
+
+        if let Some(id) = iwad_id {
+            imp.filter.set_filter_func(move |item| {
+                item
+                    .downcast_ref::<EngineObject>()
+                    .expect("Could not downcast to 'EngineObject'")
+                    .games()
+                    .intersects(id)
+            });
+        }
+    }
+
+    //-----------------------------------
+    // Public reset engine settings function
+    //-----------------------------------
+    pub fn reset_engine_settings(&self) {
+        let imp = self.imp();
+
+        imp.model.iter::<EngineObject>()
+            .flatten()
+            .for_each(|engine| engine.set_settings_hires(false));
     }
 
     //-----------------------------------

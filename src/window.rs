@@ -11,13 +11,11 @@ use glib::clone;
 use crate::APP_ID;
 use crate::LauncherApplication;
 use crate::engine_combo_row::EngineComboRow;
-use crate::engine_object::EngineObject;
 use crate::iwad_combo_row::IWadComboRow;
 use crate::pwad_select_row::PWadSelectRow;
 use crate::preferences_dialog::PreferencesDialog;
 use crate::utils::env_expand;
 use crate::iwad_data::{IWadID, IWadData, IWAD_HASHMAP};
-use crate::engine_data::ENGINE_ARRAY;
 use crate::graphics_data::GRAPHICS_MAP;
 
 //------------------------------------------------------------------------------
@@ -49,8 +47,6 @@ mod imp {
     pub struct LauncherWindow {
         #[template_child]
         pub(super) engine_row: TemplateChild<EngineComboRow>,
-        #[template_child]
-        pub(super) graphics_row: TemplateChild<adw::SwitchRow>,
 
         #[template_child]
         pub(super) iwad_row: TemplateChild<IWadComboRow>,
@@ -71,7 +67,6 @@ mod imp {
         pub gsettings: OnceCell<gio::Settings>,
 
         pub iwad_hashmap: OnceCell<HashMap<u32, IWadData>>,
-        pub engine_vec: OnceCell<Vec<EngineObject>>,
         pub graphics_map: OnceCell<HashMap<IWadID, Vec<String>>>,
 
         pub graphics_installed: Cell<bool>,
@@ -168,13 +163,6 @@ impl LauncherWindow {
         // Init IWAD data
         imp.iwad_hashmap.set(HashMap::from(IWAD_HASHMAP)).unwrap();
 
-        // Init engine data
-        imp.engine_vec.set(
-            ENGINE_ARRAY.into_iter()
-                .map(|data| EngineObject::new(&data))
-                .collect::<Vec<EngineObject>>()
-        ).unwrap();
-
         // Init graphics data
         imp.graphics_map.set(
             GRAPHICS_MAP.into_iter()
@@ -248,6 +236,15 @@ impl LauncherWindow {
     }
 
     //-----------------------------------
+    // Set launch button state helper function
+    //-----------------------------------
+    fn set_launch_button_state(&self) {
+        let imp = self.imp();
+
+        imp.launch_button.set_sensitive(imp.engine_row.selected_item().is_some() && imp.iwad_row.selected_iwad().is_some());
+    }
+
+    //-----------------------------------
     // Setup signals
     //-----------------------------------
     fn setup_signals(&self) {
@@ -255,13 +252,14 @@ impl LauncherWindow {
 
         // Preferences window IWAD folder property notify signal
         imp.prefs_dialog.connect_iwad_folder_notify(clone!(
+            #[weak(rename_to = window)] self,
             #[weak] imp,
             move |prefs_dialog| {
                 let hash_map = imp.iwad_hashmap.get().unwrap();
 
                 imp.iwad_row.init(hash_map, &IWAD_PATHS, &env_expand(&prefs_dialog.iwad_folder()));
-        
-                imp.launch_button.set_sensitive(imp.engine_row.selected_item().is_some() && imp.iwad_row.selected_iwad().is_some());
+
+                window.set_launch_button_state();
             }
         ));
 
@@ -275,55 +273,20 @@ impl LauncherWindow {
 
         // Engine combo selected item property signal
         imp.engine_row.connect_selected_item_notify(clone!(
-            #[weak] imp,
-            move |engine_row| {
-                let graphics_map = imp.graphics_map.get().unwrap();
-
-                let engine_hires = engine_row.selected_engine()
-                    .map(|engine| engine.hires())
-                    .unwrap_or_default();
-
-                let iwad_id = imp.iwad_row.selected_iwad()
-                    .map(|iwad| iwad.id())
-                    .unwrap_or_default();
-
-                imp.graphics_row.set_sensitive(
-                    imp.graphics_installed.get() &&
-                    engine_hires &&
-                    graphics_map.get(&iwad_id).is_some()
-                );
+            #[weak(rename_to = window)] self,
+            move |_| {
+                window.set_launch_button_state();
             }
         ));
 
         // IWAD combo selected item property notify signal
         imp.iwad_row.connect_selected_item_notify(clone!(
+            #[weak(rename_to = window)] self,
             #[weak] imp,
             move |iwad_row| {
-                let graphics_map = imp.graphics_map.get().unwrap();
+                imp.engine_row.filter_engines(iwad_row.selected_iwad().map(|iwad| iwad.id()));
 
-                let engine = imp.engine_row.selected_engine();
-                let engine_hires = imp.engine_row.selected_engine()
-                    .map(|engine| engine.hires())
-                    .unwrap_or_default();
-
-                let iwad = iwad_row.selected_iwad();
-                let iwad_id = iwad_row.selected_iwad()
-                    .map(|iwad| iwad.id())
-                    .unwrap_or_default();
-
-                imp.graphics_row.set_sensitive(
-                    imp.graphics_installed.get() &&
-                    engine_hires &&
-                    graphics_map.get(&iwad_id).is_some()
-                );
-
-                imp.launch_button.set_sensitive(engine.is_some() && iwad.is_some());
-
-                if let Some(iwad) = iwad {
-                    let engines = imp.engine_vec.get().unwrap();
-
-                    imp.engine_row.init_for_iwad(engines, iwad.id());
-                }
+                window.set_launch_button_state();
             }
         ));
     }
@@ -370,7 +333,6 @@ impl LauncherWindow {
         imp.iwad_row.set_selected_iwad_file(&gsettings.string("selected-iwad"));
         imp.pwad_row.set_files(gsettings.strv("pwad-files").into_iter().map(String::from).collect::<Vec<String>>());
         imp.switches_row.set_text(&gsettings.string("extra-switches"));
-        imp.graphics_row.set_active(gsettings.boolean("hires-graphics"));
 
         // Store gsettings
         imp.gsettings.set(gsettings).unwrap();
@@ -397,7 +359,6 @@ impl LauncherWindow {
         Self::set_gsetting(gsettings, "selected-iwad", &selected_iwad);
         Self::set_gsetting(gsettings, "pwad-files", &imp.pwad_row.files());
         Self::set_gsetting(gsettings, "extra-switches", &imp.switches_row.text().to_string());
-        Self::set_gsetting(gsettings, "hires-graphics", &imp.graphics_row.is_active());
 
         // Save preferences window settings
         Self::set_gsetting(gsettings, "iwad-folder", &imp.prefs_dialog.iwad_folder());
@@ -433,10 +394,10 @@ impl LauncherWindow {
                             move |response| {
                                 if response == "reset" {
                                     imp.engine_row.set_selected(0);
+                                    imp.engine_row.reset_engine_settings();
                                     imp.iwad_row.set_selected(0);
                                     imp.pwad_row.reset_to_default();
                                     imp.switches_row.set_text("");
-                                    imp.graphics_row.set_active(false);
                                 }
                             }
                         )
@@ -540,11 +501,7 @@ impl LauncherWindow {
         // Get hires graphics files if enabled
         let graphics_files = imp.graphics_map.get().unwrap().get(&iwad.id());
 
-        let engine_hires = imp.engine_row.selected_engine()
-            .map(|engine| engine.hires())
-            .unwrap_or_default();
-
-        let load_graphics = imp.graphics_installed.get() && graphics_files.is_some() && engine_hires && imp.graphics_row.is_active();
+        let load_graphics = imp.graphics_installed.get() && graphics_files.is_some() && engine.hires_capable() && engine.settings_hires();
 
         let graphics_files = graphics_files
             .filter(|_| load_graphics)

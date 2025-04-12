@@ -3,8 +3,15 @@
   <!--// EngineComboRow template //-->
   <template class="EngineComboRow" parent="AdwComboRow">
     <property name="model">
-      <object class="GListStore" id="model">
-        <property name="item-type">EngineObject</property>
+      <object class="GtkFilterListModel" id="filter_model">
+        <property name="model">
+          <object class="GListStore" id="model">
+            <property name="item-type">EngineObject</property>
+          </object>
+        </property>
+        <property name="filter">
+          <object class="GtkCustomFilter" id="filter"/>
+        </property>
       </object>
     </property>
     <property name="factory">
@@ -17,5 +24,43 @@
         <property name="resource">/com/github/D-Launcher/ui/engine_combo/list-item.ui</property>
       </object>
     </property>
+    <child>
+      <object class="GtkSeparator" id="separator">
+        <property name="margin-start">12</property>
+        <property name="margin-top">14</property>
+        <property name="margin-bottom">14</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkMenuButton" id="settings_button">
+        <property name="icon-name">cog-wheel-symbolic</property>
+        <property name="valign">center</property>
+        <property name="popover">
+          <object class="GtkPopover" id="settings_popover">
+            <property name="child">
+              <object class="GtkBox">
+                <property name="margin-start">16</property>
+                <property name="margin-end">16</property>
+                <property name="margin-top">16</property>
+                <property name="margin-bottom">16</property>
+                <property name="spacing">36</property>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="label">Use Hi-Res Graphics</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkSwitch" id="settings_hires_switch">
+                  </object>
+                </child>
+              </object>
+            </property>
+          </object>
+        </property>
+        <style>
+          <class name="flat"/>
+        </style>
+      </object>
+    </child>
   </template>
 </interface>

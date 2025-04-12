@@ -38,7 +38,10 @@ mod imp {
         #[property(get, set, nullable)]
         strife_path: RefCell<Option<String>>,
         #[property(get, set)]
-        hires: Cell<bool>,
+        hires_capable: Cell<bool>,
+
+        #[property(get, set)]
+        settings_hires: Cell<bool>,
     }
 
     //-----------------------------------
@@ -77,7 +80,7 @@ impl EngineObject {
             .property("heretic-path", data.heretic_path())
             .property("hexen-path", data.hexen_path())
             .property("strife-path", data.strife_path())
-            .property("hires", data.hires())
+            .property("hires-capable", data.hires_capable())
             .build()
     }
 }
