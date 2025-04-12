@@ -73,7 +73,20 @@
                       <object class="GtkMenuButton" id="switches_button">
                         <property name="icon-name">info-outline-symbolic</property>
                         <property name="valign">center</property>
-                        <property name="popover">switches_popover</property>
+                        <property name="popover">
+                          <object class="GtkPopover" id="switches_popover">
+                            <property name="child">
+                              <object class="GtkGrid" id="switches_grid">
+                                <property name="margin-start">16</property>
+                                <property name="margin-end">16</property>
+                                <property name="margin-top">16</property>
+                                <property name="margin-bottom">16</property>
+                                <property name="column-spacing">36</property>
+                                <property name="row-spacing">12</property>
+                              </object>
+                            </property>
+                          </object>
+                        </property>
                         <style>
                           <class name="flat"/>
                         </style>
@@ -126,19 +139,4 @@
       </item>
     </section>
   </menu>
-
-  <!--// Switches popover //-->
-  <object class="GtkPopover" id="switches_popover">
-    <property name="child">
-      <object class="GtkGrid" id="switches_grid">
-        <property name="margin-start">16</property>
-        <property name="margin-end">16</property>
-        <property name="margin-top">16</property>
-        <property name="margin-bottom">16</property>
-        <property name="column-spacing">36</property>
-        <property name="row-spacing">12</property>
-      </object>
-    </property>
-  </object>
-
 </interface>
