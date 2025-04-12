@@ -25,9 +25,5 @@
       <default>'$HOME/.config/d-launcher/pwads'</default>
       <summary>Folder to search for additional files</summary>
     </key>
-    <key name="hires-graphics" type="b">
-      <default>false</default>
-      <summary>Enable high resolution graphics</summary>
-    </key>
   </schema>
 </schemalist>

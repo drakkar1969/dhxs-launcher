@@ -1,4 +1,4 @@
-use std::cell::{Cell, OnceCell};
+use std::cell::OnceCell;
 use std::path::Path;
 use std::process::Command;
 use std::collections::HashMap;
@@ -16,12 +16,7 @@ use crate::pwad_select_row::PWadSelectRow;
 use crate::preferences_dialog::PreferencesDialog;
 use crate::utils::env_expand;
 use crate::iwad_data::IWadID;
-use crate::graphics_data::GRAPHICS_MAP;
-
-//------------------------------------------------------------------------------
-// CONST VARIABLES
-//------------------------------------------------------------------------------
-const GRAPHICS_PATH: &str = "/usr/share/d-launcher/graphics/";
+use crate::graphics_data::{GRAPHICS_PATH, GRAPHICS_MAP};
 
 //------------------------------------------------------------------------------
 // ENUM: LaunchResult
@@ -63,10 +58,6 @@ mod imp {
         pub(super) prefs_dialog: TemplateChild<PreferencesDialog>,
 
         pub gsettings: OnceCell<gio::Settings>,
-
-        pub graphics_map: OnceCell<HashMap<IWadID, Vec<String>>>,
-
-        pub graphics_installed: Cell<bool>,
     }
 
     //-----------------------------------
@@ -105,8 +96,6 @@ mod imp {
             self.parent_constructed();
 
             let obj = self.obj();
-
-            obj.setup_data();
 
             obj.setup_widgets();
 
@@ -149,20 +138,6 @@ impl LauncherWindow {
     //-----------------------------------
     pub fn new(app: &LauncherApplication) -> Self {
         glib::Object::builder().property("application", app).build()
-    }
-
-    //-----------------------------------
-    // Setup data
-    //-----------------------------------
-    fn setup_data(&self) {
-        let imp = self.imp();
-
-        // Init graphics data
-        imp.graphics_map.set(
-            GRAPHICS_MAP.into_iter()
-                .map(|(id, files)| (id, files.split(' ').map(String::from).collect()))
-                .collect::<HashMap<IWadID, Vec<String>>>()
-        ).unwrap();
     }
 
     //-----------------------------------
@@ -219,11 +194,6 @@ impl LauncherWindow {
             imp.switches_grid.attach(&self.key_label(key), 0, i as i32, 1, 1);
             imp.switches_grid.attach(&self.value_label(value), 1, i as i32, 1, 1);
         });
-
-        // Set graphics package installed variable if 'dlauncher-hires-graphics' package is installed
-        if Path::new(GRAPHICS_PATH).try_exists().unwrap_or_default() {
-            imp.graphics_installed.set(true);
-        }
 
         // Set initial focus on engine combo row
         imp.engine_row.get().grab_focus();
@@ -491,16 +461,22 @@ impl LauncherWindow {
         let pwad_files = imp.pwad_row.files().join(" ");
 
         // Get hires graphics files if enabled
-        let graphics_files = imp.graphics_map.get().unwrap().get(&iwad.id());
+        let graphics_installed = Path::new(GRAPHICS_PATH).try_exists().unwrap_or_default();
 
-        let load_graphics = imp.graphics_installed.get() && graphics_files.is_some() && engine.hires_capable() && engine.settings_hires();
+        let graphics_map = GRAPHICS_MAP.into_iter()
+                .map(|(id, files)| (id, files.to_string()))
+                .collect::<HashMap<IWadID, String>>();
+
+        let graphics_files = graphics_map.get(&iwad.id());
+
+        let load_graphics = graphics_installed && graphics_files.is_some() && engine.hires_capable() && engine.settings_hires();
 
         let graphics_files = graphics_files
             .filter(|_| load_graphics)
             .map(|files| {
-                files.into_iter()
+                files.split(' ')
                     .map(|file| Path::new(GRAPHICS_PATH).join(file).display().to_string())
-                    .collect::<Vec<_>>()
+                    .collect::<Vec<String>>()
                     .join(" ")
             })
             .unwrap_or_default();
