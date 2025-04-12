@@ -463,18 +463,16 @@ impl LauncherWindow {
         // Get hires graphics files if enabled
         let graphics_installed = Path::new(GRAPHICS_PATH).try_exists().unwrap_or_default();
 
-        let graphics_map = GRAPHICS_MAP.into_iter()
-                .map(|(id, files)| (id, files.to_string()))
-                .collect::<HashMap<IWadID, String>>();
+        let graphics_map = HashMap::from(GRAPHICS_MAP);
 
-        let graphics_files = graphics_map.get(&iwad.id());
+        let graphics_array = graphics_map.get(&iwad.id());
 
-        let load_graphics = graphics_installed && graphics_files.is_some() && engine.hires_capable() && engine.settings_hires();
+        let load_graphics = graphics_installed && graphics_array.is_some() && engine.hires_capable() && engine.settings_hires();
 
-        let graphics_files = graphics_files
+        let graphics_files = graphics_array
             .filter(|_| load_graphics)
             .map(|files| {
-                files.split(' ')
+                files.iter()
                     .map(|file| Path::new(GRAPHICS_PATH).join(file).display().to_string())
                     .collect::<Vec<String>>()
                     .join(" ")
