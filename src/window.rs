@@ -310,11 +310,11 @@ impl LauncherWindow {
 
         // Get selected engine
         let selected_engine = imp.engine_row.selected_engine()
-            .map_or("".to_string(), |engine| engine.name());
+            .map_or(String::new(), |engine| engine.name());
 
         // Get selected IWAD
         let selected_iwad = imp.iwad_row.selected_iwad()
-            .map_or("".to_string(), |iwad| iwad.filename());
+            .map_or(String::new(), |iwad| iwad.filename());
 
         // Save main window settings
         Self::set_gsetting(gsettings, "selected-engine", &selected_engine);
@@ -420,12 +420,12 @@ impl LauncherWindow {
 
         // Return with error if no engine selected
         let Some(engine) = imp.engine_row.selected_engine() else {
-            return LaunchResult::Error("Doom Engine not specified.".to_string())
+            return LaunchResult::Error(String::from("Doom Engine not specified."))
         };
 
         // Return with error if no game (IWAD file) selected
         let Some(iwad) = imp.iwad_row.selected_iwad() else {
-            return LaunchResult::Error("Game not specified.".to_string())
+            return LaunchResult::Error(String::from("Game not specified."))
         };
 
         // Get executable file
