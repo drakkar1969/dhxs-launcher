@@ -15,15 +15,13 @@ use crate::iwad_combo_row::IWadComboRow;
 use crate::pwad_select_row::PWadSelectRow;
 use crate::preferences_dialog::PreferencesDialog;
 use crate::utils::env_expand;
-use crate::iwad_data::{IWadID, IWadData, IWAD_HASHMAP};
+use crate::iwad_data::IWadID;
 use crate::graphics_data::GRAPHICS_MAP;
 
 //------------------------------------------------------------------------------
 // CONST VARIABLES
 //------------------------------------------------------------------------------
 const GRAPHICS_PATH: &str = "/usr/share/d-launcher/graphics/";
-
-const IWAD_PATHS: [&str; 1] = ["/usr/share/d-launcher/iwads"];
 
 //------------------------------------------------------------------------------
 // ENUM: LaunchResult
@@ -66,7 +64,6 @@ mod imp {
 
         pub gsettings: OnceCell<gio::Settings>,
 
-        pub iwad_hashmap: OnceCell<HashMap<u32, IWadData>>,
         pub graphics_map: OnceCell<HashMap<IWadID, Vec<String>>>,
 
         pub graphics_installed: Cell<bool>,
@@ -160,9 +157,6 @@ impl LauncherWindow {
     fn setup_data(&self) {
         let imp = self.imp();
 
-        // Init IWAD data
-        imp.iwad_hashmap.set(HashMap::from(IWAD_HASHMAP)).unwrap();
-
         // Init graphics data
         imp.graphics_map.set(
             GRAPHICS_MAP.into_iter()
@@ -255,9 +249,7 @@ impl LauncherWindow {
             #[weak(rename_to = window)] self,
             #[weak] imp,
             move |prefs_dialog| {
-                let hash_map = imp.iwad_hashmap.get().unwrap();
-
-                imp.iwad_row.init(hash_map, &IWAD_PATHS, &env_expand(&prefs_dialog.iwad_folder()));
+                imp.iwad_row.init(&env_expand(&prefs_dialog.iwad_folder()));
 
                 window.set_launch_button_state();
             }

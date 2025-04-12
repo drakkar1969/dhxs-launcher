@@ -1,3 +1,4 @@
+use std::cell::OnceCell;
 use std::collections::HashMap;
 
 use gtk::{gio, glib};
@@ -7,8 +8,8 @@ use adw::prelude::*;
 use glob::{glob_with, MatchOptions};
 
 use crate::iwad_object::IWadObject;
+use crate::iwad_data::{IWAD_PATHS, IWAD_HASHMAP, IWadData};
 use crate::utils::crc32;
-use crate::iwad_data::IWadData;
 
 //------------------------------------------------------------------------------
 // MODULE: IWadComboRow
@@ -24,6 +25,8 @@ mod imp {
     pub struct IWadComboRow {
         #[template_child]
         pub(super) model: TemplateChild<gio::ListStore>,
+
+        pub iwad_hashmap: OnceCell<HashMap<u32, IWadData>>,
     }
 
     //-----------------------------------
@@ -52,6 +55,10 @@ mod imp {
         //-----------------------------------
         fn constructed(&self) {
             self.parent_constructed();
+
+            let obj = self.obj();
+
+            obj.setup_iwads();
         }
     }
 
@@ -80,9 +87,17 @@ impl IWadComboRow {
     }
 
     //-----------------------------------
+    // Setup IWADs function
+    //-----------------------------------
+    fn setup_iwads(&self) {
+        // Initialize IWADs
+        self.imp().iwad_hashmap.set(HashMap::from(IWAD_HASHMAP)).unwrap();
+    }
+
+    //-----------------------------------
     // Public init for folder function
     //-----------------------------------
-    pub fn init(&self, hash_map: &HashMap<u32, IWadData>, folders: &[&str], user_folder: &str) {
+    pub fn init(&self, user_folder: &str) {
         let imp = self.imp();
 
         let options = MatchOptions {
@@ -92,7 +107,9 @@ impl IWadComboRow {
         };
 
         // Get list of IWADs in folders
-        let mut iwad_objects = folders.iter().chain([&user_folder])
+        let hash_map = imp.iwad_hashmap.get().unwrap();
+
+        let mut iwad_objects = IWAD_PATHS.iter().chain([&user_folder])
             .flat_map(|folder| glob_with(&format!("{folder}/*.wad"), options))
             .flat_map(|paths| {
                 paths.into_iter()
