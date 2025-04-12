@@ -95,7 +95,7 @@ impl IWadComboRow {
     }
 
     //-----------------------------------
-    // Public init for folder function
+    // Public init function
     //-----------------------------------
     pub fn init(&self, user_folder: &str) {
         let imp = self.imp();
