@@ -331,14 +331,14 @@ impl LauncherWindow {
     //-----------------------------------
     // Gsetting default value helper function
     //-----------------------------------
-    pub fn gsetting_default_value(gsettings: &gio::Settings, key: &str) -> String {
+    fn gsetting_default_value(gsettings: &gio::Settings, key: &str) -> String {
         gsettings.default_value(key).unwrap().to_string().replace('\'', "")
     }
 
     //---------------------------------------
     // Set gsetting helper function
     //---------------------------------------
-    pub fn set_gsetting<T: FromVariant + ToVariant + PartialEq>(gsettings: &gio::Settings, key: &str, value: &T) {
+    fn set_gsetting<T: FromVariant + ToVariant + PartialEq>(gsettings: &gio::Settings, key: &str, value: &T) {
         let default: T = gsettings.default_value(key)
             .expect("Could not get gsettings default value")
             .get::<T>()
