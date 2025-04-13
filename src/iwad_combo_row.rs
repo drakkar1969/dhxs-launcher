@@ -1,4 +1,3 @@
-use std::cell::OnceCell;
 use std::collections::HashMap;
 
 use gtk::{gio, glib};
@@ -8,7 +7,7 @@ use adw::prelude::*;
 use glob::{glob_with, MatchOptions};
 
 use crate::iwad_object::IWadObject;
-use crate::iwad_data::{IWAD_PATHS, IWAD_HASHMAP, IWadData};
+use crate::iwad_data::{IWAD_PATHS, IWAD_HASHMAP};
 use crate::utils::crc32;
 
 //------------------------------------------------------------------------------
@@ -27,8 +26,6 @@ mod imp {
         pub(super) model: TemplateChild<gio::ListStore>,
         #[template_child]
         pub(super) sort_model: TemplateChild<gtk::SortListModel>,
-
-        pub iwad_hashmap: OnceCell<HashMap<u32, IWadData>>,
     }
 
     //-----------------------------------
@@ -57,10 +54,6 @@ mod imp {
         //-----------------------------------
         fn constructed(&self) {
             self.parent_constructed();
-
-            let obj = self.obj();
-
-            obj.setup_iwads();
         }
     }
 
@@ -89,14 +82,6 @@ impl IWadComboRow {
     }
 
     //-----------------------------------
-    // Setup IWADs function
-    //-----------------------------------
-    fn setup_iwads(&self) {
-        // Initialize IWADs
-        self.imp().iwad_hashmap.set(HashMap::from(IWAD_HASHMAP)).unwrap();
-    }
-
-    //-----------------------------------
     // Public init for folders function
     //-----------------------------------
     pub fn init_for_folders(&self, user_folder: &str) {
@@ -109,7 +94,7 @@ impl IWadComboRow {
         };
 
         // Get list of IWADs in folders
-        let hash_map = imp.iwad_hashmap.get().unwrap();
+        let hash_map = HashMap::from(IWAD_HASHMAP);
 
         let iwad_objects = IWAD_PATHS.iter().chain([&user_folder])
             .flat_map(|folder| glob_with(&format!("{folder}/*.wad"), options))

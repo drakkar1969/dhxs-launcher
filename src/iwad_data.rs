@@ -41,13 +41,13 @@ impl Default for IWadID {
 // STRUCT: IWadData
 //------------------------------------------------------------------------------
 #[derive(Debug)]
-pub struct IWadData {
+pub struct IWadData<'a> {
     id: IWadID,
-    name: &'static str,
-    version: &'static str,
+    name: &'a str,
+    version: &'a str,
 }
 
-impl IWadData {
+impl IWadData<'_> {
     pub fn id(&self) -> IWadID {
         self.id
     }
