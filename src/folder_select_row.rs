@@ -154,11 +154,10 @@ impl FolderSelectRow {
 
                 // Get root window
                 let root = row.root()
-                    .and_downcast::<gtk::Window>()
-                    .expect("Must be a 'Window'");
+                    .and_downcast::<gtk::Window>();
 
                 // Show dialog
-                dialog.select_folder(Some(&root), None::<&gio::Cancellable>, clone!(
+                dialog.select_folder(root.as_ref(), None::<&gio::Cancellable>, clone!(
                     #[weak] row,
                     move |result| {
                         if let Ok(folder) = result {

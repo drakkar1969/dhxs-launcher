@@ -193,11 +193,10 @@ impl PWadSelectRow {
 
                 // Get root window
                 let root = row.root()
-                    .and_downcast::<gtk::Window>()
-                    .expect("Must be a 'Window'");
+                    .and_downcast::<gtk::Window>();
 
                 // Show dialog
-                dialog.open_multiple(Some(&root), None::<&gio::Cancellable>, clone!(
+                dialog.open_multiple(root.as_ref(), None::<&gio::Cancellable>, clone!(
                     #[weak] row,
                     move |result| {
                         if let Ok(file_list) = result {
