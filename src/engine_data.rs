@@ -34,6 +34,8 @@ pub struct EngineData<'a> {
     hexen_path: Option<&'a str>,
     strife_path: Option<&'a str>,
     hires_capable: bool,
+    fullscreen_cmd: &'a str,
+    window_cmd: &'a str,
 }
 
 impl EngineData<'_> {
@@ -76,6 +78,14 @@ impl EngineData<'_> {
     pub fn hires_capable(&self) -> bool {
         self.hires_capable
     }
+
+    pub fn fullscreen_cmd(&self) -> &str {
+        self.fullscreen_cmd
+    }
+
+    pub fn window_cmd(&self) -> &str {
+        self.window_cmd
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -92,7 +102,9 @@ pub const ENGINE_ARRAY: [EngineData; 7] = [
         heretic_path: Some("/usr/bin/chocolate-heretic"),
         hexen_path: Some("/usr/bin/chocolate-hexen"),
         strife_path: Some("/usr/bin/chocolate-strife"),
-        hires_capable: false
+        hires_capable: false,
+        fullscreen_cmd: "-fullscreen",
+        window_cmd: "-window"
     },
     EngineData {
         id: EngineID::CrispyDoom,
@@ -104,7 +116,9 @@ pub const ENGINE_ARRAY: [EngineData; 7] = [
         heretic_path: Some("/usr/bin/crispy-heretic"),
         hexen_path: Some("/usr/bin/crispy-hexen"),
         strife_path: Some("/usr/bin/crispy-strife"),
-        hires_capable: false
+        hires_capable: false,
+        fullscreen_cmd: "-fullscreen",
+        window_cmd: "-window"
     },
     EngineData {
         id: EngineID::DSDADoom,
@@ -116,7 +130,9 @@ pub const ENGINE_ARRAY: [EngineData; 7] = [
         heretic_path: None,
         hexen_path: None,
         strife_path: None,
-        hires_capable: false
+        hires_capable: false,
+        fullscreen_cmd: "-fullscreen",
+        window_cmd: "-window"
     },
     EngineData {
         id: EngineID::GZDoom,
@@ -128,7 +144,9 @@ pub const ENGINE_ARRAY: [EngineData; 7] = [
         heretic_path: None,
         hexen_path: None,
         strife_path: None,
-        hires_capable: true
+        hires_capable: true,
+        fullscreen_cmd: "+vid_fullscreen 1",
+        window_cmd: "+vid_fullscreen 0"
     },
     EngineData {
         id: EngineID::NuggetDoom,
@@ -140,7 +158,9 @@ pub const ENGINE_ARRAY: [EngineData; 7] = [
         heretic_path: None,
         hexen_path: None,
         strife_path: None,
-        hires_capable: false
+        hires_capable: false,
+        fullscreen_cmd: "-fullscreen",
+        window_cmd: "-window"
     },
     EngineData {
         id: EngineID::VKDoom,
@@ -152,7 +172,9 @@ pub const ENGINE_ARRAY: [EngineData; 7] = [
         heretic_path: None,
         hexen_path: None,
         strife_path: None,
-        hires_capable: true
+        hires_capable: true,
+        fullscreen_cmd: "+vid_fullscreen 1",
+        window_cmd: "+vid_fullscreen 0"
     },
     EngineData {
         id: EngineID::Woof,
@@ -164,6 +186,8 @@ pub const ENGINE_ARRAY: [EngineData; 7] = [
         heretic_path: None,
         hexen_path: None,
         strife_path: None,
-        hires_capable: false
+        hires_capable: false,
+        fullscreen_cmd: "-fullscreen",
+        window_cmd: "-window"
     },
 ];

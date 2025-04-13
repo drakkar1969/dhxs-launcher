@@ -40,6 +40,10 @@ mod imp {
         strife_path: RefCell<Option<String>>,
         #[property(get, set)]
         hires_capable: Cell<bool>,
+        #[property(get, set)]
+        fullscreen_cmd: RefCell<String>,
+        #[property(get, set)]
+        window_cmd: RefCell<String>,
 
         #[property(get)]
         settings: RefCell<EngineSettings>,
@@ -82,6 +86,8 @@ impl EngineObject {
             .property("hexen-path", data.hexen_path())
             .property("strife-path", data.strife_path())
             .property("hires-capable", data.hires_capable())
+            .property("fullscreen-cmd", data.fullscreen_cmd())
+            .property("window-cmd", data.window_cmd())
             .build()
     }
 }

@@ -18,6 +18,8 @@ mod imp {
     pub struct EngineSettings {
         #[property(get, set)]
         use_hires: Cell<bool>,
+        #[property(get, set)]
+        fullscreen: Cell<bool>,
     }
 
     //-----------------------------------
@@ -38,6 +40,16 @@ mod imp {
 //------------------------------------------------------------------------------
 glib::wrapper! {
     pub struct EngineSettings(ObjectSubclass<imp::EngineSettings>);
+}
+
+impl EngineSettings {
+    //-----------------------------------
+    // Public reset function
+    //-----------------------------------
+    pub fn reset(&self) {
+        self.set_use_hires(false);
+        self.set_fullscreen(false);
+    }
 }
 
 impl Default for EngineSettings {

@@ -111,21 +111,6 @@ impl EngineComboRow {
     fn setup_signals(&self) {
         let imp = self.imp();
 
-        // Selected item property signal
-        self.connect_selected_item_notify(clone!(
-            #[weak(rename_to = row)] self,
-            #[weak] imp,
-            move |_| {
-                if let Some(engine) = row.selected_engine() {
-                    let hires_capable = engine.hires_capable();
-
-                    imp.settings_button.set_sensitive(hires_capable);
-                } else {
-                    imp.settings_button.set_sensitive(false);
-                }
-            }
-        ));
-
         // Settings button clicked signal
         imp.settings_button.connect_clicked(clone!(
             #[weak(rename_to = row)] self,
@@ -178,7 +163,7 @@ impl EngineComboRow {
         let imp = self.imp();
 
         for engine in imp.model.iter::<EngineObject>().flatten() {
-            engine.settings().set_use_hires(false)
+            engine.settings().reset();
         }
     }
 

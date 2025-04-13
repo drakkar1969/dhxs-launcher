@@ -60,6 +60,8 @@ mod imp {
         #[template_child]
         pub(super) settings_group: TemplateChild<adw::PreferencesGroup>,
         #[template_child]
+        pub(super) settings_fullscreen_row: TemplateChild<adw::SwitchRow>,
+        #[template_child]
         pub(super) settings_hires_row: TemplateChild<adw::SwitchRow>,
 
         #[template_child]
@@ -256,13 +258,17 @@ impl LauncherWindow {
                 let imp = window.imp();
 
                 if let Some(engine) = engine_row.selected_engine() {
+                    let settings = engine.settings();
+
                     let hires_capable = engine.hires_capable();
-                    let hires_active = engine.settings().use_hires();
+                    let hires_active = settings.use_hires();
 
                     imp.settings_group.set_title(&format!("{} Settings", engine.name()));
 
                     imp.settings_hires_row.set_visible(hires_capable);
                     imp.settings_hires_row.set_active(hires_capable && hires_active);
+
+                    imp.settings_fullscreen_row.set_active(settings.fullscreen());
 
                     imp.split_view.set_show_sidebar(true);
                 }
@@ -286,6 +292,16 @@ impl LauncherWindow {
             move |row| {
                 if let Some(engine) = imp.engine_row.selected_engine() {
                     engine.settings().set_use_hires(row.is_active());
+                }
+            }
+        ));
+
+        // Settings fullscreen row active property signal
+        imp.settings_fullscreen_row.connect_active_notify(clone!(
+            #[weak] imp,
+            move |row| {
+                if let Some(engine) = imp.engine_row.selected_engine() {
+                    engine.settings().set_fullscreen(row.is_active());
                 }
             }
         ));
@@ -517,6 +533,13 @@ impl LauncherWindow {
             })
             .unwrap_or_default();
 
+        // Get fullscreen switch
+        let fullscreen_switch = if engine.settings().fullscreen() {
+            engine.fullscreen_cmd()
+        } else {
+            engine.window_cmd()
+        };
+
         // Get extra switches
         let extra_switches = imp.switches_row.text();
 
@@ -534,6 +557,10 @@ impl LauncherWindow {
         if !extra_switches.is_empty() {
             cmd_line = format!("{cmd_line} {extra_switches}");
         }
+
+        cmd_line = format!("{cmd_line} {fullscreen_switch}");
+
+        println!("{}", cmd_line);
 
         // Launch Doom
         if let Some(params) = shlex::split(&cmd_line).filter(|params| !params.is_empty()) {
