@@ -117,7 +117,7 @@
             <child type="top">
               <object class="AdwHeaderBar">
                 <property name="title-widget">
-                  <object class="AdwWindowTitle">
+                  <object class="AdwWindowTitle" id="settings_title">
                     <property name="title">Engine Settings</property>
                   </object>
                 </property>
@@ -133,8 +133,7 @@
                 <property name="margin-bottom">28</property>
                 <property name="spacing">28</property>
                 <child>
-                  <object class="AdwPreferencesGroup" id="settings_group">
-                    <property name="title">Settings</property>
+                  <object class="AdwPreferencesGroup">
                     <child>
                       <object class="AdwSwitchRow" id="settings_hires_row">
                         <property name="title">Use _Hi-Res Graphics</property>

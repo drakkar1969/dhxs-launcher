@@ -59,7 +59,7 @@ mod imp {
         pub(super) launch_button: TemplateChild<gtk::Button>,
 
         #[template_child]
-        pub(super) settings_group: TemplateChild<adw::PreferencesGroup>,
+        pub(super) settings_title: TemplateChild<adw::WindowTitle>,
         #[template_child]
         pub(super) settings_hires_row: TemplateChild<adw::SwitchRow>,
 
@@ -262,7 +262,7 @@ impl LauncherWindow {
                     let hires_capable = engine.source() == EngineSource::ZDoom;
                     let hires_active = settings.use_hires();
 
-                    imp.settings_group.set_title(&format!("{} Settings", engine.name()));
+                    imp.settings_title.set_title(&format!("{} Settings", engine.name()));
 
                     imp.settings_hires_row.set_active(hires_capable && hires_active);
 
