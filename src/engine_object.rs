@@ -29,8 +29,6 @@ mod imp {
         #[property(get, set)]
         games: Cell<IWadID>,
         #[property(get, set)]
-        compatibility: Cell<u32>,
-        #[property(get, set)]
         path: RefCell<String>,
         #[property(get, set, nullable)]
         heretic_path: RefCell<Option<String>>,
@@ -80,7 +78,6 @@ impl EngineObject {
             .property("name", data.name())
             .property("description", data.description())
             .property("games", data.games())
-            .property("compatibility", data.compatibility())
             .property("path", data.path())
             .property("heretic-path", data.heretic_path())
             .property("hexen-path", data.hexen_path())
