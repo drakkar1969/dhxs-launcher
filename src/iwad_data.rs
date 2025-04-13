@@ -42,23 +42,9 @@ impl Default for IWadID {
 //------------------------------------------------------------------------------
 #[derive(Debug)]
 pub struct IWadData<'a> {
-    id: IWadID,
-    name: &'a str,
-    version: &'a str,
-}
-
-impl IWadData<'_> {
-    pub fn id(&self) -> IWadID {
-        self.id
-    }
-
-    pub fn name(&self) -> &str {
-        self.name
-    }
-
-    pub fn version(&self) -> &str {
-        self.version
-    }
+    pub id: IWadID,
+    pub name: &'a str,
+    pub version: &'a str,
 }
 
 //------------------------------------------------------------------------------

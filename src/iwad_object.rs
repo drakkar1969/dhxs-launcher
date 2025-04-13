@@ -70,9 +70,9 @@ impl IWadObject {
     pub fn new(data: &IWadData, filename: &str) -> Self {
         // Build IWadObject
         glib::Object::builder()
-            .property("id", data.id())
-            .property("name", data.name())
-            .property("version", data.version())
+            .property("id", data.id)
+            .property("name", data.name)
+            .property("version", data.version)
             .property("filename", filename)
             .build()
     }

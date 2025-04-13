@@ -38,53 +38,15 @@ pub enum EngineSource {
 //------------------------------------------------------------------------------
 #[derive(Debug)]
 pub struct EngineData<'a> {
-    id: EngineID,
-    name: &'a str,
-    description: &'a str,
-    games: IWadID,
-    path: &'a str,
-    heretic_path: Option<&'a str>,
-    hexen_path: Option<&'a str>,
-    strife_path: Option<&'a str>,
-    source: EngineSource,
-}
-
-impl EngineData<'_> {
-    pub fn id(&self) -> EngineID {
-        self.id
-    }
-
-    pub fn name(&self) -> &str {
-        self.name
-    }
-
-    pub fn description(&self) -> &str {
-        self.description
-    }
-
-    pub fn games(&self) -> IWadID {
-        self.games
-    }
-
-    pub fn path(&self) -> &str {
-        self.path
-    }
-
-    pub fn heretic_path(&self) -> Option<&str> {
-        self.heretic_path
-    }
-
-    pub fn hexen_path(&self) -> Option<&str> {
-        self.hexen_path
-    }
-
-    pub fn strife_path(&self) -> Option<&str> {
-        self.strife_path
-    }
-
-    pub fn source(&self) -> EngineSource {
-        self.source
-    }
+    pub id: EngineID,
+    pub name: &'a str,
+    pub description: &'a str,
+    pub games: IWadID,
+    pub path: &'a str,
+    pub heretic_path: Option<&'a str>,
+    pub hexen_path: Option<&'a str>,
+    pub strife_path: Option<&'a str>,
+    pub source: EngineSource,
 }
 
 //------------------------------------------------------------------------------

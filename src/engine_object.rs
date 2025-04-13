@@ -70,15 +70,15 @@ impl EngineObject {
     pub fn new(data: &EngineData) -> Self {
         // Build IWadObject
         glib::Object::builder()
-            .property("id", data.id())
-            .property("name", data.name())
-            .property("description", data.description())
-            .property("games", data.games())
-            .property("path", data.path())
-            .property("heretic-path", data.heretic_path())
-            .property("hexen-path", data.hexen_path())
-            .property("strife-path", data.strife_path())
-            .property("source", data.source())
+            .property("id", data.id)
+            .property("name", data.name)
+            .property("description", data.description)
+            .property("games", data.games)
+            .property("path", data.path)
+            .property("heretic-path", data.heretic_path)
+            .property("hexen-path", data.hexen_path)
+            .property("strife-path", data.strife_path)
+            .property("source", data.source)
             .build()
     }
 }
