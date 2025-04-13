@@ -41,7 +41,7 @@ mod imp {
         #[property(get, set)]
         hires_capable: Cell<bool>,
 
-        #[property(get, set)]
+        #[property(get)]
         settings: RefCell<EngineSettings>,
     }
 
