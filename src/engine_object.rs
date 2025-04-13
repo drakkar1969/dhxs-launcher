@@ -6,6 +6,7 @@ use gtk::prelude::ObjectExt;
 
 use crate::iwad_data::IWadID;
 use crate::engine_data::{EngineData, EngineID};
+use crate::engine_settings::EngineSettings;
 
 //------------------------------------------------------------------------------
 // MODULE: EngineObject
@@ -41,7 +42,7 @@ mod imp {
         hires_capable: Cell<bool>,
 
         #[property(get, set)]
-        settings_hires: Cell<bool>,
+        settings: RefCell<EngineSettings>,
     }
 
     //-----------------------------------

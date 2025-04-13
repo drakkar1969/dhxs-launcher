@@ -467,7 +467,7 @@ impl LauncherWindow {
 
         let graphics_array = graphics_map.get(&iwad.id());
 
-        let load_graphics = graphics_installed && graphics_array.is_some() && engine.hires_capable() && engine.settings_hires();
+        let load_graphics = graphics_installed && graphics_array.is_some() && engine.hires_capable() && engine.settings().use_hires();
 
         let graphics_files = graphics_array
             .filter(|_| load_graphics)

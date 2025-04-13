@@ -2,6 +2,7 @@ mod app;
 mod window;
 mod engine_combo_row;
 mod engine_object;
+mod engine_settings;
 mod iwad_combo_row;
 mod iwad_object;
 mod pwad_select_row;

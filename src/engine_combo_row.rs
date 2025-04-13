@@ -105,7 +105,7 @@ impl EngineComboRow {
             move |_| {
                 if let Some(engine) = row.selected_engine() {
                     let hires_capable = engine.hires_capable();
-                    let hires_active = engine.settings_hires();
+                    let hires_active = engine.settings().use_hires();
 
                     imp.settings_hires_switch.set_visible(hires_capable);
                     imp.settings_hires_switch.set_active(hires_capable && hires_active);
@@ -121,7 +121,7 @@ impl EngineComboRow {
             #[weak(rename_to = row)] self,
             move |switch| {
                 if let Some(engine) = row.selected_engine() {
-                    engine.set_settings_hires(switch.is_active());
+                    engine.settings().set_use_hires(switch.is_active());
                 }
             }
         ));
@@ -170,7 +170,7 @@ impl EngineComboRow {
         let imp = self.imp();
 
         for engine in imp.model.iter::<EngineObject>().flatten() {
-            engine.set_settings_hires(false)
+            engine.settings().set_use_hires(false)
         }
     }
 
