@@ -169,9 +169,9 @@ impl EngineComboRow {
     pub fn reset_engine_settings(&self) {
         let imp = self.imp();
 
-        imp.model.iter::<EngineObject>()
-            .flatten()
-            .for_each(|engine| engine.set_settings_hires(false));
+        for engine in imp.model.iter::<EngineObject>().flatten() {
+            engine.set_settings_hires(false)
+        }
     }
 
     //-----------------------------------
