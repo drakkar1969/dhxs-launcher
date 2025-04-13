@@ -260,7 +260,7 @@ impl LauncherWindow {
                     let settings = engine.settings();
 
                     let hires_capable = engine.source() == EngineSource::ZDoom;
-                    let hires_active = settings.use_hires();
+                    let hires_active = settings.hires();
 
                     imp.settings_title.set_title(&format!("{} Settings", engine.name()));
 
@@ -287,7 +287,7 @@ impl LauncherWindow {
             #[weak] imp,
             move |row| {
                 if let Some(engine) = imp.engine_row.selected_engine() {
-                    engine.settings().set_use_hires(row.is_active());
+                    engine.settings().set_hires(row.is_active());
                 }
             }
         ));
@@ -507,7 +507,7 @@ impl LauncherWindow {
 
         let graphics_array = graphics_map.get(&iwad.id());
 
-        let load_graphics = graphics_installed && graphics_array.is_some() && (engine.source() == EngineSource::ZDoom) && engine.settings().use_hires();
+        let load_graphics = graphics_installed && graphics_array.is_some() && (engine.source() == EngineSource::ZDoom) && engine.settings().hires();
 
         let graphics_files = graphics_array
             .filter(|_| load_graphics)

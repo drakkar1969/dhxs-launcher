@@ -17,7 +17,7 @@ mod imp {
     #[properties(wrapper_type = super::EngineSettings)]
     pub struct EngineSettings {
         #[property(get, set)]
-        use_hires: Cell<bool>,
+        hires: Cell<bool>,
     }
 
     //-----------------------------------
@@ -45,7 +45,7 @@ impl EngineSettings {
     // Public reset function
     //-----------------------------------
     pub fn reset(&self) {
-        self.set_use_hires(false);
+        self.set_hires(false);
     }
 }
 
