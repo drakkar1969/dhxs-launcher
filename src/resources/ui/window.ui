@@ -10,8 +10,8 @@
         <property name="collapsed">true</property>
         <property name="pin-sidebar">false</property>
         <property name="sidebar-position">end</property>
-        <property name="min-sidebar-width">440</property>
-        <property name="max-sidebar-width">440</property>
+        <property name="min-sidebar-width">360</property>
+        <property name="max-sidebar-width">360</property>
         <property name="content">
           <object class="AdwToolbarView">
             <child type="top">
@@ -27,7 +27,6 @@
             </child>
             <property name="content">
               <object class="GtkBox">
-                <property name="width-request">480</property>
                 <property name="orientation">vertical</property>
                 <property name="margin-start">24</property>
                 <property name="margin-end">24</property>
@@ -125,7 +124,6 @@
             </child>
             <property name="content">
               <object class="GtkBox">
-                <property name="width-request">480</property>
                 <property name="orientation">vertical</property>
                 <property name="margin-start">24</property>
                 <property name="margin-end">24</property>
