@@ -5,7 +5,7 @@ use gtk::subclass::prelude::*;
 use gtk::prelude::ObjectExt;
 
 use crate::iwad_data::IWadID;
-use crate::engine_data::{EngineData, EngineID, EngineSource};
+use crate::engine_data::{EngineData, EngineSource};
 use crate::engine_settings::EngineSettings;
 
 //------------------------------------------------------------------------------
@@ -20,8 +20,6 @@ mod imp {
     #[derive(Default, glib::Properties)]
     #[properties(wrapper_type = super::EngineObject)]
     pub struct EngineObject {
-        #[property(get, set, builder(EngineID::default()))]
-        id: Cell<EngineID>,
         #[property(get, set)]
         name: RefCell<String>,
         #[property(get, set)]
@@ -70,7 +68,6 @@ impl EngineObject {
     pub fn new(data: &EngineData) -> Self {
         // Build IWadObject
         glib::Object::builder()
-            .property("id", data.id)
             .property("name", data.name)
             .property("description", data.description)
             .property("games", data.games)
