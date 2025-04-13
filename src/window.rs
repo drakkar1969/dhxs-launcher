@@ -257,7 +257,7 @@ impl LauncherWindow {
     // Gsetting default value helper function
     //-----------------------------------
     fn gsetting_default_value(gsettings: &gio::Settings, key: &str) -> String {
-        gsettings.default_value(key).unwrap().to_string().replace('\'', "")
+        gsettings.default_value(key).and_then(|value| value.get::<String>()).unwrap()
     }
 
     //---------------------------------------
