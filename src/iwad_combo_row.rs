@@ -25,6 +25,8 @@ mod imp {
     pub struct IWadComboRow {
         #[template_child]
         pub(super) model: TemplateChild<gio::ListStore>,
+        #[template_child]
+        pub(super) sort_model: TemplateChild<gtk::SortListModel>,
 
         pub iwad_hashmap: OnceCell<HashMap<u32, IWadData>>,
     }
@@ -109,7 +111,7 @@ impl IWadComboRow {
         // Get list of IWADs in folders
         let hash_map = imp.iwad_hashmap.get().unwrap();
 
-        let mut iwad_objects = IWAD_PATHS.iter().chain([&user_folder])
+        let iwad_objects = IWAD_PATHS.iter().chain([&user_folder])
             .flat_map(|folder| glob_with(&format!("{folder}/*.wad"), options))
             .flat_map(|paths| {
                 paths.into_iter()
@@ -123,9 +125,6 @@ impl IWadComboRow {
                     })
             })
             .collect::<Vec<_>>();
-
-
-        iwad_objects.sort_unstable_by_key(|iwad| iwad.name().to_ascii_lowercase());
 
         // Add IWADs to combo row
         imp.model.splice(0, imp.model.n_items(), &iwad_objects);
@@ -143,14 +142,16 @@ impl IWadComboRow {
     // Public set selected iwad file function
     //-----------------------------------
     pub fn set_selected_iwad_file(&self, filename: &str) {
-        let index = self.imp().model.find_with_equal_func(|iwad| {
-            let iwad = iwad.downcast_ref::<IWadObject>()
-                .expect("Must be a 'IWadObject'");
+        let index = self.imp().sort_model.iter::<glib::Object>()
+            .flatten()
+            .position(|obj| {
+                let iwad = obj.downcast_ref::<IWadObject>()
+                    .expect("Must be a 'IWadObject'");
 
-            iwad.filename() == filename
-        });
+                iwad.filename() == filename
+            });
 
-        self.set_selected(index.unwrap_or_default());
+        self.set_selected(index.unwrap_or_default() as u32);
     }
 }
 

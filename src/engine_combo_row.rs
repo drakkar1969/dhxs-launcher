@@ -186,7 +186,7 @@ impl EngineComboRow {
             .flatten()
             .position(|obj| {
                 let engine = obj.downcast_ref::<EngineObject>()
-                .expect("Must be a 'IWadObject'");
+                    .expect("Must be a 'IWadObject'");
 
                 engine.name() == name
             });

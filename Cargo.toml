@@ -6,7 +6,6 @@ edition = "2024"
 [dependencies]
 adw = { version = "0.7", package = "libadwaita", features = ["v1_7"] }
 crc32fast = "1.4"
-gio = { version = "0.20", features = ["v2_84"] }
 glob = "0.3"
 gtk = { version = "0.9", package = "gtk4", features = ["v4_18"] }
 shellexpand = "3.1.0"
