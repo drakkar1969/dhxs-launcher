@@ -219,7 +219,7 @@ impl LauncherWindow {
             #[weak(rename_to = window)] self,
             #[weak] imp,
             move |prefs_dialog| {
-                imp.iwad_row.init(&env_expand(&prefs_dialog.iwad_folder()));
+                imp.iwad_row.init_for_folders(&env_expand(&prefs_dialog.iwad_folder()));
 
                 window.set_launch_button_state();
             }

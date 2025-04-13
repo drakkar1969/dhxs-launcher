@@ -95,9 +95,9 @@ impl IWadComboRow {
     }
 
     //-----------------------------------
-    // Public init function
+    // Public init for folders function
     //-----------------------------------
-    pub fn init(&self, user_folder: &str) {
+    pub fn init_for_folders(&self, user_folder: &str) {
         let imp = self.imp();
 
         let options = MatchOptions {
