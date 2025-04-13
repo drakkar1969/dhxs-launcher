@@ -20,6 +20,20 @@ pub enum EngineID {
 }
 
 //------------------------------------------------------------------------------
+// ENUM: EngineSource
+//------------------------------------------------------------------------------
+#[derive(Default, Debug, Eq, PartialEq, Clone, Copy, glib::Enum)]
+#[repr(u32)]
+#[enum_type(name = "EngineSource")]
+pub enum EngineSource {
+    #[default]
+    Chocolate,
+    PrBoom,
+    WinMBF,
+    ZDoom,
+}
+
+//------------------------------------------------------------------------------
 // STRUCT: EngineData
 //------------------------------------------------------------------------------
 #[derive(Debug)]
@@ -32,9 +46,7 @@ pub struct EngineData<'a> {
     heretic_path: Option<&'a str>,
     hexen_path: Option<&'a str>,
     strife_path: Option<&'a str>,
-    hires_capable: bool,
-    fullscreen_cmd: &'a str,
-    window_cmd: &'a str,
+    source: EngineSource,
 }
 
 impl EngineData<'_> {
@@ -70,16 +82,8 @@ impl EngineData<'_> {
         self.strife_path
     }
 
-    pub fn hires_capable(&self) -> bool {
-        self.hires_capable
-    }
-
-    pub fn fullscreen_cmd(&self) -> &str {
-        self.fullscreen_cmd
-    }
-
-    pub fn window_cmd(&self) -> &str {
-        self.window_cmd
+    pub fn source(&self) -> EngineSource {
+        self.source
     }
 }
 
@@ -96,9 +100,7 @@ pub const ENGINE_ARRAY: [EngineData; 7] = [
         heretic_path: Some("/usr/bin/chocolate-heretic"),
         hexen_path: Some("/usr/bin/chocolate-hexen"),
         strife_path: Some("/usr/bin/chocolate-strife"),
-        hires_capable: false,
-        fullscreen_cmd: "-fullscreen",
-        window_cmd: "-window"
+        source: EngineSource::Chocolate,
     },
     EngineData {
         id: EngineID::CrispyDoom,
@@ -109,9 +111,7 @@ pub const ENGINE_ARRAY: [EngineData; 7] = [
         heretic_path: Some("/usr/bin/crispy-heretic"),
         hexen_path: Some("/usr/bin/crispy-hexen"),
         strife_path: Some("/usr/bin/crispy-strife"),
-        hires_capable: false,
-        fullscreen_cmd: "-fullscreen",
-        window_cmd: "-window"
+        source: EngineSource::Chocolate,
     },
     EngineData {
         id: EngineID::DSDADoom,
@@ -122,9 +122,7 @@ pub const ENGINE_ARRAY: [EngineData; 7] = [
         heretic_path: None,
         hexen_path: None,
         strife_path: None,
-        hires_capable: false,
-        fullscreen_cmd: "-fullscreen",
-        window_cmd: "-window"
+        source: EngineSource::PrBoom,
     },
     EngineData {
         id: EngineID::GZDoom,
@@ -135,9 +133,7 @@ pub const ENGINE_ARRAY: [EngineData; 7] = [
         heretic_path: None,
         hexen_path: None,
         strife_path: None,
-        hires_capable: true,
-        fullscreen_cmd: "+vid_fullscreen 1",
-        window_cmd: "+vid_fullscreen 0"
+        source: EngineSource::ZDoom,
     },
     EngineData {
         id: EngineID::NuggetDoom,
@@ -148,9 +144,7 @@ pub const ENGINE_ARRAY: [EngineData; 7] = [
         heretic_path: None,
         hexen_path: None,
         strife_path: None,
-        hires_capable: false,
-        fullscreen_cmd: "-fullscreen",
-        window_cmd: "-window"
+        source: EngineSource::WinMBF,
     },
     EngineData {
         id: EngineID::VKDoom,
@@ -161,9 +155,7 @@ pub const ENGINE_ARRAY: [EngineData; 7] = [
         heretic_path: None,
         hexen_path: None,
         strife_path: None,
-        hires_capable: true,
-        fullscreen_cmd: "+vid_fullscreen 1",
-        window_cmd: "+vid_fullscreen 0"
+        source: EngineSource::ZDoom,
     },
     EngineData {
         id: EngineID::Woof,
@@ -174,8 +166,6 @@ pub const ENGINE_ARRAY: [EngineData; 7] = [
         heretic_path: None,
         hexen_path: None,
         strife_path: None,
-        hires_capable: false,
-        fullscreen_cmd: "-fullscreen",
-        window_cmd: "-window"
+        source: EngineSource::WinMBF,
     },
 ];

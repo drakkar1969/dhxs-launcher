@@ -10,6 +10,7 @@ use glib::{clone, closure_local};
 
 use crate::APP_ID;
 use crate::LauncherApplication;
+use crate::engine_data::EngineSource;
 use crate::engine_combo_row::EngineComboRow;
 use crate::iwad_combo_row::IWadComboRow;
 use crate::pwad_select_row::PWadSelectRow;
@@ -260,7 +261,7 @@ impl LauncherWindow {
                 if let Some(engine) = engine_row.selected_engine() {
                     let settings = engine.settings();
 
-                    let hires_capable = engine.hires_capable();
+                    let hires_capable = engine.source() == EngineSource::ZDoom;
                     let hires_active = settings.use_hires();
 
                     imp.settings_group.set_title(&format!("{} Settings", engine.name()));
@@ -521,7 +522,7 @@ impl LauncherWindow {
 
         let graphics_array = graphics_map.get(&iwad.id());
 
-        let load_graphics = graphics_installed && graphics_array.is_some() && engine.hires_capable() && engine.settings().use_hires();
+        let load_graphics = graphics_installed && graphics_array.is_some() && (engine.source() == EngineSource::ZDoom) && engine.settings().use_hires();
 
         let graphics_files = graphics_array
             .filter(|_| load_graphics)
@@ -535,9 +536,23 @@ impl LauncherWindow {
 
         // Get fullscreen switch
         let fullscreen_switch = if engine.settings().fullscreen() {
-            engine.fullscreen_cmd()
+            match engine.source() {
+                EngineSource::Chocolate | EngineSource::PrBoom | EngineSource::WinMBF => {
+                    "-fullscreen"
+                },
+                EngineSource::ZDoom => {
+                    "+vid_fullscreen 1"
+                }
+            }
         } else {
-            engine.window_cmd()
+            match engine.source() {
+                EngineSource::Chocolate | EngineSource::PrBoom | EngineSource::WinMBF => {
+                    "-window"
+                },
+                EngineSource::ZDoom => {
+                    "+vid_fullscreen 0"
+                }
+            }
         };
 
         // Get extra switches

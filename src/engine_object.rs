@@ -5,7 +5,7 @@ use gtk::subclass::prelude::*;
 use gtk::prelude::ObjectExt;
 
 use crate::iwad_data::IWadID;
-use crate::engine_data::{EngineData, EngineID};
+use crate::engine_data::{EngineData, EngineID, EngineSource};
 use crate::engine_settings::EngineSettings;
 
 //------------------------------------------------------------------------------
@@ -36,12 +36,8 @@ mod imp {
         hexen_path: RefCell<Option<String>>,
         #[property(get, set, nullable)]
         strife_path: RefCell<Option<String>>,
-        #[property(get, set)]
-        hires_capable: Cell<bool>,
-        #[property(get, set)]
-        fullscreen_cmd: RefCell<String>,
-        #[property(get, set)]
-        window_cmd: RefCell<String>,
+        #[property(get, set, builder(EngineSource::default()))]
+        source: Cell<EngineSource>,
 
         #[property(get)]
         settings: RefCell<EngineSettings>,
@@ -82,9 +78,7 @@ impl EngineObject {
             .property("heretic-path", data.heretic_path())
             .property("hexen-path", data.hexen_path())
             .property("strife-path", data.strife_path())
-            .property("hires-capable", data.hires_capable())
-            .property("fullscreen-cmd", data.fullscreen_cmd())
-            .property("window-cmd", data.window_cmd())
+            .property("source", data.source())
             .build()
     }
 }
