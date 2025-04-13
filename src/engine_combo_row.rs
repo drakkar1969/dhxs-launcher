@@ -7,7 +7,7 @@ use adw::prelude::*;
 use glib::clone;
 use glib::subclass::Signal;
 
-use crate::engine_data::ENGINE_ARRAY;
+use crate::engine_data::{EngineSource, ENGINE_ARRAY};
 use crate::engine_object::EngineObject;
 use crate::iwad_data::IWadID;
 
@@ -110,6 +110,16 @@ impl EngineComboRow {
     //-----------------------------------
     fn setup_signals(&self) {
         let imp = self.imp();
+
+        // Selected item property notify signal
+        self.connect_selected_item_notify(clone!(
+            #[weak] imp,
+            move |row| {
+                if let Some(engine) = row.selected_engine() {
+                    imp.settings_button.set_sensitive(engine.source() == EngineSource::ZDoom)
+                }
+            }
+        ));
 
         // Settings button clicked signal
         imp.settings_button.connect_clicked(clone!(

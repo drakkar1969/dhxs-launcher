@@ -133,19 +133,8 @@
                 <property name="margin-bottom">28</property>
                 <property name="spacing">28</property>
                 <child>
-                  <object class="AdwPreferencesGroup" id="settings_main_group">
+                  <object class="AdwPreferencesGroup" id="settings_group">
                     <property name="title">Settings</property>
-                    <child>
-                      <object class="AdwSwitchRow" id="settings_fullscreen_row">
-                        <property name="title">_Fullscreen</property>
-                        <property name="title-lines">1</property>
-                        <property name="use-underline">true</property>
-                      </object>
-                    </child>
-                  </object>
-                </child>
-                <child>
-                  <object class="AdwPreferencesGroup" id="settings_zdoom_group">
                     <child>
                       <object class="AdwSwitchRow" id="settings_hires_row">
                         <property name="title">Use _Hi-Res Graphics</property>

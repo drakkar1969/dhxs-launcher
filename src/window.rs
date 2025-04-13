@@ -59,11 +59,7 @@ mod imp {
         pub(super) launch_button: TemplateChild<gtk::Button>,
 
         #[template_child]
-        pub(super) settings_main_group: TemplateChild<adw::PreferencesGroup>,
-        #[template_child]
-        pub(super) settings_fullscreen_row: TemplateChild<adw::SwitchRow>,
-        #[template_child]
-        pub(super) settings_zdoom_group: TemplateChild<adw::PreferencesGroup>,
+        pub(super) settings_group: TemplateChild<adw::PreferencesGroup>,
         #[template_child]
         pub(super) settings_hires_row: TemplateChild<adw::SwitchRow>,
 
@@ -266,13 +262,9 @@ impl LauncherWindow {
                     let hires_capable = engine.source() == EngineSource::ZDoom;
                     let hires_active = settings.use_hires();
 
-                    imp.settings_main_group.set_title(&format!("{} Settings", engine.name()));
-
-                    imp.settings_zdoom_group.set_visible(hires_capable);
+                    imp.settings_group.set_title(&format!("{} Settings", engine.name()));
 
                     imp.settings_hires_row.set_active(hires_capable && hires_active);
-
-                    imp.settings_fullscreen_row.set_active(settings.fullscreen());
 
                     imp.split_view.set_show_sidebar(true);
                 }
@@ -296,16 +288,6 @@ impl LauncherWindow {
             move |row| {
                 if let Some(engine) = imp.engine_row.selected_engine() {
                     engine.settings().set_use_hires(row.is_active());
-                }
-            }
-        ));
-
-        // Settings fullscreen row active property signal
-        imp.settings_fullscreen_row.connect_active_notify(clone!(
-            #[weak] imp,
-            move |row| {
-                if let Some(engine) = imp.engine_row.selected_engine() {
-                    engine.settings().set_fullscreen(row.is_active());
                 }
             }
         ));
@@ -537,27 +519,6 @@ impl LauncherWindow {
             })
             .unwrap_or_default();
 
-        // Get fullscreen switch
-        let fullscreen_switch = if engine.settings().fullscreen() {
-            match engine.source() {
-                EngineSource::Chocolate | EngineSource::PrBoom | EngineSource::WinMBF => {
-                    "-fullscreen"
-                },
-                EngineSource::ZDoom => {
-                    "+vid_fullscreen 1"
-                }
-            }
-        } else {
-            match engine.source() {
-                EngineSource::Chocolate | EngineSource::PrBoom | EngineSource::WinMBF => {
-                    "-window"
-                },
-                EngineSource::ZDoom => {
-                    "+vid_fullscreen 0"
-                }
-            }
-        };
-
         // Get extra switches
         let extra_switches = imp.switches_row.text();
 
@@ -575,10 +536,6 @@ impl LauncherWindow {
         if !extra_switches.is_empty() {
             cmd_line = format!("{cmd_line} {extra_switches}");
         }
-
-        cmd_line = format!("{cmd_line} {fullscreen_switch}");
-
-        println!("{}", cmd_line);
 
         // Launch Doom
         if let Some(params) = shlex::split(&cmd_line).filter(|params| !params.is_empty()) {

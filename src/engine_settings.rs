@@ -18,8 +18,6 @@ mod imp {
     pub struct EngineSettings {
         #[property(get, set)]
         use_hires: Cell<bool>,
-        #[property(get, set)]
-        fullscreen: Cell<bool>,
     }
 
     //-----------------------------------
@@ -48,7 +46,6 @@ impl EngineSettings {
     //-----------------------------------
     pub fn reset(&self) {
         self.set_use_hires(false);
-        self.set_fullscreen(false);
     }
 }
 
