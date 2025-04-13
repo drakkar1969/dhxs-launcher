@@ -29,6 +29,8 @@ mod imp {
         #[template_child]
         pub(super) model: TemplateChild<gio::ListStore>,
         #[template_child]
+        pub(super) sort_model: TemplateChild<gtk::SortListModel>,
+        #[template_child]
         pub(super) filter: TemplateChild<gtk::CustomFilter>,
     }
 
@@ -132,12 +134,10 @@ impl EngineComboRow {
         let imp = self.imp();
 
         // Get list of installed engines
-        let mut engine_objects = ENGINE_ARRAY.into_iter()
+        let engine_objects = ENGINE_ARRAY.into_iter()
             .filter(|data| Path::new(&data.path()).try_exists().unwrap_or_default())
             .map(|data| EngineObject::new(&data))
             .collect::<Vec<EngineObject>>();
-
-        engine_objects.sort_unstable_by_key(|engine| engine.name().to_ascii_lowercase());
 
         imp.model.splice(0, imp.model.n_items(), &engine_objects);
     }
@@ -182,14 +182,16 @@ impl EngineComboRow {
     // Public set selected engine name function
     //-----------------------------------
     pub fn set_selected_engine_name(&self, name: &str) {
-        let index = self.imp().model.find_with_equal_func(|engine| {
-            let engine = engine.downcast_ref::<EngineObject>()
+        let index = self.imp().sort_model.iter::<glib::Object>()
+            .flatten()
+            .position(|obj| {
+                let engine = obj.downcast_ref::<EngineObject>()
                 .expect("Must be a 'IWadObject'");
 
-            engine.name() == name
-        });
+                engine.name() == name
+            });
 
-        self.set_selected(index.unwrap_or_default());
+        self.set_selected(index.unwrap_or_default() as u32);
     }
 }
 

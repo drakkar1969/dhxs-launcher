@@ -3,14 +3,25 @@
   <!--// EngineComboRow template //-->
   <template class="EngineComboRow" parent="AdwComboRow">
     <property name="model">
-      <object class="GtkFilterListModel" id="filter_model">
+      <object class="GtkSortListModel" id="sort_model">
         <property name="model">
-          <object class="GListStore" id="model">
-            <property name="item-type">EngineObject</property>
+          <object class="GtkFilterListModel" id="filter_model">
+            <property name="model">
+              <object class="GListStore" id="model">
+                <property name="item-type">EngineObject</property>
+              </object>
+            </property>
+            <property name="filter">
+              <object class="GtkCustomFilter" id="filter"/>
+            </property>
           </object>
         </property>
-        <property name="filter">
-          <object class="GtkCustomFilter" id="filter"/>
+        <property name="sorter">
+          <object class="GtkStringSorter" id="sorter">
+            <property name="expression">
+              <lookup name="name" type="EngineObject"/>
+            </property>
+          </object>
         </property>
       </object>
     </property>
