@@ -156,6 +156,10 @@ impl EngineComboRow {
                     .games()
                     .intersects(id)
             });
+        } else {
+            imp.filter.set_filter_func(move |_| {
+                false
+            });
         }
     }
 
