@@ -1,9 +1,11 @@
+use std::sync::OnceLock;
 use std::path::Path;
 
 use gtk::{gio, glib};
 use adw::subclass::prelude::*;
 use adw::prelude::*;
 use glib::clone;
+use glib::subclass::Signal;
 
 use crate::engine_data::ENGINE_ARRAY;
 use crate::engine_object::EngineObject;
@@ -22,9 +24,7 @@ mod imp {
     #[template(resource = "/com/github/D-Launcher/ui/engine_combo_row.ui")]
     pub struct EngineComboRow {
         #[template_child]
-        pub(super) settings_button: TemplateChild<gtk::MenuButton>,
-        #[template_child]
-        pub(super) settings_hires_switch: TemplateChild<gtk::Switch>,
+        pub(super) settings_button: TemplateChild<gtk::Button>,
 
         #[template_child]
         pub(super) model: TemplateChild<gio::ListStore>,
@@ -55,6 +55,19 @@ mod imp {
     }
 
     impl ObjectImpl for EngineComboRow {
+        //---------------------------------------
+        // Custom signals
+        //---------------------------------------
+        fn signals() -> &'static [Signal] {
+            static SIGNALS: OnceLock<Vec<Signal>> = OnceLock::new();
+            SIGNALS.get_or_init(|| {
+                vec![
+                    Signal::builder("settings-clicked")
+                        .build(),
+                ]
+            })
+        }
+
         //-----------------------------------
         // Constructor
         //-----------------------------------
@@ -105,10 +118,7 @@ impl EngineComboRow {
             move |_| {
                 if let Some(engine) = row.selected_engine() {
                     let hires_capable = engine.hires_capable();
-                    let hires_active = engine.settings().use_hires();
 
-                    imp.settings_hires_switch.set_visible(hires_capable);
-                    imp.settings_hires_switch.set_active(hires_capable && hires_active);
                     imp.settings_button.set_sensitive(hires_capable);
                 } else {
                     imp.settings_button.set_sensitive(false);
@@ -116,13 +126,11 @@ impl EngineComboRow {
             }
         ));
 
-        // Settings hires switch active property signal
-        imp.settings_hires_switch.connect_active_notify(clone!(
+        // Settings button clicked signal
+        imp.settings_button.connect_clicked(clone!(
             #[weak(rename_to = row)] self,
-            move |switch| {
-                if let Some(engine) = row.selected_engine() {
-                    engine.settings().set_use_hires(switch.is_active());
-                }
+            move |_| {
+                row.emit_by_name::<()>("settings-clicked", &[]);
             }
         ));
     }

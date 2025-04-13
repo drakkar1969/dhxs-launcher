@@ -6,7 +6,7 @@ use std::collections::HashMap;
 use gtk::{gio, glib, gdk, pango};
 use adw::subclass::prelude::*;
 use adw::prelude::*;
-use glib::clone;
+use glib::{clone, closure_local};
 
 use crate::APP_ID;
 use crate::LauncherApplication;
@@ -39,6 +39,9 @@ mod imp {
     #[template(resource = "/com/github/D-Launcher/ui/window.ui")]
     pub struct LauncherWindow {
         #[template_child]
+        pub(super) split_view: TemplateChild<adw::OverlaySplitView>,
+
+        #[template_child]
         pub(super) engine_row: TemplateChild<EngineComboRow>,
 
         #[template_child]
@@ -53,6 +56,11 @@ mod imp {
 
         #[template_child]
         pub(super) launch_button: TemplateChild<gtk::Button>,
+
+        #[template_child]
+        pub(super) settings_group: TemplateChild<adw::PreferencesGroup>,
+        #[template_child]
+        pub(super) settings_hires_row: TemplateChild<adw::SwitchRow>,
 
         #[template_child]
         pub(super) prefs_dialog: TemplateChild<PreferencesDialog>,
@@ -241,6 +249,26 @@ impl LauncherWindow {
             }
         ));
 
+        // Engine combo settings clicked signal
+        imp.engine_row.connect_closure("settings-clicked", false, closure_local!(
+            #[watch(rename_to = window)] self,
+            move |engine_row: EngineComboRow| {
+                let imp = window.imp();
+
+                if let Some(engine) = engine_row.selected_engine() {
+                    let hires_capable = engine.hires_capable();
+                    let hires_active = engine.settings().use_hires();
+
+                    imp.settings_group.set_title(&format!("{} Settings", engine.name()));
+
+                    imp.settings_hires_row.set_visible(hires_capable);
+                    imp.settings_hires_row.set_active(hires_capable && hires_active);
+
+                    imp.split_view.set_show_sidebar(true);
+                }
+            }
+        ));
+
         // IWAD combo selected item property notify signal
         imp.iwad_row.connect_selected_item_notify(clone!(
             #[weak(rename_to = window)] self,
@@ -249,6 +277,16 @@ impl LauncherWindow {
                 imp.engine_row.filter_engines(iwad_row.selected_iwad().map(|iwad| iwad.id()));
 
                 window.set_launch_button_state();
+            }
+        ));
+
+        // Settings hires row active property signal
+        imp.settings_hires_row.connect_active_notify(clone!(
+            #[weak] imp,
+            move |row| {
+                if let Some(engine) = imp.engine_row.selected_engine() {
+                    engine.settings().set_use_hires(row.is_active());
+                }
             }
         ));
     }
