@@ -159,8 +159,7 @@ impl PWadSelectRow {
 
         // Select button clicked signal
         self.connect_activated(clone!(
-            #[weak(rename_to = row)] self,
-            move |_| {
+            move |row| {
                 // Create dialog
                 let dialog = gtk::FileDialog::builder()
                     .title("PWAD Files")
