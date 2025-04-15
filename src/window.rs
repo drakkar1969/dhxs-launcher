@@ -1,4 +1,3 @@
-use std::cell::OnceCell;
 use std::path::Path;
 use std::process::Command;
 use std::collections::HashMap;
@@ -12,6 +11,7 @@ use crate::APP_ID;
 use crate::LauncherApplication;
 use crate::engine_data::EngineSource;
 use crate::engine_combo_row::EngineComboRow;
+use crate::engine_object::EngineObject;
 use crate::iwad_combo_row::IWadComboRow;
 use crate::pwad_select_row::PWadSelectRow;
 use crate::preferences_dialog::PreferencesDialog;
@@ -61,12 +61,22 @@ mod imp {
         #[template_child]
         pub(super) settings_title: TemplateChild<adw::WindowTitle>,
         #[template_child]
+        pub(super) settings_zdoom_group: TemplateChild<adw::PreferencesGroup>,
+        #[template_child]
+        pub(super) settings_fullscreen_row: TemplateChild<adw::SwitchRow>,
+        #[template_child]
         pub(super) settings_hires_row: TemplateChild<adw::SwitchRow>,
+        #[template_child]
+        pub(super) settings_lights_row: TemplateChild<adw::SwitchRow>,
+        #[template_child]
+        pub(super) settings_brightmaps_row: TemplateChild<adw::SwitchRow>,
+        #[template_child]
+        pub(super) settings_widescreen_row: TemplateChild<adw::SwitchRow>,
+        #[template_child]
+        pub(super) settings_config_row: TemplateChild<adw::ActionRow>,
 
         #[template_child]
         pub(super) prefs_dialog: TemplateChild<PreferencesDialog>,
-
-        pub gsettings: OnceCell<gio::Settings>,
     }
 
     //-----------------------------------
@@ -259,14 +269,85 @@ impl LauncherWindow {
                 if let Some(engine) = engine_row.selected_engine() {
                     let settings = engine.settings();
 
-                    let hires_capable = engine.source() == EngineSource::ZDoom;
-                    let hires_active = settings.hires();
+                    let is_zdoom = engine.source() == EngineSource::ZDoom;
 
                     imp.settings_title.set_title(&format!("{} Settings", engine.name()));
 
-                    imp.settings_hires_row.set_active(hires_capable && hires_active);
+                    imp.settings_zdoom_group.set_visible(is_zdoom);
+
+                    if is_zdoom {
+                        imp.settings_fullscreen_row.set_active(settings.fullscreen());
+                        imp.settings_hires_row.set_active(settings.hires());
+                        imp.settings_lights_row.set_active(settings.lights());
+                        imp.settings_brightmaps_row.set_active(settings.brightmaps());
+                        imp.settings_widescreen_row.set_active(settings.widescreen());
+                    }
 
                     imp.split_view.set_show_sidebar(true);
+                }
+            }
+        ));
+
+        // Settings fullscreen row active property signal
+        imp.settings_fullscreen_row.connect_active_notify(clone!(
+            #[weak] imp,
+            move |row| {
+                if let Some(engine) = imp.engine_row.selected_engine() {
+                    engine.settings().set_fullscreen(row.is_active());
+                }
+            }
+        ));
+
+        // Settings hires row active property signal
+        imp.settings_hires_row.connect_active_notify(clone!(
+            #[weak] imp,
+            move |row| {
+                if let Some(engine) = imp.engine_row.selected_engine() {
+                    engine.settings().set_hires(row.is_active());
+                }
+            }
+        ));
+
+        // Settings lights row active property signal
+        imp.settings_lights_row.connect_active_notify(clone!(
+            #[weak] imp,
+            move |row| {
+                if let Some(engine) = imp.engine_row.selected_engine() {
+                    engine.settings().set_lights(row.is_active());
+                }
+            }
+        ));
+
+        // Settings brightmaps row active property signal
+        imp.settings_brightmaps_row.connect_active_notify(clone!(
+            #[weak] imp,
+            move |row| {
+                if let Some(engine) = imp.engine_row.selected_engine() {
+                    engine.settings().set_brightmaps(row.is_active());
+                }
+            }
+        ));
+
+        // Settings widescreen row active property signal
+        imp.settings_widescreen_row.connect_active_notify(clone!(
+            #[weak] imp,
+            move |row| {
+                if let Some(engine) = imp.engine_row.selected_engine() {
+                    engine.settings().set_widescreen(row.is_active());
+                }
+            }
+        ));
+
+        // Settings config row actived signal
+        imp.settings_config_row.connect_activated(clone!(
+            #[weak] imp,
+            move |_| {
+                if let Some(engine) = imp.engine_row.selected_engine() {
+                    let uri = format!("file://{}", env_expand(&engine.config_folder()));
+
+                    if let Some(desktop) = gio::AppInfo::default_for_type("inode/directory", true) {
+                        let _res = desktop.launch_uris(&[&uri], None::<&gio::AppLaunchContext>);
+                    }
                 }
             }
         ));
@@ -279,16 +360,6 @@ impl LauncherWindow {
                 imp.engine_row.filter_engines(iwad_row.selected_iwad().map(|iwad| iwad.id()));
 
                 window.set_launch_button_state();
-            }
-        ));
-
-        // Settings hires row active property signal
-        imp.settings_hires_row.connect_active_notify(clone!(
-            #[weak] imp,
-            move |row| {
-                if let Some(engine) = imp.engine_row.selected_engine() {
-                    engine.settings().set_hires(row.is_active());
-                }
             }
         ));
     }
@@ -336,8 +407,20 @@ impl LauncherWindow {
         imp.pwad_row.set_files(gsettings.strv("pwad-files").into_iter().map(String::from).collect::<Vec<String>>());
         imp.switches_row.set_text(&gsettings.string("extra-switches"));
 
-        // Store gsettings
-        imp.gsettings.set(gsettings).unwrap();
+        // Init engine settings
+        for engine in imp.engine_row.engines().iter::<EngineObject>().flatten() {
+            if engine.source() == EngineSource::ZDoom {
+                let gsettings = gio::Settings::new(&format!("{}.{}", APP_ID, engine.name()));
+
+                let engine_settings = engine.settings();
+
+                engine_settings.set_fullscreen(gsettings.boolean("fullscreen"));
+                engine_settings.set_hires(gsettings.boolean("hires"));
+                engine_settings.set_lights(gsettings.boolean("lights"));
+                engine_settings.set_brightmaps(gsettings.boolean("brightmaps"));
+                engine_settings.set_widescreen(gsettings.boolean("widescreen"));
+            }
+        }
     }
 
     //-----------------------------------
@@ -346,7 +429,8 @@ impl LauncherWindow {
     fn save_gsettings(&self) {
         let imp = self.imp();
 
-        let gsettings = imp.gsettings.get().unwrap();
+        // Create gsettings
+        let gsettings = gio::Settings::new(APP_ID);
 
         // Get selected engine
         let selected_engine = imp.engine_row.selected_engine()
@@ -357,14 +441,29 @@ impl LauncherWindow {
             .map_or(String::new(), |iwad| iwad.filename());
 
         // Save main window settings
-        Self::set_gsetting(gsettings, "selected-engine", &selected_engine);
-        Self::set_gsetting(gsettings, "selected-iwad", &selected_iwad);
-        Self::set_gsetting(gsettings, "pwad-files", &imp.pwad_row.files());
-        Self::set_gsetting(gsettings, "extra-switches", &imp.switches_row.text().to_string());
+        Self::set_gsetting(&gsettings, "selected-engine", &selected_engine);
+        Self::set_gsetting(&gsettings, "selected-iwad", &selected_iwad);
+        Self::set_gsetting(&gsettings, "pwad-files", &imp.pwad_row.files());
+        Self::set_gsetting(&gsettings, "extra-switches", &imp.switches_row.text().to_string());
 
         // Save preferences window settings
-        Self::set_gsetting(gsettings, "iwad-folder", &imp.prefs_dialog.iwad_folder());
-        Self::set_gsetting(gsettings, "pwad-folder", &imp.prefs_dialog.pwad_folder());
+        Self::set_gsetting(&gsettings, "iwad-folder", &imp.prefs_dialog.iwad_folder());
+        Self::set_gsetting(&gsettings, "pwad-folder", &imp.prefs_dialog.pwad_folder());
+
+        // Save engine settings
+        for engine in imp.engine_row.engines().iter::<EngineObject>().flatten() {
+            if engine.source() == EngineSource::ZDoom {
+                let gsettings = gio::Settings::new(&format!("{}.{}", APP_ID, engine.name()));
+
+                let engine_settings = engine.settings();
+
+                Self::set_gsetting(&gsettings, "fullscreen", &engine_settings.fullscreen());
+                Self::set_gsetting(&gsettings, "hires", &engine_settings.hires());
+                Self::set_gsetting(&gsettings, "lights", &engine_settings.lights());
+                Self::set_gsetting(&gsettings, "brightmaps", &engine_settings.brightmaps());
+                Self::set_gsetting(&gsettings, "widescreen", &engine_settings.widescreen());
+            }
+        }
     }
 
     //-----------------------------------
@@ -471,16 +570,16 @@ impl LauncherWindow {
         // Get executable file
         let exec_file = env_expand(&match iwad.id() {
             IWadID::DOOM | IWadID::UDOOM | IWadID::DOOM2 | IWadID::PLUTONIA | IWadID::TNT | IWadID::FREEDOOM1 | IWadID::FREEDOOM2 => {
-                engine.path()
+                engine.doom_path()
             },
             IWadID::HERETIC => {
-                engine.heretic_path().unwrap_or(engine.path())
+                engine.heretic_path().unwrap_or(engine.doom_path())
             },
             IWadID::HEXEN => {
-                engine.hexen_path().unwrap_or(engine.path())
+                engine.hexen_path().unwrap_or(engine.doom_path())
             },
             IWadID::STRIFE => {
-                engine.strife_path().unwrap_or(engine.path())
+                engine.strife_path().unwrap_or(engine.doom_path())
             },
             _ => unreachable!()
         });

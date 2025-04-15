@@ -16,8 +16,16 @@ mod imp {
     #[derive(Default, glib::Properties)]
     #[properties(wrapper_type = super::EngineSettings)]
     pub struct EngineSettings {
-        #[property(get, set)]
+        #[property(get, set, default = true, construct)]
+        fullscreen: Cell<bool>,
+        #[property(get, set, default = false, construct)]
         hires: Cell<bool>,
+        #[property(get, set, default = false, construct)]
+        lights: Cell<bool>,
+        #[property(get, set, default = false, construct)]
+        brightmaps: Cell<bool>,
+        #[property(get, set, default = true, construct)]
+        widescreen: Cell<bool>,
     }
 
     //-----------------------------------
@@ -45,7 +53,11 @@ impl EngineSettings {
     // Public reset function
     //-----------------------------------
     pub fn reset(&self) {
+        self.set_fullscreen(true);
         self.set_hires(false);
+        self.set_lights(false);
+        self.set_brightmaps(false);
+        self.set_widescreen(true);
     }
 }
 
