@@ -133,36 +133,8 @@
                 <child>
                   <object class="AdwPreferencesGroup" id="settings_zdoom_group">
                     <child>
-                      <object class="AdwSwitchRow" id="settings_fullscreen_row">
-                        <property name="title">_Fullscreen</property>
-                        <property name="title-lines">1</property>
-                        <property name="use-underline">true</property>
-                      </object>
-                    </child>
-                    <child>
                       <object class="AdwSwitchRow" id="settings_hires_row">
                         <property name="title">_Hi-Res Graphics</property>
-                        <property name="title-lines">1</property>
-                        <property name="use-underline">true</property>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="AdwSwitchRow" id="settings_lights_row">
-                        <property name="title">_Lights</property>
-                        <property name="title-lines">1</property>
-                        <property name="use-underline">true</property>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="AdwSwitchRow" id="settings_brightmaps_row">
-                        <property name="title">_Brightmaps</property>
-                        <property name="title-lines">1</property>
-                        <property name="use-underline">true</property>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="AdwSwitchRow" id="settings_widescreen_row">
-                        <property name="title">_Widescreen</property>
                         <property name="title-lines">1</property>
                         <property name="use-underline">true</property>
                       </object>

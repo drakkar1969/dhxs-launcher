@@ -27,37 +27,13 @@
     </key>
   </schema>
   <schema id="com.github.D-Launcher.GZDoom" path="/com/github/D-Launcher/GZDoom/">
-    <key name="fullscreen" type="b">
-      <default>true</default>
-    </key>
     <key name="hires" type="b">
       <default>false</default>
-    </key>
-    <key name="lights" type="b">
-      <default>false</default>
-    </key>
-    <key name="brightmaps" type="b">
-      <default>false</default>
-    </key>
-    <key name="widescreen" type="b">
-      <default>true</default>
     </key>
   </schema>
   <schema id="com.github.D-Launcher.VKDoom" path="/com/github/D-Launcher/VKDoom/">
-    <key name="fullscreen" type="b">
-      <default>true</default>
-    </key>
     <key name="hires" type="b">
       <default>false</default>
-    </key>
-    <key name="lights" type="b">
-      <default>false</default>
-    </key>
-    <key name="brightmaps" type="b">
-      <default>false</default>
-    </key>
-    <key name="widescreen" type="b">
-      <default>true</default>
     </key>
   </schema>
 </schemalist>

@@ -63,15 +63,7 @@ mod imp {
         #[template_child]
         pub(super) settings_zdoom_group: TemplateChild<adw::PreferencesGroup>,
         #[template_child]
-        pub(super) settings_fullscreen_row: TemplateChild<adw::SwitchRow>,
-        #[template_child]
         pub(super) settings_hires_row: TemplateChild<adw::SwitchRow>,
-        #[template_child]
-        pub(super) settings_lights_row: TemplateChild<adw::SwitchRow>,
-        #[template_child]
-        pub(super) settings_brightmaps_row: TemplateChild<adw::SwitchRow>,
-        #[template_child]
-        pub(super) settings_widescreen_row: TemplateChild<adw::SwitchRow>,
         #[template_child]
         pub(super) settings_config_row: TemplateChild<adw::ActionRow>,
 
@@ -267,33 +259,17 @@ impl LauncherWindow {
                 let imp = window.imp();
 
                 if let Some(engine) = engine_row.selected_engine() {
-                    let settings = engine.settings();
+                    imp.settings_title.set_title(&format!("{} Settings", engine.name()));
 
                     let is_zdoom = engine.source() == EngineSource::ZDoom;
-
-                    imp.settings_title.set_title(&format!("{} Settings", engine.name()));
 
                     imp.settings_zdoom_group.set_visible(is_zdoom);
 
                     if is_zdoom {
-                        imp.settings_fullscreen_row.set_active(settings.fullscreen());
-                        imp.settings_hires_row.set_active(settings.hires());
-                        imp.settings_lights_row.set_active(settings.lights());
-                        imp.settings_brightmaps_row.set_active(settings.brightmaps());
-                        imp.settings_widescreen_row.set_active(settings.widescreen());
+                        imp.settings_hires_row.set_active(engine.settings().hires());
                     }
 
                     imp.split_view.set_show_sidebar(true);
-                }
-            }
-        ));
-
-        // Settings fullscreen row active property signal
-        imp.settings_fullscreen_row.connect_active_notify(clone!(
-            #[weak] imp,
-            move |row| {
-                if let Some(engine) = imp.engine_row.selected_engine() {
-                    engine.settings().set_fullscreen(row.is_active());
                 }
             }
         ));
@@ -304,36 +280,6 @@ impl LauncherWindow {
             move |row| {
                 if let Some(engine) = imp.engine_row.selected_engine() {
                     engine.settings().set_hires(row.is_active());
-                }
-            }
-        ));
-
-        // Settings lights row active property signal
-        imp.settings_lights_row.connect_active_notify(clone!(
-            #[weak] imp,
-            move |row| {
-                if let Some(engine) = imp.engine_row.selected_engine() {
-                    engine.settings().set_lights(row.is_active());
-                }
-            }
-        ));
-
-        // Settings brightmaps row active property signal
-        imp.settings_brightmaps_row.connect_active_notify(clone!(
-            #[weak] imp,
-            move |row| {
-                if let Some(engine) = imp.engine_row.selected_engine() {
-                    engine.settings().set_brightmaps(row.is_active());
-                }
-            }
-        ));
-
-        // Settings widescreen row active property signal
-        imp.settings_widescreen_row.connect_active_notify(clone!(
-            #[weak] imp,
-            move |row| {
-                if let Some(engine) = imp.engine_row.selected_engine() {
-                    engine.settings().set_widescreen(row.is_active());
                 }
             }
         ));
@@ -412,13 +358,7 @@ impl LauncherWindow {
             if engine.source() == EngineSource::ZDoom {
                 let gsettings = gio::Settings::new(&format!("{}.{}", APP_ID, engine.name()));
 
-                let engine_settings = engine.settings();
-
-                engine_settings.set_fullscreen(gsettings.boolean("fullscreen"));
-                engine_settings.set_hires(gsettings.boolean("hires"));
-                engine_settings.set_lights(gsettings.boolean("lights"));
-                engine_settings.set_brightmaps(gsettings.boolean("brightmaps"));
-                engine_settings.set_widescreen(gsettings.boolean("widescreen"));
+                engine.settings().set_hires(gsettings.boolean("hires"));
             }
         }
     }
@@ -455,13 +395,7 @@ impl LauncherWindow {
             if engine.source() == EngineSource::ZDoom {
                 let gsettings = gio::Settings::new(&format!("{}.{}", APP_ID, engine.name()));
 
-                let engine_settings = engine.settings();
-
-                Self::set_gsetting(&gsettings, "fullscreen", &engine_settings.fullscreen());
-                Self::set_gsetting(&gsettings, "hires", &engine_settings.hires());
-                Self::set_gsetting(&gsettings, "lights", &engine_settings.lights());
-                Self::set_gsetting(&gsettings, "brightmaps", &engine_settings.brightmaps());
-                Self::set_gsetting(&gsettings, "widescreen", &engine_settings.widescreen());
+                Self::set_gsetting(&gsettings, "hires", &engine.settings().hires());
             }
         }
     }
@@ -599,6 +533,9 @@ impl LauncherWindow {
         // Get optional PWAD files
         let pwad_files = imp.pwad_row.files().join(" ");
 
+        // Get extra switches
+        let extra_switches = imp.switches_row.text();
+
         // Get hires graphics files if enabled
         let graphics_installed = Path::new(GRAPHICS_PATH).try_exists().unwrap_or_default();
 
@@ -618,22 +555,19 @@ impl LauncherWindow {
             })
             .unwrap_or_default();
 
-        // Get extra switches
-        let extra_switches = imp.switches_row.text();
-
         // Build Doom command line
         let mut cmd_line = format!("{exec_file} -iwad {iwad_file}");
 
         if !pwad_files.is_empty() {
-            cmd_line = format!("{cmd_line} -file {pwad_files}");
+            cmd_line += &format!(" -file {pwad_files}");
         }
 
         if !graphics_files.is_empty() {
-            cmd_line = format!("{cmd_line} -file {graphics_files}");
+            cmd_line += &format!(" -file {graphics_files}");
         }
 
         if !extra_switches.is_empty() {
-            cmd_line = format!("{cmd_line} {extra_switches}");
+            cmd_line += &format!(" {extra_switches}");
         }
 
         // Launch Doom
