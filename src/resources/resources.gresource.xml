@@ -6,6 +6,7 @@
     <file alias="info-outline-symbolic.svg">icons/info-outline-symbolic.svg</file>
   </gresource>
   <gresource prefix="/com/github/D-Launcher">
+    <file compressed="true" preprocess="xml-stripblanks">gtk/help-overlay.ui</file>
     <file compressed="true">ui/engine_combo/entry-item.ui</file>
     <file compressed="true">ui/engine_combo/list-item.ui</file>
     <file compressed="true">ui/iwad_combo/entry-item.ui</file>
