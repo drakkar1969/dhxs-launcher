@@ -488,6 +488,7 @@ impl LauncherWindow {
     //-----------------------------------
     // Launch Doom function
     //-----------------------------------
+    #[allow(clippy::zombie_processes)]
     fn launch_doom(&self) -> LaunchResult {
         let imp = self.imp();
 
