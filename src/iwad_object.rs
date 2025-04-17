@@ -28,6 +28,8 @@ mod imp {
         #[property(get, set)]
         filename: RefCell<String>,
 
+        #[property(get = Self::path)]
+        _path: RefCell<String>,
         #[property(get = Self::basename)]
         _basename: RefCell<String>,
     }
@@ -46,8 +48,14 @@ mod imp {
 
     impl IWadObject {
         //-----------------------------------
-        // Basename property getter
+        // Custom property getters
         //-----------------------------------
+        fn path(&self) -> String {
+            let filename = self.filename.borrow();
+
+            Path::new(filename.as_str()).parent().unwrap().to_string_lossy().into_owned()
+        }
+
         fn basename(&self) -> String {
             let filename = self.filename.borrow();
 
