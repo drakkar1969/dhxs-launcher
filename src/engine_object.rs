@@ -68,7 +68,7 @@ impl EngineObject {
     // New function
     //-----------------------------------
     pub fn new(data: &EngineData) -> Self {
-        // Build IWadObject
+        // Build EngineObject
         glib::Object::builder()
             .property("name", data.name)
             .property("description", data.description)

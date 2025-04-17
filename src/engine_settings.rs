@@ -54,7 +54,7 @@ impl Default for EngineSettings {
     // Default costructor
     //-----------------------------------
     fn default() -> Self {
-        // Build IWadObject
+        // Build EngineSettings
         glib::Object::builder()
             .build()
     }
