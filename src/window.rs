@@ -28,7 +28,7 @@ enum LaunchResult {
 }
 
 //------------------------------------------------------------------------------
-// MODULE: LauncherWindow
+// MODULE: AppWindow
 //------------------------------------------------------------------------------
 mod imp {
     use super::*;
@@ -38,7 +38,7 @@ mod imp {
     //-----------------------------------
     #[derive(Default, gtk::CompositeTemplate)]
     #[template(resource = "/com/github/D-Launcher/ui/window.ui")]
-    pub struct LauncherWindow {
+    pub struct AppWindow {
         #[template_child]
         pub(super) split_view: TemplateChild<adw::OverlaySplitView>,
 
@@ -75,9 +75,9 @@ mod imp {
     // Subclass
     //-----------------------------------
     #[glib::object_subclass]
-    impl ObjectSubclass for LauncherWindow {
-        const NAME: &'static str = "LauncherWindow";
-        type Type = super::LauncherWindow;
+    impl ObjectSubclass for AppWindow {
+        const NAME: &'static str = "AppWindow";
+        type Type = super::AppWindow;
         type ParentType = adw::ApplicationWindow;
 
         fn class_init(klass: &mut Self::Class) {
@@ -99,7 +99,7 @@ mod imp {
         }
     }
 
-    impl ObjectImpl for LauncherWindow {
+    impl ObjectImpl for AppWindow {
         //-----------------------------------
         // Constructor
         //-----------------------------------
@@ -118,8 +118,8 @@ mod imp {
         }
     }
 
-    impl WidgetImpl for LauncherWindow {}
-    impl WindowImpl for LauncherWindow {
+    impl WidgetImpl for AppWindow {}
+    impl WindowImpl for AppWindow {
         //-----------------------------------
         // Window close handler
         //-----------------------------------
@@ -129,21 +129,21 @@ mod imp {
             glib::Propagation::Proceed
         }
     }
-    impl ApplicationWindowImpl for LauncherWindow {}
-    impl AdwApplicationWindowImpl for LauncherWindow {}
+    impl ApplicationWindowImpl for AppWindow {}
+    impl AdwApplicationWindowImpl for AppWindow {}
 }
 
 //------------------------------------------------------------------------------
-// IMPLEMENTATION: LauncherWindow
+// IMPLEMENTATION: AppWindow
 //------------------------------------------------------------------------------
 glib::wrapper! {
-    pub struct LauncherWindow(ObjectSubclass<imp::LauncherWindow>)
+    pub struct AppWindow(ObjectSubclass<imp::AppWindow>)
         @extends gtk::Widget, gtk::Window, gtk::ApplicationWindow, adw::ApplicationWindow,
         @implements gio::ActionGroup, gio::ActionMap, gtk::Accessible, gtk::Buildable,
                     gtk::ConstraintTarget, gtk::Native, gtk::Root, gtk::ShortcutManager;
 }
 
-impl LauncherWindow {
+impl AppWindow {
     //-----------------------------------
     // New function
     //-----------------------------------
