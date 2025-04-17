@@ -10,7 +10,9 @@ use crate::iwad_data::IWadID;
 #[enum_type(name = "EngineSource")]
 pub enum EngineSource {
     #[default]
+    #[enum_value(name = "Chocolate Doom")]
     Chocolate,
+    #[enum_value(name = "PrBoom+")]
     PrBoom,
     WinMBF,
     ZDoom,
