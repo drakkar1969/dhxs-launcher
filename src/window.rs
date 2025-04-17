@@ -531,11 +531,22 @@ impl LauncherWindow {
             return LaunchResult::Error(format!("IWAD file <b>{}</b> not found.", iwad_file))
         }
 
+        // Init Doom command line with exec file and IWAD
+        let mut cmd_line = format!("{exec_file} -iwad {iwad_file}");
+
         // Get optional PWAD files
         let pwad_files = imp.pwad_row.files().join(" ");
 
+        if !pwad_files.is_empty() {
+            cmd_line += &format!(" -file {pwad_files}");
+        }
+
         // Get extra switches
         let extra_switches = imp.switches_row.text();
+
+        if !extra_switches.is_empty() {
+            cmd_line += &format!(" {extra_switches}");
+        }
 
         // Get hires graphics files if enabled
         let load_graphics = Path::new(GRAPHICS_PATH).try_exists().unwrap_or_default() &&
@@ -558,19 +569,8 @@ impl LauncherWindow {
             String::new()
         };
 
-        // Build Doom command line
-        let mut cmd_line = format!("{exec_file} -iwad {iwad_file}");
-
-        if !pwad_files.is_empty() {
-            cmd_line += &format!(" -file {pwad_files}");
-        }
-
         if !graphics_files.is_empty() {
             cmd_line += &format!(" -file {graphics_files}");
-        }
-
-        if !extra_switches.is_empty() {
-            cmd_line += &format!(" {extra_switches}");
         }
 
         // Launch Doom
