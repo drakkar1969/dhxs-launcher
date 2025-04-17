@@ -53,7 +53,7 @@ mod imp {
         fn path(&self) -> String {
             let filename = self.filename.borrow();
 
-            Path::new(filename.as_str()).parent().unwrap().to_string_lossy().into_owned()
+            Path::new(filename.as_str()).parent().unwrap().display().to_string()
         }
 
         fn basename(&self) -> String {
