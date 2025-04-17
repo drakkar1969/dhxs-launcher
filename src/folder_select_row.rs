@@ -7,7 +7,7 @@ use adw::subclass::prelude::*;
 use gtk::prelude::*;
 use glib::clone;
 
-use crate::utils::{file_to_path, path_to_file};
+use crate::utils::{env_expand, file_to_path, path_to_file};
 
 //------------------------------------------------------------------------------
 // MODULE: FolderSelectRow
@@ -119,7 +119,7 @@ impl FolderSelectRow {
         self.connect_folder_notify(clone!(
             #[weak] imp,
             move |row| {
-                let folder = row.folder();
+                let folder = env_expand(&row.folder());
 
                 let label = Path::new(&folder).file_name()
                     .and_then(|filename| filename.to_str())
@@ -128,7 +128,7 @@ impl FolderSelectRow {
 
                 imp.label.set_label(label);
 
-                imp.reset_button.set_sensitive(!folder.is_empty());
+                imp.reset_button.set_sensitive(folder != env_expand(&row.default_folder()));
             }
         ));
 
@@ -181,13 +181,7 @@ impl FolderSelectRow {
     // Public reset_to_default function
     //-----------------------------------
     pub fn reset_to_default(&self) {
-        let default_folder = self.default_folder();
-
-        if default_folder.is_empty() {
-            self.set_folder("");
-        } else {
-            self.set_folder(default_folder);
-        }
+        self.set_folder(self.default_folder());
     }
 }
 

@@ -39,8 +39,6 @@ mod imp {
         #[property(get, set)]
         initial_folder: RefCell<String>,
         #[property(get, set)]
-        default_file: RefCell<String>,
-        #[property(get, set)]
         files: RefCell<Vec<String>>,
     }
 
@@ -223,13 +221,7 @@ impl PWadSelectRow {
     // Public reset_to_default function
     //-----------------------------------
     pub fn reset_to_default(&self) {
-        let default_file = self.default_file();
-
-        if default_file.is_empty() {
-            self.set_files(vec![]);
-        } else {
-            self.set_files(vec![default_file]);
-        }
+        self.set_files(vec![]);
     }
 }
 

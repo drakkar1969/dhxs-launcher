@@ -341,11 +341,11 @@ impl LauncherWindow {
         let gsettings = gio::Settings::new(APP_ID);
 
         // Init preferences window
-        imp.prefs_dialog.set_iwad_folder(gsettings.string("iwad-folder"));
-        imp.prefs_dialog.set_pwad_folder(gsettings.string("pwad-folder"));
-
         imp.prefs_dialog.set_iwad_default_folder(Self::gsetting_default_value(&gsettings,"iwad-folder"));
         imp.prefs_dialog.set_pwad_default_folder(Self::gsetting_default_value(&gsettings,"pwad-folder"));
+
+        imp.prefs_dialog.set_iwad_folder(gsettings.string("iwad-folder"));
+        imp.prefs_dialog.set_pwad_folder(gsettings.string("pwad-folder"));
 
         // Init main window
         imp.engine_row.set_selected_engine_name(&gsettings.string("selected-engine"));
