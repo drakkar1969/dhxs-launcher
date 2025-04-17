@@ -73,7 +73,7 @@ impl EngineObject {
             .property("name", data.name)
             .property("description", data.description)
             .property("games", data.games)
-            .property("doom-path", data.path)
+            .property("doom-path", data.doom_path)
             .property("heretic-path", data.heretic_path)
             .property("hexen-path", data.hexen_path)
             .property("strife-path", data.strife_path)

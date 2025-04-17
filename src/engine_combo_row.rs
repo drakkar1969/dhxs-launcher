@@ -128,7 +128,7 @@ impl EngineComboRow {
 
         // Get list of installed engines
         let engine_objects = ENGINE_ARRAY.into_iter()
-            .filter(|data| Path::new(&data.path).try_exists().unwrap_or_default())
+            .filter(|data| Path::new(&data.doom_path).try_exists().unwrap_or_default())
             .map(|data| EngineObject::new(&data))
             .collect::<Vec<EngineObject>>();
 
