@@ -538,23 +538,25 @@ impl LauncherWindow {
         let extra_switches = imp.switches_row.text();
 
         // Get hires graphics files if enabled
-        let graphics_installed = Path::new(GRAPHICS_PATH).try_exists().unwrap_or_default();
+        let load_graphics = Path::new(GRAPHICS_PATH).try_exists().unwrap_or_default() &&
+            (engine.source() == EngineSource::ZDoom) &&
+            engine.settings().hires();
 
-        let graphics_map = HashMap::from(GRAPHICS_MAP);
+        let graphics_files = if load_graphics {
+            let graphics_map = HashMap::from(GRAPHICS_MAP);
 
-        let graphics_array = graphics_map.get(&iwad.id());
-
-        let load_graphics = graphics_installed && graphics_array.is_some() && (engine.source() == EngineSource::ZDoom) && engine.settings().hires();
-
-        let graphics_files = graphics_array
-            .filter(|_| load_graphics)
-            .map(|files| {
-                files.iter()
-                    .map(|file| Path::new(GRAPHICS_PATH).join(file).display().to_string())
-                    .collect::<Vec<String>>()
-                    .join(" ")
-            })
-            .unwrap_or_default();
+            graphics_map.get(&iwad.id())
+                .filter(|_| load_graphics)
+                .map(|files| {
+                    files.iter()
+                        .map(|file| Path::new(GRAPHICS_PATH).join(file).display().to_string())
+                        .collect::<Vec<String>>()
+                        .join(" ")
+                })
+                .unwrap_or_default()
+        } else {
+            String::new()
+        };
 
         // Build Doom command line
         let mut cmd_line = format!("{exec_file} -iwad {iwad_file}");
