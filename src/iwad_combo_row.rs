@@ -109,7 +109,7 @@ impl IWadComboRow {
                             .map(|data| IWadObject::new(data, &filename))
                     })
             })
-            .collect::<Vec<_>>();
+            .collect::<Vec<IWadObject>>();
 
         // Add IWADs to combo row
         imp.model.splice(0, imp.model.n_items(), &iwad_objects);
