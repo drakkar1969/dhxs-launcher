@@ -145,7 +145,7 @@ impl EngineComboRow {
             imp.filter.set_filter_func(move |item| {
                 item
                     .downcast_ref::<EngineObject>()
-                    .expect("Could not downcast to 'EngineObject'")
+                    .expect("Must be a 'EngineObject'")
                     .games()
                     .intersects(id)
             });
@@ -189,8 +189,8 @@ impl EngineComboRow {
         let index = self.imp().sort_model.iter::<glib::Object>()
             .flatten()
             .position(|obj| {
-                let engine = obj.downcast_ref::<EngineObject>()
-                    .expect("Must be a 'IWadObject'");
+                let engine = obj.downcast::<EngineObject>()
+                    .expect("Must be a 'EngineObject'");
 
                 engine.name() == name
             });

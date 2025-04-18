@@ -130,7 +130,7 @@ impl IWadComboRow {
         let index = self.imp().sort_model.iter::<glib::Object>()
             .flatten()
             .position(|obj| {
-                let iwad = obj.downcast_ref::<IWadObject>()
+                let iwad = obj.downcast::<IWadObject>()
                     .expect("Must be a 'IWadObject'");
 
                 iwad.filename() == filename
