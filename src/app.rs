@@ -95,10 +95,10 @@ impl LauncherApp {
 
                 let about_dialog = adw::AboutDialog::builder()
                     .application_name("DHXS-Launcher")
-                    // .application_icon("zandronum")
+                    .application_icon("dhxs-launcher")
                     .developer_name("draKKar1969")
                     .version(env!("CARGO_PKG_VERSION"))
-                    // .website("https://github.com/drakkar1969/zandronum-launcher/")
+                    .website("https://github.com/drakkar1969/dhxs-launcher/")
                     .developers(vec!["draKKar1969"])
                     .designers(vec!["draKKar1969"])
                     .copyright("© 2025 draKKar1969")
