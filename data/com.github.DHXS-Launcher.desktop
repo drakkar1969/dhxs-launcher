@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=DHXS-Launcher
+GenericName=DHXS-Launcher
+Comment=Launcher for Doom, Heretic, Hexen and Strife with WAD selection
+Exec=/usr/bin/dhxs-launcher
+Icon=dhxs-launcher
+StartupNotify=true
+Terminal=false
+Type=Application
+Categories=Game;Shooter
