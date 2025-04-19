@@ -8,7 +8,7 @@ use adw::prelude::*;
 use glib::{clone, closure_local};
 
 use crate::APP_ID;
-use crate::LauncherApplication;
+use crate::LauncherApp;
 use crate::engine_data::EngineSource;
 use crate::engine_combo_row::EngineComboRow;
 use crate::engine_object::EngineObject;
@@ -147,7 +147,7 @@ impl AppWindow {
     //-----------------------------------
     // New function
     //-----------------------------------
-    pub fn new(app: &LauncherApplication) -> Self {
+    pub fn new(app: &LauncherApp) -> Self {
         glib::Object::builder().property("application", app).build()
     }
 

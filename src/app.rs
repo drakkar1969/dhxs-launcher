@@ -5,7 +5,7 @@ use adw::subclass::prelude::*;
 use crate::window::AppWindow;
 
 //------------------------------------------------------------------------------
-// MODULE: LauncherApplication
+// MODULE: LauncherApp
 //------------------------------------------------------------------------------
 mod imp {
     use super::*;
@@ -14,19 +14,19 @@ mod imp {
     // Private structure
     //-----------------------------------
     #[derive(Default)]
-    pub struct LauncherApplication {}
+    pub struct LauncherApp {}
 
     //-----------------------------------
     // Subclass
     //-----------------------------------
     #[glib::object_subclass]
-    impl ObjectSubclass for LauncherApplication {
-        const NAME: &'static str = "LauncherApplication";
-        type Type = super::LauncherApplication;
+    impl ObjectSubclass for LauncherApp {
+        const NAME: &'static str = "LauncherApp";
+        type Type = super::LauncherApp;
         type ParentType = adw::Application;
     }
 
-    impl ObjectImpl for LauncherApplication {
+    impl ObjectImpl for LauncherApp {
         //-----------------------------------
         // Constructor
         //-----------------------------------
@@ -37,7 +37,7 @@ mod imp {
         }
     }
 
-    impl ApplicationImpl for LauncherApplication {
+    impl ApplicationImpl for LauncherApp {
         //-----------------------------------
         // Activate handler
         //-----------------------------------
@@ -56,20 +56,20 @@ mod imp {
         }
     }
 
-    impl GtkApplicationImpl for LauncherApplication {}
-    impl AdwApplicationImpl for LauncherApplication {}
+    impl GtkApplicationImpl for LauncherApp {}
+    impl AdwApplicationImpl for LauncherApp {}
 }
 
 //------------------------------------------------------------------------------
-// IMPLEMENTATION: LauncherApplication
+// IMPLEMENTATION: LauncherApp
 //------------------------------------------------------------------------------
 glib::wrapper! {
-    pub struct LauncherApplication(ObjectSubclass<imp::LauncherApplication>)
+    pub struct LauncherApp(ObjectSubclass<imp::LauncherApp>)
         @extends gio::Application, gtk::Application, adw::Application,
         @implements gio::ActionGroup, gio::ActionMap;
 }
 
-impl LauncherApplication {
+impl LauncherApp {
     //-----------------------------------
     // New function
     //-----------------------------------

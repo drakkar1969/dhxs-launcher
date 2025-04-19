@@ -16,7 +16,7 @@ mod graphics_data;
 use gtk::{gio, glib};
 use gtk::prelude::*;
 
-use app::LauncherApplication;
+use app::LauncherApp;
 
 const APP_ID: &str = "com.github.DHXS-Launcher";
 
@@ -26,7 +26,7 @@ fn main() -> glib::ExitCode {
         .expect("Failed to register resources");
 
     // Run app
-    let app = LauncherApplication::new(APP_ID, &gio::ApplicationFlags::empty());
+    let app = LauncherApp::new(APP_ID, &gio::ApplicationFlags::empty());
 
     app.run()
 }
