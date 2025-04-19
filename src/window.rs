@@ -187,6 +187,12 @@ impl AppWindow {
     fn setup_widgets(&self) {
         let imp = self.imp();
 
+        // Create user config dirs if they do not exist
+        if let Ok(xdg_dirs) = xdg::BaseDirectories::new() {
+            let _ = xdg_dirs.create_config_directory("dhxs-launcher/iwads");
+            let _ = xdg_dirs.create_config_directory("dhxs-launcher/pwads");
+        }
+
         // Populate switches popover
         [
             ("-fast", "Increase the speed and attack rate of monsters, requires the -warp parameter"),
