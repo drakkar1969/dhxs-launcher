@@ -4,7 +4,7 @@
   <template class="AppWindow" parent="AdwApplicationWindow">
     <property name="default-width">580</property>
     <property name="default-height">-1</property>
-    <property name="title">D-Launcher</property>
+    <property name="title">DHXS-Launcher</property>
     <property name="content">
       <object class="AdwOverlaySplitView" id="split_view">
         <property name="collapsed">true</property>
@@ -190,7 +190,7 @@
     </section>
     <section>
       <item>
-        <attribute name="label">About D-Launcher</attribute>
+        <attribute name="label">About DHXS-Launcher</attribute>
         <attribute name="action">app.show-about</attribute>
       </item>
     </section>

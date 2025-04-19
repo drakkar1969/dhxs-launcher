@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist>
-  <schema id="com.github.D-Launcher" path="/com/github/D-Launcher/">
+  <schema id="com.github.DHXS-Launcher" path="/com/github/DHXS-Launcher/">
     <key name="selected-engine" type="s">
       <default>''</default>
       <summary>Selected Doom engine</summary>
@@ -18,20 +18,20 @@
       <summary>Extra switches to pass to Doom</summary>
     </key>
     <key name="iwad-folder" type="s">
-      <default>'$HOME/.config/d-launcher/iwads'</default>
+      <default>'$HOME/.config/dhxs-launcher/iwads'</default>
       <summary>Folder to search for game (IWAD) files</summary>
     </key>
     <key name="pwad-folder" type="s">
-      <default>'$HOME/.config/d-launcher/pwads'</default>
+      <default>'$HOME/.config/dhxs-launcher/pwads'</default>
       <summary>Folder to search for additional files</summary>
     </key>
   </schema>
-  <schema id="com.github.D-Launcher.GZDoom" path="/com/github/D-Launcher/GZDoom/">
+  <schema id="com.github.DHXS-Launcher.GZDoom" path="/com/github/DHXS-Launcher/GZDoom/">
     <key name="hires" type="b">
       <default>false</default>
     </key>
   </schema>
-  <schema id="com.github.D-Launcher.VKDoom" path="/com/github/D-Launcher/VKDoom/">
+  <schema id="com.github.DHXS-Launcher.VKDoom" path="/com/github/DHXS-Launcher/VKDoom/">
     <key name="hires" type="b">
       <default>false</default>
     </key>

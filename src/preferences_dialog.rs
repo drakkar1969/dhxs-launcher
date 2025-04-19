@@ -18,7 +18,7 @@ mod imp {
     //-----------------------------------
     #[derive(Default, gtk::CompositeTemplate, glib::Properties)]
     #[properties(wrapper_type = super::PreferencesDialog)]
-    #[template(resource = "/com/github/D-Launcher/ui/preferences_dialog.ui")]
+    #[template(resource = "/com/github/DHXS-Launcher/ui/preferences_dialog.ui")]
     pub struct PreferencesDialog {
         #[template_child]
         pub(super) iwad_row: TemplateChild<FolderSelectRow>,

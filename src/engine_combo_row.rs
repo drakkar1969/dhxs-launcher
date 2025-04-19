@@ -21,7 +21,7 @@ mod imp {
     // Private structure
     //-----------------------------------
     #[derive(Default, gtk::CompositeTemplate)]
-    #[template(resource = "/com/github/D-Launcher/ui/engine_combo_row.ui")]
+    #[template(resource = "/com/github/DHXS-Launcher/ui/engine_combo_row.ui")]
     pub struct EngineComboRow {
         #[template_child]
         pub(super) settings_button: TemplateChild<gtk::Button>,

@@ -3,7 +3,7 @@ use crate::iwad_data::IWadID;
 //------------------------------------------------------------------------------
 // CONST VARIABLES
 //------------------------------------------------------------------------------
-pub const GRAPHICS_PATH: &str = "/usr/share/d-launcher/graphics/";
+pub const GRAPHICS_PATH: &str = "/usr/share/dhxs-launcher/graphics/";
 
 //------------------------------------------------------------------------------
 // GRAPHICS DATA

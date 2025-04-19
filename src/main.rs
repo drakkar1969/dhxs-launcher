@@ -18,7 +18,7 @@ use gtk::prelude::*;
 
 use app::LauncherApplication;
 
-const APP_ID: &str = "com.github.D-Launcher";
+const APP_ID: &str = "com.github.DHXS-Launcher";
 
 fn main() -> glib::ExitCode {
     // Register and include resources

@@ -94,7 +94,7 @@ impl LauncherApplication {
                     .expect("Could not retrieve active window");
 
                 let about_dialog = adw::AboutDialog::builder()
-                    .application_name("D-Launcher")
+                    .application_name("DHXS-Launcher")
                     // .application_icon("zandronum")
                     .developer_name("draKKar1969")
                     .version(env!("CARGO_PKG_VERSION"))

@@ -37,7 +37,7 @@ mod imp {
     // Private structure
     //-----------------------------------
     #[derive(Default, gtk::CompositeTemplate)]
-    #[template(resource = "/com/github/D-Launcher/ui/window.ui")]
+    #[template(resource = "/com/github/DHXS-Launcher/ui/window.ui")]
     pub struct AppWindow {
         #[template_child]
         pub(super) split_view: TemplateChild<adw::OverlaySplitView>,

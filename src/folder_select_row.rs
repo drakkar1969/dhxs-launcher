@@ -20,7 +20,7 @@ mod imp {
     //-----------------------------------
     #[derive(Default, gtk::CompositeTemplate, glib::Properties)]
     #[properties(wrapper_type = super::FolderSelectRow)]
-    #[template(resource = "/com/github/D-Launcher/ui/folder_select_row.ui")]
+    #[template(resource = "/com/github/DHXS-Launcher/ui/folder_select_row.ui")]
     pub struct FolderSelectRow {
         #[template_child]
         pub(super) label: TemplateChild<gtk::Label>,

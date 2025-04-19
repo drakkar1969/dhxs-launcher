@@ -20,12 +20,12 @@
     </property>
     <property name="factory">
       <object class="GtkBuilderListItemFactory">
-        <property name="resource">/com/github/D-Launcher/ui/iwad_combo/entry-item.ui</property>
+        <property name="resource">/com/github/DHXS-Launcher/ui/iwad_combo/entry-item.ui</property>
       </object>
     </property>
     <property name="list-factory">
       <object class="GtkBuilderListItemFactory">
-        <property name="resource">/com/github/D-Launcher/ui/iwad_combo/list-item.ui</property>
+        <property name="resource">/com/github/DHXS-Launcher/ui/iwad_combo/list-item.ui</property>
       </object>
     </property>
   </template>

@@ -20,7 +20,7 @@ mod imp {
     //-----------------------------------
     #[derive(Default, gtk::CompositeTemplate, glib::Properties)]
     #[properties(wrapper_type = super::PWadSelectRow)]
-    #[template(resource = "/com/github/D-Launcher/ui/pwad_select_row.ui")]
+    #[template(resource = "/com/github/DHXS-Launcher/ui/pwad_select_row.ui")]
     pub struct PWadSelectRow {
         #[template_child]
         pub(super) label: TemplateChild<gtk::Label>,

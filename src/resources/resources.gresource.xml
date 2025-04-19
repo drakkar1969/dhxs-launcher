@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
-  <gresource prefix="/com/github/D-Launcher/icons/scalable/actions/">
+  <gresource prefix="/com/github/DHXS-Launcher/icons/scalable/actions/">
     <file alias="cog-wheel-symbolic.svg">icons/cog-wheel-symbolic.svg</file>
     <file alias="external-link-symbolic.svg">icons/external-link-symbolic.svg</file>
     <file alias="info-outline-symbolic.svg">icons/info-outline-symbolic.svg</file>
   </gresource>
-  <gresource prefix="/com/github/D-Launcher">
+  <gresource prefix="/com/github/DHXS-Launcher">
     <file compressed="true" preprocess="xml-stripblanks">gtk/help-overlay.ui</file>
     <file compressed="true">ui/engine_combo/entry-item.ui</file>
     <file compressed="true">ui/engine_combo/list-item.ui</file>

@@ -20,7 +20,7 @@ mod imp {
     // Private structure
     //-----------------------------------
     #[derive(Default, gtk::CompositeTemplate)]
-    #[template(resource = "/com/github/D-Launcher/ui/iwad_combo_row.ui")]
+    #[template(resource = "/com/github/DHXS-Launcher/ui/iwad_combo_row.ui")]
     pub struct IWadComboRow {
         #[template_child]
         pub(super) model: TemplateChild<gio::ListStore>,
