@@ -14,7 +14,7 @@ mod imp {
     // Private structure
     //-----------------------------------
     #[derive(Default)]
-    pub struct LauncherApp {}
+    pub struct LauncherApp;
 
     //-----------------------------------
     // Subclass
@@ -45,12 +45,9 @@ mod imp {
             let application = self.obj();
 
             // Show main window
-            let window = if let Some(window) = application.active_window() {
-                window
-            } else {
-                let window = AppWindow::new(&application);
-                window.upcast()
-            };
+            let window = application.active_window().map_or_else(|| {
+                AppWindow::new(&application).upcast()
+            }, |window| window);
 
             window.present();
         }
@@ -73,7 +70,7 @@ impl LauncherApp {
     //-----------------------------------
     // New function
     //-----------------------------------
-    pub fn new(application_id: &str, flags: &gio::ApplicationFlags) -> Self {
+    pub fn new(application_id: &str, flags: gio::ApplicationFlags) -> Self {
         glib::Object::builder()
             .property("application-id", application_id)
             .property("flags", flags)

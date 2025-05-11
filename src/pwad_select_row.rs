@@ -89,7 +89,7 @@ mod imp {
                 self.image.set_icon_name(Some("media-zip-symbolic"));
             }
 
-            self.icon.replace(icon.map(|icon| icon.to_string()));
+            self.icon.replace(icon.map(ToOwned::to_owned));
         }
 
         //-----------------------------------
@@ -182,10 +182,10 @@ impl PWadSelectRow {
                 // Set initial location for dialog
                 let files = row.files();
 
-                if !files.is_empty() {
-                    dialog.set_initial_file(path_to_file(&files[0]).as_ref());
-                } else {
+                if files.is_empty() {
                     dialog.set_initial_folder(path_to_file(row.initial_folder().as_ref()).as_ref());
+                } else {
+                    dialog.set_initial_file(path_to_file(&files[0]).as_ref());
                 }
 
                 // Get root window
@@ -201,7 +201,7 @@ impl PWadSelectRow {
                                 .flatten()
                                 .map(|file| file_to_path(&file))
                                 .collect::<Vec<String>>()
-                            )
+                            );
                         }
                     }
                 ));

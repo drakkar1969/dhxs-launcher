@@ -1,6 +1,7 @@
 use std::path::Path;
 use std::process::Command;
 use std::collections::HashMap;
+use std::fmt::Write as _;
 
 use gtk::{gio, glib, gdk, pango};
 use adw::subclass::prelude::*;
@@ -154,7 +155,7 @@ impl AppWindow {
     //-----------------------------------
     // Label helper functions
     //-----------------------------------
-    fn key_label(&self, key: &str) -> gtk::Label {
+    fn key_label(key: &str) -> gtk::Label {
         let label = gtk::Label::new(Some(key));
         label.set_vexpand(true);
         label.set_xalign(0.0);
@@ -166,7 +167,7 @@ impl AppWindow {
         label
     }
 
-    fn value_label(&self, value: &str) -> gtk::Label {
+    fn value_label(value: &str) -> gtk::Label {
         let label = gtk::Label::new(Some(value));
 
         label.set_valign(gtk::Align::Center);
@@ -208,8 +209,8 @@ impl AppWindow {
         .iter()
         .enumerate()
         .for_each(|(i, (key, value))| {
-            imp.switches_grid.attach(&self.key_label(key), 0, i as i32, 1, 1);
-            imp.switches_grid.attach(&self.value_label(value), 1, i as i32, 1, 1);
+            imp.switches_grid.attach(&Self::key_label(key), 0, i as i32, 1, 1);
+            imp.switches_grid.attach(&Self::value_label(value), 1, i as i32, 1, 1);
         });
 
         // Set initial focus on engine combo row
@@ -514,27 +515,27 @@ impl AppWindow {
                 engine.doom_path()
             },
             IWadID::HERETIC => {
-                engine.heretic_path().unwrap_or(engine.doom_path())
+                engine.heretic_path().unwrap_or_else(|| engine.doom_path())
             },
             IWadID::HEXEN => {
-                engine.hexen_path().unwrap_or(engine.doom_path())
+                engine.hexen_path().unwrap_or_else(|| engine.doom_path())
             },
             IWadID::STRIFE => {
-                engine.strife_path().unwrap_or(engine.doom_path())
+                engine.strife_path().unwrap_or_else(|| engine.doom_path())
             },
             _ => unreachable!()
         });
 
         // Return with error if executable file does not exist
         if !Path::new(&exec_file).try_exists().unwrap_or_default() {
-            return LaunchResult::Error(format!("Executable file <b>{}</b> not found.", exec_file))
+            return LaunchResult::Error(format!("Executable file <b>{exec_file}</b> not found."))
         }
 
         // Return with error if IWAD file does not exist
         let iwad_file = env_expand(&iwad.filename());
 
         if !Path::new(&iwad_file).try_exists().unwrap_or_default() {
-            return LaunchResult::Error(format!("IWAD file <b>{}</b> not found.", iwad_file))
+            return LaunchResult::Error(format!("IWAD file <b>{iwad_file}</b> not found."))
         }
 
         // Init Doom command line with exec file and IWAD
@@ -544,14 +545,14 @@ impl AppWindow {
         let pwad_files = imp.pwad_row.files().join(" ");
 
         if !pwad_files.is_empty() {
-            cmd_line += &format!(" -file {pwad_files}");
+            write!(cmd_line, " -file {pwad_files}").unwrap();
         }
 
         // Get extra switches
         let extra_switches = imp.switches_row.text();
 
         if !extra_switches.is_empty() {
-            cmd_line += &format!(" {extra_switches}");
+            write!(cmd_line, " {extra_switches}").unwrap();
         }
 
         // Get hires graphics files if enabled
@@ -576,7 +577,7 @@ impl AppWindow {
         };
 
         if !graphics_files.is_empty() {
-            cmd_line += &format!(" -file {graphics_files}");
+            write!(cmd_line, " -file {graphics_files}").unwrap();
         }
 
         // Launch Doom

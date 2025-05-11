@@ -146,10 +146,10 @@ impl FolderSelectRow {
                 // Set initial location for dialog
                 let folder = row.folder();
 
-                if !folder.is_empty() {
-                    dialog.set_initial_file(path_to_file(&folder).as_ref());
-                } else {
+                if folder.is_empty() {
                     dialog.set_initial_folder(path_to_file(row.initial_folder().as_ref()).as_ref());
+                } else {
+                    dialog.set_initial_file(path_to_file(&folder).as_ref());
                 }
 
                 // Get root window

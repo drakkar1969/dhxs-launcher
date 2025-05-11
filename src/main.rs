@@ -26,7 +26,7 @@ fn main() -> glib::ExitCode {
         .expect("Failed to register resources");
 
     // Run app
-    let app = LauncherApp::new(APP_ID, &gio::ApplicationFlags::empty());
+    let app = LauncherApp::new(APP_ID, gio::ApplicationFlags::empty());
 
     app.run()
 }
