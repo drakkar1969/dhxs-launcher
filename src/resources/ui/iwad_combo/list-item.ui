@@ -6,7 +6,7 @@
         <property name="orientation">vertical</property>
         <child>
           <object class="GtkBox">
-            <property name="spacing">16</property>
+            <property name="spacing">32</property>
             <child>
               <object class="GtkLabel">
                 <binding name="label">
@@ -38,37 +38,17 @@
           </object>
         </child>
         <child>
-          <object class="GtkBox">
-            <property name="spacing">16</property>
-            <child>
-              <object class="GtkLabel">
-                <binding name="label">
-                  <lookup name="basename" type="IWadObject">
-                    <lookup name="item">GtkListItem</lookup>
-                  </lookup>
-                </binding>
-                <property name="xalign">0</property>
-                <style>
-                  <class name="caption-heading"/>
-                  <class name="dimmed"/>
-                </style>
-              </object>
-            </child>
-            <child>
-              <object class="GtkLabel">
-                <binding name="label">
-                  <lookup name="path" type="IWadObject">
-                    <lookup name="item">GtkListItem</lookup>
-                  </lookup>
-                </binding>
-                <property name="hexpand">true</property>
-                <property name="xalign">1</property>
-                <style>
-                  <class name="caption"/>
-                  <class name="dimmed"/>
-                </style>
-              </object>
-            </child>
+          <object class="GtkLabel">
+            <binding name="label">
+              <lookup name="filename" type="IWadObject">
+                <lookup name="item">GtkListItem</lookup>
+              </lookup>
+            </binding>
+            <property name="xalign">0</property>
+            <style>
+              <class name="caption-heading"/>
+              <class name="dimmed"/>
+            </style>
           </object>
         </child>
       </object>

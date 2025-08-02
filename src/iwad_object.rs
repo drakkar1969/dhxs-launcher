@@ -1,5 +1,4 @@
 use std::cell::{Cell, RefCell};
-use std::path::Path;
 
 use gtk::glib;
 use gtk::subclass::prelude::*;
@@ -27,11 +26,6 @@ mod imp {
         version: RefCell<String>,
         #[property(get, set)]
         filename: RefCell<String>,
-
-        #[property(get = Self::path)]
-        _path: RefCell<String>,
-        #[property(get = Self::basename)]
-        _basename: RefCell<String>,
     }
 
     //-----------------------------------
@@ -46,22 +40,7 @@ mod imp {
     #[glib::derived_properties]
     impl ObjectImpl for IWadObject {}
 
-    impl IWadObject {
-        //-----------------------------------
-        // Custom property getters
-        //-----------------------------------
-        fn path(&self) -> String {
-            let filename = self.filename.borrow();
-
-            Path::new(filename.as_str()).parent().unwrap().display().to_string()
-        }
-
-        fn basename(&self) -> String {
-            let filename = self.filename.borrow();
-
-            Path::new(filename.as_str()).file_name().unwrap().to_string_lossy().into_owned()
-        }
-    }
+    impl IWadObject {}
 }
 
 //------------------------------------------------------------------------------
