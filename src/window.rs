@@ -1,3 +1,4 @@
+use std::cell::OnceCell;
 use std::path::Path;
 use std::process::Command;
 use std::collections::HashMap;
@@ -70,8 +71,7 @@ mod imp {
         #[template_child]
         pub(super) settings_config_row: TemplateChild<adw::ActionRow>,
 
-        #[template_child]
-        pub(super) prefs_dialog: TemplateChild<PreferencesDialog>,
+        pub(super) prefs_dialog: OnceCell<PreferencesDialog>,
     }
 
     //-----------------------------------
@@ -196,6 +196,9 @@ impl AppWindow {
         let _ = xdg_dirs.create_config_directory("dhxs-launcher/iwads");
         let _ = xdg_dirs.create_config_directory("dhxs-launcher/pwads");
 
+        // Create prefences dialog
+        imp.prefs_dialog.set(PreferencesDialog::default()).unwrap();
+
         // Populate switches popover
         [
             ("-fast", "Increase the speed and attack rate of monsters (requires the <b>-warp</b> parameter)"),
@@ -234,8 +237,10 @@ impl AppWindow {
     fn setup_signals(&self) {
         let imp = self.imp();
 
+        let prefs_dialog = imp.prefs_dialog.get().unwrap();
+
         // Preferences window IWAD folder property notify signal
-        imp.prefs_dialog.connect_iwad_folder_notify(clone!(
+        prefs_dialog.connect_iwad_folder_notify(clone!(
             #[weak(rename_to = window)] self,
             #[weak] imp,
             move |prefs_dialog| {
@@ -246,7 +251,7 @@ impl AppWindow {
         ));
 
         // Preferences window PWAD folder property notify signal
-        imp.prefs_dialog.connect_pwad_folder_notify(clone!(
+        prefs_dialog.connect_pwad_folder_notify(clone!(
             #[weak] imp,
             move |prefs_dialog| {
                 imp.pwad_row.set_initial_folder(prefs_dialog.pwad_folder());
@@ -367,11 +372,13 @@ impl AppWindow {
         let gsettings = gio::Settings::new(APP_ID);
 
         // Init preferences window
-        imp.prefs_dialog.set_iwad_default_folder(Self::gsetting_default_value(&gsettings,"iwad-folder"));
-        imp.prefs_dialog.set_pwad_default_folder(Self::gsetting_default_value(&gsettings,"pwad-folder"));
+        let prefs_dialog = imp.prefs_dialog.get().unwrap();
 
-        imp.prefs_dialog.set_iwad_folder(gsettings.string("iwad-folder"));
-        imp.prefs_dialog.set_pwad_folder(gsettings.string("pwad-folder"));
+        prefs_dialog.set_iwad_default_folder(Self::gsetting_default_value(&gsettings,"iwad-folder"));
+        prefs_dialog.set_pwad_default_folder(Self::gsetting_default_value(&gsettings,"pwad-folder"));
+
+        prefs_dialog.set_iwad_folder(gsettings.string("iwad-folder"));
+        prefs_dialog.set_pwad_folder(gsettings.string("pwad-folder"));
 
         // Init main window
         imp.engine_row.set_selected_engine_name(&gsettings.string("selected-engine"));
@@ -413,8 +420,10 @@ impl AppWindow {
         Self::set_gsetting(&gsettings, "extra-switches", &imp.switches_row.text().to_string());
 
         // Save preferences window settings
-        Self::set_gsetting(&gsettings, "iwad-folder", &imp.prefs_dialog.iwad_folder());
-        Self::set_gsetting(&gsettings, "pwad-folder", &imp.prefs_dialog.pwad_folder());
+        let prefs_dialog = imp.prefs_dialog.get().unwrap();
+
+        Self::set_gsetting(&gsettings, "iwad-folder", &prefs_dialog.iwad_folder());
+        Self::set_gsetting(&gsettings, "pwad-folder", &prefs_dialog.pwad_folder());
 
         // Save engine settings
         for engine in imp.engine_row.engines().iter::<EngineObject>().flatten() {
@@ -473,7 +482,7 @@ impl AppWindow {
                 #[weak(rename_to = window)] self,
                 #[weak] imp,
                 move |_, _, _| {
-                    imp.prefs_dialog.present(Some(&window));
+                    imp.prefs_dialog.get().unwrap().present(Some(&window));
                 }
             ))
             .build();
