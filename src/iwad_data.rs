@@ -15,19 +15,32 @@ pub const IWAD_PATHS: [&str; 4] = [
 //------------------------------------------------------------------------------
 #[glib::flags(name = "IWadID")]
 pub enum IWadID {
+    #[flags_value(name = "Doom")]
     DOOM          = 0b0000_0000_0000_0001,
+    #[flags_value(name = "Doom")]
     UDOOM         = 0b0000_0000_0000_0010,
+    #[flags_value(name = "Doom II")]
     DOOM2         = 0b0000_0000_0000_0100,
+    #[flags_value(name = "Final Doom")]
     PLUTONIA      = 0b0000_0000_0000_1000,
+    #[flags_value(name = "Final Doom")]
     TNT           = 0b0000_0000_0001_0000,
+    #[flags_value(name = "FreeDoom")]
     FREEDOOM1     = 0b0000_0000_0010_0000,
+    #[flags_value(name = "FreeDoom")]
     FREEDOOM2     = 0b0000_0000_0100_0000,
+    #[flags_value(name = "Heretic")]
     HERETIC       = 0b0000_0000_1000_0000,
+    #[flags_value(name = "Hexen")]
     HEXEN         = 0b0000_0001_0000_0000,
+    #[flags_value(name = "Strife")]
     STRIFE        = 0b0000_0010_0000_0000,
 
+    #[flags_value(skip)]
     DOOM_ONLY     = Self::DOOM.bits() | Self::UDOOM.bits() | Self::DOOM2.bits() | Self::PLUTONIA.bits() | Self::TNT.bits() | Self::FREEDOOM1.bits() | Self::FREEDOOM2.bits(),
+    #[flags_value(skip)]
     ALL_NO_STRIFE = Self::DOOM_ONLY.bits() | Self::HERETIC.bits() | Self::HEXEN.bits(),
+    #[flags_value(skip)]
     ALL           = Self::ALL_NO_STRIFE.bits() | Self::STRIFE.bits(),
 }
 

@@ -62,9 +62,9 @@ mod imp {
         #[template_child]
         pub(super) settings_title: TemplateChild<adw::WindowTitle>,
         #[template_child]
-        pub(super) settings_desc_label: TemplateChild<gtk::Label>,
+        pub(super) settings_desc_row: TemplateChild<adw::ActionRow>,
         #[template_child]
-        pub(super) settings_zdoom_group: TemplateChild<adw::PreferencesGroup>,
+        pub(super) settings_games_row: TemplateChild<adw::ActionRow>,
         #[template_child]
         pub(super) settings_hires_row: TemplateChild<adw::SwitchRow>,
         #[template_child]
@@ -270,11 +270,26 @@ impl AppWindow {
                 if let Some(engine) = engine_row.selected_engine() {
                     imp.settings_title.set_title(&engine.name());
 
-                    imp.settings_desc_label.set_label(&engine.description());
+                    imp.settings_desc_row.set_subtitle(&engine.description());
+
+                    let games = glib::FlagsValue::from_value(&engine.games().to_value())
+                        .map(|(_, values)| {
+                            let mut games_list: Vec<&str> = values.iter()
+                                .map(|v| v.name())
+                                .collect();
+
+                            games_list.sort_unstable();
+                            games_list.dedup();
+
+                            games_list.join(", ")
+                        })
+                        .unwrap_or_default();
+
+                    imp.settings_games_row.set_subtitle(&games);
 
                     let is_zdoom = engine.source() == EngineSource::ZDoom;
 
-                    imp.settings_zdoom_group.set_visible(is_zdoom);
+                    imp.settings_hires_row.set_visible(is_zdoom);
 
                     if is_zdoom {
                         imp.settings_hires_row.set_active(engine.settings().hires());

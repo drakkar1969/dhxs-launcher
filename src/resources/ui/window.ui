@@ -131,16 +131,32 @@
                 <property name="margin-bottom">28</property>
                 <property name="spacing">28</property>
                 <child>
-                  <object class="GtkLabel" id="settings_desc_label">
-                    <property name="xalign">0</property>
-                    <property name="wrap">true</property>
-                    <style>
-                      <class name="dimmed"/>
-                    </style>
+                  <object class="AdwPreferencesGroup">
+                    <child>
+                      <object class="AdwActionRow" id="settings_desc_row">
+                        <property name="title">_Description</property>
+                        <property name="title-lines">1</property>
+                        <property name="use-underline">true</property>
+                        <style>
+                          <class name="property"/>
+                        </style>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="AdwActionRow" id="settings_games_row">
+                        <property name="title">_Game Compatibility</property>
+                        <property name="title-lines">1</property>
+                        <property name="use-underline">true</property>
+                        <style>
+                          <class name="property"/>
+                        </style>
+                      </object>
+                    </child>
                   </object>
                 </child>
                 <child>
-                  <object class="AdwPreferencesGroup" id="settings_zdoom_group">
+                  <object class="AdwPreferencesGroup">
+                    <property name="title">Configuration</property>
                     <child>
                       <object class="AdwSwitchRow" id="settings_hires_row">
                         <property name="title">_Hi-Res Graphics</property>
@@ -148,10 +164,6 @@
                         <property name="use-underline">true</property>
                       </object>
                     </child>
-                  </object>
-                </child>
-                <child>
-                  <object class="AdwPreferencesGroup" id="settings_info_group">
                     <child>
                       <object class="AdwActionRow" id="settings_config_row">
                         <property name="activatable">true</property>
