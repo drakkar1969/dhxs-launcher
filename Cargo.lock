@@ -64,7 +64,7 @@ dependencies = [
 
 [[package]]
 name = "dhxs-launcher"
-version = "0.9.3"
+version = "1.0.0"
 dependencies = [
  "crc32fast",
  "glib-build-tools",
