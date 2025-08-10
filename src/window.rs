@@ -91,6 +91,9 @@ mod imp {
             // Add reset widgets shortcut
             klass.add_binding_action(gdk::Key::R, gdk::ModifierType::CONTROL_MASK, "win.reset-widgets");
 
+            // Add show cheats window shortcut
+            klass.add_binding_action(gdk::Key::F1, gdk::ModifierType::empty(), "win.show-cheats");
+
             // Add show preferences shortcut
             klass.add_binding_action(gdk::Key::comma, gdk::ModifierType::CONTROL_MASK, "win.show-preferences");
 
