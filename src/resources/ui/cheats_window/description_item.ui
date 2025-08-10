@@ -4,7 +4,7 @@
     <property name="child">
       <object class="GtkLabel">
         <property name="margin-start">2</property>
-        <property name="margin-end">2</property>
+        <property name="margin-end">12</property>
         <binding name="label">
           <lookup name="description" type="CheatObject">
             <lookup name="item">GtkListItem</lookup>
