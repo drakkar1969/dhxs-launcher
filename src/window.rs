@@ -88,6 +88,77 @@ mod imp {
         fn class_init(klass: &mut Self::Class) {
             klass.bind_template();
 
+            //---------------------------------------
+            // Add class actions
+            //---------------------------------------
+            // Add reset widgets action
+            klass.install_action("win.reset-widgets", None, |window, _, _| {
+                let imp = window.imp();
+
+                let reset_dialog = adw::AlertDialog::builder()
+                    .heading("Reset Parameters?")
+                    .body("Reset all parameters to their default values.")
+                    .default_response("reset")
+                    .build();
+
+                reset_dialog.add_responses(&[("cancel", "_Cancel"), ("reset", "_Reset")]);
+                reset_dialog.set_response_appearance("reset", adw::ResponseAppearance::Destructive);
+
+                reset_dialog.choose(
+                    window,
+                    None::<&gio::Cancellable>,
+                    clone!(
+                        #[weak] imp,
+                        move |response| {
+                            if response == "reset" {
+                                imp.engine_row.set_selected(0);
+                                imp.engine_row.reset_engine_settings();
+                                imp.iwad_row.set_selected(0);
+                                imp.pwad_row.reset_to_default();
+                                imp.switches_row.set_text("");
+                            }
+                        }
+                    )
+                );
+            });
+
+            // Add show cheats window action
+            klass.install_action("win.show-cheats", None, |window, _, _| {
+                window.imp().cheats_window.get().unwrap().present();
+            });
+
+            // Add show preferences action
+            klass.install_action("win.show-preferences", None, |window, _, _| {
+                window.imp().prefs_dialog.get().unwrap().present(Some(window));
+            });
+
+            // Add launch Doom action
+            klass.install_action("win.launch-doom", None, |window, _, _| {
+                window.set_sensitive(false);
+
+                match window.launch_doom() {
+                    LaunchResult::Error(error_msg) => {
+                        window.set_sensitive(true);
+
+                        let error_dialog = adw::AlertDialog::builder()
+                            .heading("Error")
+                            .body(error_msg)
+                            .body_use_markup(true)
+                            .build();
+
+                        error_dialog.add_responses(&[("ok", "_Ok")]);
+
+                        error_dialog.present(Some(window));
+                    },
+                    LaunchResult::Success => {
+                        window.close();
+                    }
+                }
+            });
+
+            //---------------------------------------
+            // Add class key bindings
+            //---------------------------------------
             // Add reset widgets shortcut
             klass.add_binding_action(gdk::Key::R, gdk::ModifierType::CONTROL_MASK, "win.reset-widgets");
 
@@ -121,8 +192,6 @@ mod imp {
             obj.setup_signals();
 
             obj.load_gsettings();
-
-            obj.setup_actions();
         }
     }
 
@@ -444,101 +513,6 @@ impl AppWindow {
                 Self::set_gsetting(&gsettings, "hires", &engine.settings().hires());
             }
         }
-    }
-
-    //-----------------------------------
-    // Setup actions
-    //-----------------------------------
-    fn setup_actions(&self) {
-        let imp = self.imp();
-
-        // Add reset widgets action
-        let reset_action = gio::ActionEntry::builder("reset-widgets")
-            .activate(clone!(
-                #[weak(rename_to = window)] self,
-                #[weak] imp,
-                move |_, _, _| {
-                    let reset_dialog = adw::AlertDialog::builder()
-                        .heading("Reset Parameters?")
-                        .body("Reset all parameters to their default values.")
-                        .default_response("reset")
-                        .build();
-
-                    reset_dialog.add_responses(&[("cancel", "_Cancel"), ("reset", "_Reset")]);
-                    reset_dialog.set_response_appearance("reset", adw::ResponseAppearance::Destructive);
-        
-                    reset_dialog.choose(
-                        &window,
-                        None::<&gio::Cancellable>,
-                        clone!(
-                            #[weak] imp,
-                            move |response| {
-                                if response == "reset" {
-                                    imp.engine_row.set_selected(0);
-                                    imp.engine_row.reset_engine_settings();
-                                    imp.iwad_row.set_selected(0);
-                                    imp.pwad_row.reset_to_default();
-                                    imp.switches_row.set_text("");
-                                }
-                            }
-                        )
-                    );
-                }
-            ))
-            .build();
-
-        // Add show cheats window action
-        let cheats_action = gio::ActionEntry::builder("show-cheats")
-            .activate(clone!(
-                #[weak] imp,
-                move |_, _, _| {
-                    imp.cheats_window.get().unwrap().present();
-                }
-            ))
-            .build();
-
-        // Add show preferences action
-        let prefs_action = gio::ActionEntry::builder("show-preferences")
-            .activate(clone!(
-                #[weak(rename_to = window)] self,
-                #[weak] imp,
-                move |_, _, _| {
-                    imp.prefs_dialog.get().unwrap().present(Some(&window));
-                }
-            ))
-            .build();
-
-        // Add launch Doom action
-        let launch_action = gio::ActionEntry::builder("launch-doom")
-            .activate(clone!(
-                #[weak(rename_to = window)] self,
-                move |_, _, _| {
-                    window.set_sensitive(false);
-
-                    match window.launch_doom() {
-                        LaunchResult::Error(error_msg) => {
-                            window.set_sensitive(true);
-
-                            let error_dialog = adw::AlertDialog::builder()
-                                .heading("Error")
-                                .body(error_msg)
-                                .body_use_markup(true)
-                                .build();
-
-                            error_dialog.add_responses(&[("ok", "_Ok")]);
-
-                            error_dialog.present(Some(&window));
-                        },
-                        LaunchResult::Success => {
-                            window.close();
-                        }
-                    }
-                }
-            ))
-            .build();
-
-        // Add actions to window
-        self.add_action_entries([reset_action, cheats_action, prefs_action, launch_action]);
     }
 
     //-----------------------------------
