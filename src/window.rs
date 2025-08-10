@@ -575,28 +575,24 @@ impl AppWindow {
         }
 
         // Get hires graphics files if enabled
-        let load_graphics = Path::new(GRAPHICS_PATH).try_exists().unwrap_or_default() &&
-            (engine.source() == EngineSource::ZDoom) &&
-            engine.settings().hires();
+        let load_graphics = (engine.source() == EngineSource::ZDoom) && engine.settings().hires() &&
+            Path::new(GRAPHICS_PATH).try_exists().unwrap_or_default();
 
-        let graphics_files = if load_graphics {
+        if load_graphics {
             let graphics_map = HashMap::from(GRAPHICS_MAP);
 
-            graphics_map.get(&iwad.id())
-                .filter(|_| load_graphics)
+            let graphics_files = graphics_map.get(&iwad.id())
                 .map(|files| {
                     files.iter()
                         .map(|file| Path::new(GRAPHICS_PATH).join(file).display().to_string())
                         .collect::<Vec<String>>()
                         .join(" ")
                 })
-                .unwrap_or_default()
-        } else {
-            String::new()
-        };
+                .unwrap_or_default();
 
-        if !graphics_files.is_empty() {
-            write!(cmd_line, " -file {graphics_files}").unwrap();
+            if !graphics_files.is_empty() {
+                write!(cmd_line, " -file {graphics_files}").unwrap();
+            }
         }
 
         // Launch Doom
