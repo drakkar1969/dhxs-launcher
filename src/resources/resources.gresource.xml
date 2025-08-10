@@ -7,6 +7,8 @@
   </gresource>
   <gresource prefix="/com/github/DHXS-Launcher">
     <file compressed="true" preprocess="xml-stripblanks">gtk/help-overlay.ui</file>
+    <file compressed="true">ui/cheats_window/code_item.ui</file>
+    <file compressed="true">ui/cheats_window/description_item.ui</file>
     <file compressed="true">ui/engine_combo/entry-item.ui</file>
     <file compressed="true">ui/engine_combo/list-item.ui</file>
     <file compressed="true">ui/iwad_combo/entry-item.ui</file>
@@ -14,6 +16,7 @@
     <file compressed="true">ui/folder_select_row.ui</file>
     <file compressed="true">ui/iwad_combo_row.ui</file>
     <file compressed="true">ui/engine_combo_row.ui</file>
+    <file compressed="true">ui/cheats_window.ui</file>
     <file compressed="true">ui/preferences_dialog.ui</file>
     <file compressed="true">ui/pwad_select_row.ui</file>
     <file compressed="true">ui/window.ui</file>

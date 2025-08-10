@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <!--// CheatsWindow template //-->
+  <template class="CheatsWindow" parent="AdwWindow">
+    <property name="modal">true</property>
+    <property name="resizable">false</property>
+    <property name="hide-on-close">true</property>
+    <property name="title">Doom Cheat Codes</property>
+    <property name="content">
+      <object class="AdwToolbarView" id="toolbar_view">
+        <property name="top-bar-style">raised</property>
+        <child type="top">
+          <object class="AdwHeaderBar" id="header_bar">
+          </object>
+        </child>
+        <property name="content">
+          <object class="GtkScrolledWindow">
+            <property name="hexpand">true</property>
+            <property name="vexpand">true</property>
+            <property name="hscrollbar-policy">never</property>
+            <property name="vscrollbar-policy">never</property>
+            <property name="child">
+              <object class="GtkColumnView" id="view">
+                <property name="tab-behavior">item</property>
+                <property name="model">
+                  <object class="GtkNoSelection" id="selection">
+                    <property name="model">
+                      <object class="GListStore" id="model">
+                        <property name="item-type">CheatObject</property>
+                      </object>
+                    </property>
+                  </object>
+                </property>
+                <child>
+                  <object class="GtkColumnViewColumn" id="code_column">
+                    <property name="title">Cheat Code</property>
+                    <property name="factory">
+                      <object class="GtkBuilderListItemFactory">
+                        <property name="resource">/com/github/DHXS-Launcher/ui/cheats_window/code_item.ui</property>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkColumnViewColumn" id="description_column">
+                    <property name="title">Description</property>
+                    <property name="expand">true</property>
+                    <property name="factory">
+                      <object class="GtkBuilderListItemFactory">
+                        <property name="resource">/com/github/DHXS-Launcher/ui/cheats_window/description_item.ui</property>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+              </object>
+            </property>
+          </object>
+        </property>
+      </object>
+    </property>
+  </template>
+</interface>

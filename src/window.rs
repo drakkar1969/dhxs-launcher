@@ -16,6 +16,7 @@ use crate::engine_combo_row::EngineComboRow;
 use crate::engine_object::EngineObject;
 use crate::iwad_combo_row::IWadComboRow;
 use crate::pwad_select_row::PWadSelectRow;
+use crate::cheats_window::CheatsWindow;
 use crate::preferences_dialog::PreferencesDialog;
 use crate::utils::env_expand;
 use crate::iwad_data::IWadID;
@@ -71,6 +72,7 @@ mod imp {
         #[template_child]
         pub(super) settings_config_row: TemplateChild<adw::ActionRow>,
 
+        pub(super) cheats_window: OnceCell<CheatsWindow>,
         pub(super) prefs_dialog: OnceCell<PreferencesDialog>,
     }
 
@@ -195,6 +197,12 @@ impl AppWindow {
 
         let _ = xdg_dirs.create_config_directory("dhxs-launcher/iwads");
         let _ = xdg_dirs.create_config_directory("dhxs-launcher/pwads");
+
+        // Create cheats window
+        let cheats_window = CheatsWindow::default();
+        cheats_window.set_transient_for(Some(self));
+
+        imp.cheats_window.set(cheats_window).unwrap();
 
         // Create prefences dialog
         imp.prefs_dialog.set(PreferencesDialog::default()).unwrap();
@@ -476,6 +484,16 @@ impl AppWindow {
             ))
             .build();
 
+        // Add show cheats window action
+        let cheats_action = gio::ActionEntry::builder("show-cheats")
+            .activate(clone!(
+                #[weak] imp,
+                move |_, _, _| {
+                    imp.cheats_window.get().unwrap().present();
+                }
+            ))
+            .build();
+
         // Add show preferences action
         let prefs_action = gio::ActionEntry::builder("show-preferences")
             .activate(clone!(
@@ -517,7 +535,7 @@ impl AppWindow {
             .build();
 
         // Add actions to window
-        self.add_action_entries([reset_action, prefs_action, launch_action]);
+        self.add_action_entries([reset_action, cheats_action, prefs_action, launch_action]);
     }
 
     //-----------------------------------

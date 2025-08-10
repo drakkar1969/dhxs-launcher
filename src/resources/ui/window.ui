@@ -207,6 +207,12 @@
     </section>
     <section>
       <item>
+        <attribute name="label">Doom Cheat Codes</attribute>
+        <attribute name="action">win.show-cheats</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
         <attribute name="label">About DHXS-Launcher</attribute>
         <attribute name="action">app.show-about</attribute>
       </item>

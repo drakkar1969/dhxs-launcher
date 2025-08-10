@@ -6,6 +6,8 @@ mod engine_settings;
 mod iwad_combo_row;
 mod iwad_object;
 mod pwad_select_row;
+mod cheats_window;
+mod cheat_object;
 mod preferences_dialog;
 mod folder_select_row;
 mod utils;
