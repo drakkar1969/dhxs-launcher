@@ -64,7 +64,7 @@ pub struct IWadData<'a> {
 // IWAD DATA
 //------------------------------------------------------------------------------
 pub const IWAD_HASHMAP: [(u32, IWadData); 39] = [
-    // DOOM / ULTIMATE DOOM ----------------------------------------------------
+    // (ULTIMATE) DOOM ----------------------------------------------------
     (
         0x66457ab9,
         IWadData { id: IWadID::DOOM, name: "Doom", version: "v1.1" }
