@@ -11,7 +11,7 @@
             <child>
               <object class="FolderSelectRow" id="iwad_row">
                 <property name="title">_IWAD Folder</property>
-                <property name="subtitle">Folder to search for IWAD files</property>
+                <property name="subtitle">Folder to search for user IWAD files</property>
                 <property name="use-underline">true</property>
                 <property name="dialog-title">IWAD Folder</property>
               </object>
