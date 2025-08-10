@@ -172,6 +172,7 @@ impl AppWindow {
     fn value_label(value: &str) -> gtk::Label {
         gtk::Label::builder()
             .label(value)
+            .use_markup(true)
             .valign(gtk::Align::Center)
             .xalign(0.0)
             .yalign(0.0)
@@ -197,15 +198,15 @@ impl AppWindow {
 
         // Populate switches popover
         [
-            ("-fast", "Increase the speed and attack rate of monsters, requires the -warp parameter"),
-            ("-nomonsters", "Disable spawning of monsters, requires the -warp parameter."),
+            ("-fast", "Increase the speed and attack rate of monsters (requires the <b>-warp</b> parameter)"),
+            ("-nomonsters", "Disable spawning of monsters (requires the <b>-warp</b> parameter)"),
             ("-nomusic", "Disable background music"),
             ("-nosfx", "Disable sound effects"),
             ("-nosound", "Disable music and sound effects"),
-            ("-respawn", "Monsters return a few seconds after being killed, requires the -warp parameter"),
-            ("-skill s", "Select difficulty level s (1 to 5), will warp to the first level of the game (if no other -warp parameter is specified)"),
-            ("-warp e m\n-warp m", "Start the game on episode e (1 to 4) map m (1 to 9) (Doom1)\nStart the game on level m (1 to 32) (Doom2)"),
-            ("-width x -height y", "Specify the desired screen resolution")
+            ("-respawn", "Monsters return a few seconds after being killed (requires the <b>-warp</b> parameter)"),
+            ("-skill s", "Select difficulty level <b>s</b> (1 to 5), will warp to the first level of the game (if no other <b>-warp</b> parameter is specified)"),
+            ("-warp e m\n-warp m", "Start the game on episode <b>e</b> (1 to 4) map <b>m</b> (1 to 9) (Doom1)\nStart the game on level <b>m</b> (1 to 32) (Doom2)"),
+            ("-width W -height H", "Specify the desired screen resolution (WxH)")
         ]
         .iter()
         .enumerate()
