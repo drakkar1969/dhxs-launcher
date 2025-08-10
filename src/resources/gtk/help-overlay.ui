@@ -28,6 +28,12 @@
             </child>
             <child>
               <object class="GtkShortcutsShortcut">
+                <property name="accelerator">F1</property>
+                <property name="title">Doom Cheat Codes</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkShortcutsShortcut">
                 <property name="accelerator">&lt;ctrl&gt;question</property>
                 <property name="title">Keyboard Shortcuts</property>
               </object>
