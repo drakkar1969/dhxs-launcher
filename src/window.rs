@@ -158,30 +158,29 @@ impl AppWindow {
     // Label helper functions
     //-----------------------------------
     fn key_label(key: &str) -> gtk::Label {
-        let label = gtk::Label::new(Some(key));
-        label.set_vexpand(true);
-        label.set_xalign(0.0);
-        label.set_yalign(0.0);
-        label.set_can_focus(false);
-        label.set_selectable(true);
-        label.set_css_classes(&["heading"]);
-
-        label
+        gtk::Label::builder()
+            .label(key)
+            .vexpand(true)
+            .xalign(0.0)
+            .yalign(0.0)
+            .can_focus(false)
+            .selectable(true)
+            .css_classes(["heading"])
+            .build()
     }
 
     fn value_label(value: &str) -> gtk::Label {
-        let label = gtk::Label::new(Some(value));
-
-        label.set_valign(gtk::Align::Center);
-        label.set_xalign(0.0);
-        label.set_yalign(0.0);
-        label.set_can_focus(false);
-        label.set_wrap_mode(pango::WrapMode::Word);
-        label.set_wrap(true);
-        label.set_width_chars(45);
-        label.set_max_width_chars(45);
-
-        label
+        gtk::Label::builder()
+            .label(value)
+            .valign(gtk::Align::Center)
+            .xalign(0.0)
+            .yalign(0.0)
+            .can_focus(false)
+            .wrap_mode(pango::WrapMode::Word)
+            .wrap(true)
+            .width_chars(45)
+            .max_width_chars(45)
+            .build()
     }
 
     //-----------------------------------
