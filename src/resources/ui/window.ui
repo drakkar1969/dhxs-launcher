@@ -131,6 +131,15 @@
                 <property name="margin-bottom">28</property>
                 <property name="spacing">28</property>
                 <child>
+                  <object class="GtkLabel" id="settings_desc_label">
+                    <property name="xalign">0</property>
+                    <property name="wrap">true</property>
+                    <style>
+                      <class name="dimmed"/>
+                    </style>
+                  </object>
+                </child>
+                <child>
                   <object class="AdwPreferencesGroup" id="settings_zdoom_group">
                     <child>
                       <object class="AdwSwitchRow" id="settings_hires_row">

@@ -62,6 +62,8 @@ mod imp {
         #[template_child]
         pub(super) settings_title: TemplateChild<adw::WindowTitle>,
         #[template_child]
+        pub(super) settings_desc_label: TemplateChild<gtk::Label>,
+        #[template_child]
         pub(super) settings_zdoom_group: TemplateChild<adw::PreferencesGroup>,
         #[template_child]
         pub(super) settings_hires_row: TemplateChild<adw::SwitchRow>,
@@ -266,7 +268,9 @@ impl AppWindow {
                 let imp = window.imp();
 
                 if let Some(engine) = engine_row.selected_engine() {
-                    imp.settings_title.set_title(&format!("{} Settings", engine.name()));
+                    imp.settings_title.set_title(&engine.name());
+
+                    imp.settings_desc_label.set_label(&engine.description());
 
                     let is_zdoom = engine.source() == EngineSource::ZDoom;
 
