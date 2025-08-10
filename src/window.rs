@@ -205,7 +205,7 @@ impl AppWindow {
             ("-nosound", "Disable music and sound effects"),
             ("-respawn", "Monsters return a few seconds after being killed, requires the -warp parameter"),
             ("-skill s", "Select difficulty level s (1 to 5), will warp to the first level of the game (if no other -warp parameter is specified)"),
-            ("-warp m\n-warp e m", "Start the game on level m (1 to 32) (Doom2)\nStart the game on episode e (1 to 4) map m (1 to 9) (Doom1)"),
+            ("-warp e m\n-warp m", "Start the game on episode e (1 to 4) map m (1 to 9) (Doom1)\nStart the game on level m (1 to 32) (Doom2)"),
             ("-width x -height y", "Specify the desired screen resolution")
         ]
         .iter()
