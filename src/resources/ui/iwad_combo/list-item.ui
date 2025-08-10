@@ -31,7 +31,7 @@
                 <property name="xalign">1</property>
                 <property name="valign">end</property>
                 <style>
-                  <class name="caption-heading"/>
+                  <class name="caption"/>
                 </style>
               </object>
             </child>
@@ -46,7 +46,7 @@
             </binding>
             <property name="xalign">0</property>
             <style>
-              <class name="caption-heading"/>
+              <class name="caption"/>
               <class name="dimmed"/>
             </style>
           </object>
