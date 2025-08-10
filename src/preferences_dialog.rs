@@ -87,13 +87,6 @@ glib::wrapper! {
 }
 
 impl PreferencesDialog {
-    //-----------------------------------
-    // New function
-    //-----------------------------------
-    pub fn new() -> Self {
-        glib::Object::builder().build()
-    }
-
     //---------------------------------------
     // Setup widgets
     //---------------------------------------
@@ -165,6 +158,6 @@ impl Default for PreferencesDialog {
     // Default constructor
     //-----------------------------------
     fn default() -> Self {
-        Self::new()
+        glib::Object::builder().build()
     }
 }

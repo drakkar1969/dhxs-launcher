@@ -75,13 +75,6 @@ glib::wrapper! {
 
 impl IWadComboRow {
     //-----------------------------------
-    // New function
-    //-----------------------------------
-    pub fn new() -> Self {
-        glib::Object::builder().build()
-    }
-
-    //-----------------------------------
     // Public init for folders function
     //-----------------------------------
     pub fn init_for_folders(&self, user_folder: &str) {
@@ -145,6 +138,6 @@ impl Default for IWadComboRow {
     // Default constructor
     //-----------------------------------
     fn default() -> Self {
-        Self::new()
+        glib::Object::builder().build()
     }
 }

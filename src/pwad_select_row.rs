@@ -115,13 +115,6 @@ glib::wrapper! {
 
 impl PWadSelectRow {
     //-----------------------------------
-    // New function
-    //-----------------------------------
-    pub fn new() -> Self {
-        glib::Object::builder().build()
-    }
-
-    //-----------------------------------
     // Setup signals
     //-----------------------------------
     fn setup_signals(&self) {
@@ -230,6 +223,6 @@ impl Default for PWadSelectRow {
     // Default constructor
     //-----------------------------------
     fn default() -> Self {
-        Self::new()
+        glib::Object::builder().build()
     }
 }
