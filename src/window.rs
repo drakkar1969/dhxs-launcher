@@ -587,7 +587,7 @@ impl AppWindow {
                     .flatten()
                     .filter_map(|path| {
                         let filename = path.display().to_string();
-    
+
                         crc32(&filename).ok()
                             .and_then(|hash| pwad_hashmap.get(&hash))
                             .filter(|&id| *id == iwad.id())
