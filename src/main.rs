@@ -12,6 +12,7 @@ mod preferences_dialog;
 mod folder_select_row;
 mod utils;
 mod iwad_data;
+mod pwad_data;
 mod engine_data;
 mod graphics_data;
 
