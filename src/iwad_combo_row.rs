@@ -7,7 +7,8 @@ use adw::prelude::*;
 use glob::{glob_with, MatchOptions};
 
 use crate::iwad_object::IWadObject;
-use crate::iwad_data::{IWAD_PATHS, IWAD_HASHMAP};
+use crate::iwad_data::{IWadData, IWadID, IWAD_HASHMAP, IWAD_PATHS};
+use crate::pwad_data::PWAD_HASHMAP;
 use crate::utils::crc32;
 
 //------------------------------------------------------------------------------
@@ -86,21 +87,37 @@ impl IWadComboRow {
             require_literal_leading_dot: false
         };
 
-        // Get list of IWADs in folders
-        let hash_map = HashMap::from(IWAD_HASHMAP);
+        let iwad_hashmap = HashMap::from(IWAD_HASHMAP);
+        let pwad_hashmap = HashMap::from(PWAD_HASHMAP);
 
-        let iwad_objects = IWAD_PATHS.iter().chain([&user_folder])
+        let mut iwad_files: Vec<(&IWadData, String)> = vec![];
+        let mut pwad_files: Vec<(&IWadID, String)> = vec![];
+
+        // Get list of WAD files in folders
+        for path in IWAD_PATHS.iter().chain([&user_folder])
             .flat_map(|folder| glob_with(&format!("{folder}/*.wad"), options))
-            .flat_map(|paths| {
-                paths.into_iter()
-                    .flatten()
-                    .filter_map(|path| {
-                        let filename = path.display().to_string();
+            .flat_map(|paths| paths.into_iter().flatten())
+        {
+            let filename = path.display().to_string();
+            let hash = crc32(&filename);
 
-                        crc32(&filename).ok()
-                            .and_then(|hash| hash_map.get(&hash))
-                            .map(|data| IWadObject::new(data, &filename))
-                    })
+            if let Some(data) = hash.as_ref().ok().and_then(|hash| iwad_hashmap.get(&hash)) {
+                iwad_files.push((data, filename));
+            } else if let Some(id) = hash.as_ref().ok().and_then(|hash| pwad_hashmap.get(&hash)) {
+                pwad_files.push((id, filename));
+            }
+        }
+
+        // Get IWAD list
+        let iwad_objects = iwad_files.into_iter()
+            .map(|(data, filename)| {
+                let pwads = pwad_files.iter()
+                    .filter(|(id, _)| **id == data.id)
+                    .map(|(_, filename)| filename.as_str())
+                    .collect::<Vec<&str>>()
+                    .join(" ");
+
+                IWadObject::new(data, &filename, &pwads)
             })
             .collect::<Vec<IWadObject>>();
 

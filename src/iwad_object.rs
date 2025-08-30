@@ -26,6 +26,8 @@ mod imp {
         version: RefCell<String>,
         #[property(get, set)]
         filename: RefCell<String>,
+        #[property(get, set)]
+        pwads: RefCell<String>,
     }
 
     //-----------------------------------
@@ -54,13 +56,14 @@ impl IWadObject {
     //-----------------------------------
     // New function
     //-----------------------------------
-    pub fn new(data: &IWadData, filename: &str) -> Self {
+    pub fn new(data: &IWadData, filename: &str, pwads: &str) -> Self {
         // Build IWadObject
         glib::Object::builder()
             .property("id", data.id)
             .property("name", data.name)
             .property("version", data.version)
             .property("filename", filename)
+            .property("pwads", pwads)
             .build()
     }
 }

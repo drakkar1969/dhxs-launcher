@@ -9,8 +9,6 @@ use adw::subclass::prelude::*;
 use adw::prelude::*;
 use glib::{clone, closure_local};
 
-use glob::{glob_with, MatchOptions};
-
 use crate::APP_ID;
 use crate::LauncherApp;
 use crate::engine_data::EngineSource;
@@ -20,9 +18,8 @@ use crate::iwad_combo_row::IWadComboRow;
 use crate::pwad_select_row::PWadSelectRow;
 use crate::cheats_window::CheatsWindow;
 use crate::preferences_dialog::PreferencesDialog;
-use crate::utils::{crc32, env_expand};
-use crate::iwad_data::{IWAD_PATHS, IWadID};
-use crate::pwad_data::PWAD_HASHMAP;
+use crate::utils::env_expand;
+use crate::iwad_data::IWadID;
 use crate::graphics_data::{GRAPHICS_PATH, GRAPHICS_MAP};
 
 //------------------------------------------------------------------------------
@@ -570,32 +567,8 @@ impl AppWindow {
         // Init Doom command line with exec file and IWAD
         let mut cmd_line = format!("{exec_file} -iwad {iwad_file}");
 
-        // Get installed PWAD files
-        let options = MatchOptions {
-            case_sensitive: false,
-            require_literal_separator: false,
-            require_literal_leading_dot: false
-        };
-
-        // Get list of installed PWADS
-        let pwad_hashmap = HashMap::from(PWAD_HASHMAP);
-
-        let pwad_files = IWAD_PATHS.iter()
-            .flat_map(|folder| glob_with(&format!("{folder}/*.wad"), options))
-            .flat_map(|paths| {
-                paths.into_iter()
-                    .flatten()
-                    .filter_map(|path| {
-                        let filename = path.display().to_string();
-
-                        crc32(&filename).ok()
-                            .and_then(|hash| pwad_hashmap.get(&hash))
-                            .filter(|&id| *id == iwad.id())
-                            .map(|_| filename)
-                    })
-            })
-            .collect::<Vec<String>>()
-            .join(" ");
+        // Get installed PWAD files for IWAD
+        let pwad_files = iwad.pwads();
 
         if !pwad_files.is_empty() {
             write!(cmd_line, " -file {pwad_files}").unwrap();
