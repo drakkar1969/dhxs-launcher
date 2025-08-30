@@ -102,6 +102,9 @@ impl LauncherApp {
                     .license_type(gtk::License::Gpl30)
                     .build();
 
+                about_dialog.add_link("Doom Wiki", "https://doomwiki.org/wiki/Entryway");
+                about_dialog.add_link("DoomWorld /idgames", "https://www.doomworld.com/idgames/");
+
                 about_dialog.present(Some(&window));
             })
             .build();
