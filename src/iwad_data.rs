@@ -173,8 +173,32 @@ pub const IWAD_HASHMAP: [(u32, IWadData); 39] = [
     ),
     // FREEDOOM ----------------------------------------------------------------
     (
+        0x562d477f,
+        IWadData { id: IWadID::FREEDOOM1, name: "FreeDoom: Phase 1", version: "v0.10.0" }
+    ),
+    (
+        0xd94b737d,
+        IWadData { id: IWadID::FREEDOOM1, name: "FreeDoom: Phase 1", version: "v0.10.1" }
+    ),
+    (
+        0x48aef988,
+        IWadData { id: IWadID::FREEDOOM1, name: "FreeDoom: Phase 1", version: "v0.11.0" }
+    ),
+    (
+        0x872e5d9d,
+        IWadData { id: IWadID::FREEDOOM1, name: "FreeDoom: Phase 1", version: "v0.11.1" }
+    ),
+    (
+        0x922cc8c4,
+        IWadData { id: IWadID::FREEDOOM1, name: "FreeDoom: Phase 1", version: "v0.11.2" }
+    ),
+    (
+        0x81901f03,
+        IWadData { id: IWadID::FREEDOOM1, name: "FreeDoom: Phase 1", version: "v0.11.3" }
+    ),
+    (
         0x070682b7,
-        IWadData { id: IWadID::FREEDOOM1, name: "FreeDoom: Phase 1", version: "v0.12." }
+        IWadData { id: IWadID::FREEDOOM1, name: "FreeDoom: Phase 1", version: "v0.12.0" }
     ),
     (
         0xde6ddb27,
@@ -183,6 +207,30 @@ pub const IWAD_HASHMAP: [(u32, IWadData); 39] = [
     (
         0xe42df22f,
         IWadData { id: IWadID::FREEDOOM1, name: "FreeDoom: Phase 1", version: "v0.13.0" }
+    ),
+    (
+        0xfd3019dc,
+        IWadData { id: IWadID::FREEDOOM2, name: "FreeDoom: Phase 2", version: "v0.10.0" }
+    ),
+    (
+        0xbc18778d,
+        IWadData { id: IWadID::FREEDOOM2, name: "FreeDoom: Phase 2", version: "v0.10.1" }
+    ),
+    (
+        0x23997426,
+        IWadData { id: IWadID::FREEDOOM2, name: "FreeDoom: Phase 2", version: "v0.11.0" }
+    ),
+    (
+        0xbbcfea9b,
+        IWadData { id: IWadID::FREEDOOM2, name: "FreeDoom: Phase 2", version: "v0.11.1" }
+    ),
+    (
+        0xa758c437,
+        IWadData { id: IWadID::FREEDOOM2, name: "FreeDoom: Phase 2", version: "v0.11.2" }
+    ),
+    (
+        0x81901f03,
+        IWadData { id: IWadID::FREEDOOM2, name: "FreeDoom: Phase 2", version: "v0.11.3" }
     ),
     (
         0xb66d9e8d,
