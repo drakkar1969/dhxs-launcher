@@ -34,6 +34,8 @@ mod imp {
         hexen_path: RefCell<Option<String>>,
         #[property(get, set, nullable)]
         strife_path: RefCell<Option<String>>,
+        #[property(get, set, nullable)]
+        hacx_path: RefCell<Option<String>>,
         #[property(get, set)]
         config_folder: RefCell<String>,
         #[property(get, set, builder(EngineSource::default()))]
@@ -77,6 +79,7 @@ impl EngineObject {
             .property("heretic-path", data.heretic_path)
             .property("hexen-path", data.hexen_path)
             .property("strife-path", data.strife_path)
+            .property("hacx-path", data.hacx_path)
             .property("config-folder", data.config_folder)
             .property("source", data.source)
             .build()

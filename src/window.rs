@@ -549,6 +549,9 @@ impl AppWindow {
             IWadID::STRIFE => {
                 engine.strife_path().unwrap_or_else(|| engine.doom_path())
             },
+            IWadID::HACX => {
+                engine.hacx_path().unwrap_or_else(|| engine.doom_path())
+            },
             _ => unreachable!()
         });
 

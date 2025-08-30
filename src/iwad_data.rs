@@ -3,7 +3,8 @@ use gtk::glib;
 //------------------------------------------------------------------------------
 // CONST VARIABLES
 //------------------------------------------------------------------------------
-pub const IWAD_PATHS: [&str; 4] = [
+pub const IWAD_PATHS: [&str; 5] = [
+    "/usr/share/doom",
     "/usr/share/games/doom",
     "/usr/share/games/heretic",
     "/usr/share/games/hexen",
@@ -35,13 +36,17 @@ pub enum IWadID {
     HEXEN         = 0b0000_0001_0000_0000,
     #[flags_value(name = "Strife")]
     STRIFE        = 0b0000_0010_0000_0000,
+    #[flags_value(name = "HacX")]
+    HACX          = 0b0000_0100_0000_0000,
 
     #[flags_value(skip)]
-    DOOM_ONLY     = Self::DOOM.bits() | Self::UDOOM.bits() | Self::DOOM2.bits() | Self::PLUTONIA.bits() | Self::TNT.bits() | Self::FREEDOOM1.bits() | Self::FREEDOOM2.bits(),
+    ANY_DOOM = Self::DOOM.bits() | Self::UDOOM.bits() | Self::DOOM2.bits() | Self::PLUTONIA.bits() | Self::TNT.bits() | Self::FREEDOOM1.bits() | Self::FREEDOOM2.bits(),
     #[flags_value(skip)]
-    ALL_NO_STRIFE = Self::DOOM_ONLY.bits() | Self::HERETIC.bits() | Self::HEXEN.bits(),
+    ANY_DOOM_HACX = Self::ANY_DOOM.bits() | Self::HACX.bits(),
     #[flags_value(skip)]
-    ALL           = Self::ALL_NO_STRIFE.bits() | Self::STRIFE.bits(),
+    ALL_NO_STRIFE_HACX = Self::ANY_DOOM.bits() | Self::HERETIC.bits() | Self::HEXEN.bits(),
+    #[flags_value(skip)]
+    ALL = Self::ALL_NO_STRIFE_HACX.bits() | Self::STRIFE.bits() | Self::HACX.bits(),
 }
 
 impl Default for IWadID {
@@ -63,8 +68,8 @@ pub struct IWadData<'a> {
 //------------------------------------------------------------------------------
 // IWAD DATA
 //------------------------------------------------------------------------------
-pub const IWAD_HASHMAP: [(u32, IWadData); 39] = [
-    // (ULTIMATE) DOOM ----------------------------------------------------
+pub const IWAD_HASHMAP: [(u32, IWadData); 56] = [
+    // (ULTIMATE) DOOM ---------------------------------------------------------
     (
         0x66457ab9,
         IWadData { id: IWadID::DOOM, name: "Doom", version: "v1.1" }
@@ -243,6 +248,27 @@ pub const IWAD_HASHMAP: [(u32, IWadData); 39] = [
     (
         0xa0bfeb53,
         IWadData { id: IWadID::FREEDOOM2, name: "FreeDoom: Phase 2", version: "v0.13.0" }
+    ),
+    // HACX --------------------------------------------------------------------
+    (
+        0x4f37c580,
+        IWadData { id: IWadID::HACX, name: "HacX", version: "v1.0" }
+    ),
+    (
+        0xb95a03d2,
+        IWadData { id: IWadID::HACX, name: "HacX", version: "v1.1" }
+    ),
+    (
+        0x72e3b8ac,
+        IWadData { id: IWadID::HACX, name: "HacX", version: "v1.2" }
+    ),
+    (
+        0x80b881c3,
+        IWadData { id: IWadID::HACX, name: "HacX", version: "v2.0r58" }
+    ),
+    (
+        0x19d1bb98,
+        IWadData { id: IWadID::HACX, name: "HacX", version: "v2.0r61" }
     ),
     // HERETIC -----------------------------------------------------------------
     (

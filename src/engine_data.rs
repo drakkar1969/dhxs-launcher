@@ -31,6 +31,7 @@ pub struct EngineData<'a> {
     pub heretic_path: Option<&'a str>,
     pub hexen_path: Option<&'a str>,
     pub strife_path: Option<&'a str>,
+    pub hacx_path: Option<&'a str>,
     pub config_folder: &'a str,
 }
 
@@ -47,6 +48,7 @@ pub const ENGINE_ARRAY: [EngineData; 7] = [
         heretic_path: Some("/usr/bin/chocolate-heretic"),
         hexen_path: Some("/usr/bin/chocolate-hexen"),
         strife_path: Some("/usr/bin/chocolate-strife"),
+        hacx_path: None,
         config_folder: "$HOME/.local/share/chocolate-doom"
     },
     EngineData {
@@ -58,17 +60,19 @@ pub const ENGINE_ARRAY: [EngineData; 7] = [
         heretic_path: Some("/usr/bin/crispy-heretic"),
         hexen_path: Some("/usr/bin/crispy-hexen"),
         strife_path: Some("/usr/bin/crispy-strife"),
+        hacx_path: None,
         config_folder: "$HOME/.local/share/crispy-doom"
     },
     EngineData {
         name: "DSDA-Doom",
         description: "Fork of PrBoom+ with extra tooling for demo recording and playback, with a focus on speedrunning",
         source: EngineSource::PrBoom,
-        games: IWadID::ALL_NO_STRIFE,
+        games: IWadID::ALL_NO_STRIFE_HACX,
         doom_path: "/usr/bin/dsda-doom",
         heretic_path: None,
         hexen_path: None,
         strife_path: None,
+        hacx_path: None,
         config_folder: "$HOME/.local/share/dsda-doom"
     },
     EngineData {
@@ -80,17 +84,19 @@ pub const ENGINE_ARRAY: [EngineData; 7] = [
         heretic_path: None,
         hexen_path: None,
         strife_path: None,
+        hacx_path: None,
         config_folder: "$HOME/.config/gzdoom"
     },
     EngineData {
         name: "Nugget Doom",
         description: "Fork of Woof! with additional features",
         source: EngineSource::WinMBF,
-        games: IWadID::DOOM_ONLY,
+        games: IWadID::ANY_DOOM_HACX,
         doom_path: "/usr/bin/nugget-doom",
         heretic_path: None,
         hexen_path: None,
         strife_path: None,
+        hacx_path: None,
         config_folder: "$HOME/.local/share/nugget-doom"
     },
     EngineData {
@@ -102,17 +108,19 @@ pub const ENGINE_ARRAY: [EngineData; 7] = [
         heretic_path: None,
         hexen_path: None,
         strife_path: None,
+        hacx_path: None,
         config_folder: "$HOME/.config/vkdoom"
     },
     EngineData {
         name: "Woof!",
         description: "Woof! is a continuation of Lee Killough's Doom source port MBF targeted at modern systems",
         source: EngineSource::WinMBF,
-        games: IWadID::DOOM_ONLY,
+        games: IWadID::ANY_DOOM_HACX,
         doom_path: "/usr/bin/woof",
         heretic_path: None,
         hexen_path: None,
         strife_path: None,
+        hacx_path: None,
         config_folder: "$HOME/.local/share/woof"
     },
 ];
