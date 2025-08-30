@@ -534,7 +534,7 @@ impl AppWindow {
 
         // Get executable file
         let exec_file = env_expand(&match iwad.id() {
-            IWadID::DOOM | IWadID::UDOOM | IWadID::DOOM2 | IWadID::PLUTONIA | IWadID::TNT | IWadID::FREEDOOM1 | IWadID::FREEDOOM2 => {
+            IWadID::DOOM | IWadID::UDOOM | IWadID::DOOM2 | IWadID::PLUTONIA | IWadID::TNT | IWadID::FREEDOOM1 | IWadID::FREEDOOM2 | IWadID::HACX => {
                 engine.doom_path()
             },
             IWadID::HERETIC => {
@@ -545,9 +545,6 @@ impl AppWindow {
             },
             IWadID::STRIFE => {
                 engine.strife_path().unwrap_or_else(|| engine.doom_path())
-            },
-            IWadID::HACX => {
-                engine.hacx_path().unwrap_or_else(|| engine.doom_path())
             },
             _ => unreachable!()
         });

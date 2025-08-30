@@ -31,7 +31,6 @@ pub struct EngineData<'a> {
     pub heretic_path: Option<&'a str>,
     pub hexen_path: Option<&'a str>,
     pub strife_path: Option<&'a str>,
-    pub hacx_path: Option<&'a str>,
     pub config_folder: &'a str,
 }
 
@@ -48,7 +47,6 @@ pub const ENGINE_ARRAY: [EngineData; 7] = [
         heretic_path: Some("/usr/bin/chocolate-heretic"),
         hexen_path: Some("/usr/bin/chocolate-hexen"),
         strife_path: Some("/usr/bin/chocolate-strife"),
-        hacx_path: None,
         config_folder: "$HOME/.local/share/chocolate-doom"
     },
     EngineData {
@@ -60,7 +58,6 @@ pub const ENGINE_ARRAY: [EngineData; 7] = [
         heretic_path: Some("/usr/bin/crispy-heretic"),
         hexen_path: Some("/usr/bin/crispy-hexen"),
         strife_path: Some("/usr/bin/crispy-strife"),
-        hacx_path: None,
         config_folder: "$HOME/.local/share/crispy-doom"
     },
     EngineData {
@@ -72,7 +69,6 @@ pub const ENGINE_ARRAY: [EngineData; 7] = [
         heretic_path: None,
         hexen_path: None,
         strife_path: None,
-        hacx_path: None,
         config_folder: "$HOME/.local/share/dsda-doom"
     },
     EngineData {
@@ -84,7 +80,6 @@ pub const ENGINE_ARRAY: [EngineData; 7] = [
         heretic_path: None,
         hexen_path: None,
         strife_path: None,
-        hacx_path: None,
         config_folder: "$HOME/.config/gzdoom"
     },
     EngineData {
@@ -96,7 +91,6 @@ pub const ENGINE_ARRAY: [EngineData; 7] = [
         heretic_path: None,
         hexen_path: None,
         strife_path: None,
-        hacx_path: None,
         config_folder: "$HOME/.local/share/nugget-doom"
     },
     EngineData {
@@ -108,7 +102,6 @@ pub const ENGINE_ARRAY: [EngineData; 7] = [
         heretic_path: None,
         hexen_path: None,
         strife_path: None,
-        hacx_path: None,
         config_folder: "$HOME/.config/vkdoom"
     },
     EngineData {
@@ -120,7 +113,6 @@ pub const ENGINE_ARRAY: [EngineData; 7] = [
         heretic_path: None,
         hexen_path: None,
         strife_path: None,
-        hacx_path: None,
         config_folder: "$HOME/.local/share/woof"
     },
 ];
