@@ -96,7 +96,7 @@ impl CheatsWindow {
             ("IDMYPOS", "Display location")
         ]
         .iter()
-        .map(|(code, description)| {
+        .map(|&(code, description)| {
             CheatObject::new(code, description)
         })
         .collect();

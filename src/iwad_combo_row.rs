@@ -101,9 +101,9 @@ impl IWadComboRow {
             let filename = path.display().to_string();
             let hash = crc32(&filename);
 
-            if let Some(data) = hash.as_ref().ok().and_then(|hash| iwad_hashmap.get(&hash)) {
+            if let Some(data) = hash.as_ref().ok().and_then(|hash| iwad_hashmap.get(hash)) {
                 iwad_files.push((data, filename));
-            } else if let Some(id) = hash.as_ref().ok().and_then(|hash| pwad_hashmap.get(&hash)) {
+            } else if let Some(id) = hash.as_ref().ok().and_then(|hash| pwad_hashmap.get(hash)) {
                 pwad_files.push((id, filename));
             }
         }

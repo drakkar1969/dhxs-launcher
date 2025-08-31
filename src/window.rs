@@ -293,7 +293,7 @@ impl AppWindow {
         ]
         .iter()
         .enumerate()
-        .for_each(|(i, (key, value))| {
+        .for_each(|(i, &(key, value))| {
             imp.switches_grid.attach(&Self::key_label(key), 0, i as i32, 1, 1);
             imp.switches_grid.attach(&Self::value_label(value), 1, i as i32, 1, 1);
         });
