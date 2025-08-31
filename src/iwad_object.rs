@@ -28,8 +28,6 @@ mod imp {
         filename: RefCell<String>,
         #[property(get, set)]
         pwad_files: RefCell<Vec<String>>,
-        #[property(get, set)]
-        pwad_names: RefCell<Vec<String>>,
     }
 
     //-----------------------------------
@@ -58,7 +56,7 @@ impl IWadObject {
     //-----------------------------------
     // New function
     //-----------------------------------
-    pub fn new(data: &IWadData, filename: &str, pwad_files: &[&str], pwad_names: &[&str]) -> Self {
+    pub fn new(data: &IWadData, filename: &str, pwad_files: &[&str]) -> Self {
         // Build IWadObject
         glib::Object::builder()
             .property("id", data.id)
@@ -66,7 +64,6 @@ impl IWadObject {
             .property("version", data.version)
             .property("filename", filename)
             .property("pwad-files", pwad_files)
-            .property("pwad-names", pwad_names)
             .build()
     }
 }

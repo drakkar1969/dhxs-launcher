@@ -109,15 +109,12 @@ impl IWadComboRow {
         // Add IWADs to combo row
         let iwad_objects = iwad_list.into_iter()
             .map(|(iwad_data, filename)| {
-                let (pwad_files, mut pwad_names): (Vec<&str>, Vec<&str>) = pwad_list.iter()
+                let pwad_files: Vec<&str> = pwad_list.iter()
                     .filter(|(pwad_data, _)| pwad_data.id == iwad_data.id)
-                    .map(|(pwad_data, filename)| (filename.as_str(), pwad_data.name))
-                    .unzip();
+                    .map(|(_, filename)| filename.as_str())
+                    .collect();
 
-                pwad_names.sort_unstable();
-                pwad_names.dedup();
-
-                IWadObject::new(iwad_data, &filename, &pwad_files, &pwad_names)
+                IWadObject::new(iwad_data, &filename, &pwad_files)
             })
             .collect::<Vec<IWadObject>>();
 
