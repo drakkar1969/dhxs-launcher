@@ -115,6 +115,7 @@
           <object class="AdwToolbarView">
             <child type="top">
               <object class="AdwHeaderBar">
+                <property name="show-end-title-buttons">false</property>
                 <property name="title-widget">
                   <object class="AdwWindowTitle" id="settings_title">
                     <property name="title">Engine Settings</property>
