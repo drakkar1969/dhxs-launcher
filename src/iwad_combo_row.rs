@@ -7,8 +7,8 @@ use adw::prelude::*;
 use glob::{glob_with, MatchOptions};
 
 use crate::iwad_object::IWadObject;
-use crate::iwad_data::{IWadData, IWadID, IWAD_HASHMAP, IWAD_PATHS};
-use crate::pwad_data::PWAD_HASHMAP;
+use crate::iwad_data::{IWadData, IWAD_HASHMAP, IWAD_PATHS};
+use crate::pwad_data::{PWadData, PWAD_HASHMAP};
 use crate::utils::crc32;
 
 //------------------------------------------------------------------------------
@@ -88,8 +88,8 @@ impl IWadComboRow {
         let iwad_hashmap = HashMap::from(IWAD_HASHMAP);
         let pwad_hashmap = HashMap::from(PWAD_HASHMAP);
 
-        let mut iwad_files: Vec<(&IWadData, String)> = vec![];
-        let mut pwad_files: Vec<(&IWadID, String)> = vec![];
+        let mut iwad_list: Vec<(&IWadData, String)> = vec![];
+        let mut pwad_list: Vec<(&PWadData, String)> = vec![];
 
         for path in IWAD_PATHS.iter().chain([&user_folder])
             .flat_map(|folder| glob_with(&format!("{folder}/*.wad"), options))
@@ -99,23 +99,25 @@ impl IWadComboRow {
             
             if let Ok(hash) = crc32(&filename) {
                 if let Some(data) = iwad_hashmap.get(&hash) {
-                    iwad_files.push((data, filename));
-                } else if let Some(id) = pwad_hashmap.get(&hash) {
-                    pwad_files.push((id, filename));
+                    iwad_list.push((data, filename));
+                } else if let Some(data) = pwad_hashmap.get(&hash) {
+                    pwad_list.push((data, filename));
                 }
             }
         }
 
         // Add IWADs to combo row
-        let iwad_objects = iwad_files.into_iter()
-            .map(|(data, filename)| {
-                let pwads = pwad_files.iter()
-                    .filter(|(id, _)| **id == data.id)
-                    .map(|(_, filename)| filename.as_str())
-                    .collect::<Vec<&str>>()
-                    .join(" ");
+        let iwad_objects = iwad_list.into_iter()
+            .map(|(iwad_data, filename)| {
+                let (pwad_files, mut pwad_names): (Vec<&str>, Vec<&str>) = pwad_list.iter()
+                    .filter(|(pwad_data, _)| pwad_data.id == iwad_data.id)
+                    .map(|(pwad_data, filename)| (filename.as_str(), pwad_data.name))
+                    .unzip();
 
-                IWadObject::new(data, &filename, &pwads)
+                pwad_names.sort_unstable();
+                pwad_names.dedup();
+
+                IWadObject::new(iwad_data, &filename, &pwad_files, &pwad_names)
             })
             .collect::<Vec<IWadObject>>();
 

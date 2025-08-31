@@ -565,7 +565,7 @@ impl AppWindow {
         let mut cmd_line = format!("{exec_file} -iwad {iwad_file}");
 
         // Get installed PWAD files for IWAD
-        let pwad_files = iwad.pwads();
+        let pwad_files = iwad.pwad_files().join(" ");
 
         if !pwad_files.is_empty() {
             write!(cmd_line, " -file {pwad_files}").unwrap();
