@@ -64,6 +64,8 @@ mod imp {
         #[template_child]
         pub(super) settings_title: TemplateChild<adw::WindowTitle>,
         #[template_child]
+        pub(super) settings_prev_button: TemplateChild<gtk::Button>,
+        #[template_child]
         pub(super) settings_desc_row: TemplateChild<adw::ActionRow>,
         #[template_child]
         pub(super) settings_games_row: TemplateChild<adw::ActionRow>,
@@ -382,6 +384,14 @@ impl AppWindow {
 
                     imp.split_view.set_show_sidebar(true);
                 }
+            }
+        ));
+
+        // Settings previous button clicked signal
+        imp.settings_prev_button.connect_clicked(clone!(
+            #[weak] imp,
+            move |_| {
+                imp.split_view.set_show_sidebar(false);
             }
         ));
 
