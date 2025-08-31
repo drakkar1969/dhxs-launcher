@@ -157,6 +157,8 @@ impl EngineComboRow {
         imp.iwad_id.replace(iwad_id);
 
         imp.filter.changed(gtk::FilterChange::Different);
+
+        imp.settings_button.set_sensitive(imp.sort_model.n_items() > 0);
     }
 
     //-----------------------------------
