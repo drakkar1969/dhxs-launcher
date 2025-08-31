@@ -96,8 +96,6 @@ impl LauncherApp {
                     .developer_name("draKKar1969")
                     .version(env!("CARGO_PKG_VERSION"))
                     .website("https://github.com/drakkar1969/dhxs-launcher/")
-                    .developers(vec!["draKKar1969"])
-                    .designers(vec!["draKKar1969"])
                     .copyright("© 2025 draKKar1969")
                     .license_type(gtk::License::Gpl30)
                     .build();
