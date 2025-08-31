@@ -366,7 +366,7 @@ impl AppWindow {
                             games_list.sort_unstable();
                             games_list.dedup();
 
-                            games_list.join(", ")
+                            games_list.join(" \u{2022} ")
                         })
                         .unwrap_or_default();
 
