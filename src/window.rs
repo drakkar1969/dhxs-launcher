@@ -617,13 +617,13 @@ impl AppWindow {
         }
 
         // Launch Doom
-        if let Some(params) = shlex::split(&cmd_line).filter(|params| !params.is_empty()) {
-            Command::new(&params[0])
-                .args(&params[1..])
-                .spawn()
-                .unwrap();
-        }
+        let Some(params) = shlex::split(&cmd_line).filter(|params| !params.is_empty()) else {
+            return LaunchResult::Error(String::from("Error parsing command line."))
+        };
 
-        LaunchResult::Success
+        Command::new(&params[0])
+            .args(&params[1..])
+            .spawn()
+            .map_or(LaunchResult::Error(String::from("Error spawning command.")), |_| LaunchResult::Success)
     }
 }
