@@ -102,6 +102,8 @@ impl LauncherApp {
 
                 about_dialog.add_link("Doom Wiki", "https://doomwiki.org/wiki/Entryway");
                 about_dialog.add_link("DoomWorld /idgames", "https://www.doomworld.com/idgames/");
+                about_dialog.add_link("DoomWorld /Cacowards", "https://www.doomworld.com/cacowards/");
+                about_dialog.add_link("Classic DOOM", "https://classicdoom.com/");
 
                 about_dialog.present(Some(&window));
             })
