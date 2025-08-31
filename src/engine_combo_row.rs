@@ -1,3 +1,4 @@
+use std::cell::RefCell;
 use std::sync::OnceLock;
 use std::path::Path;
 
@@ -32,6 +33,8 @@ mod imp {
         pub(super) sort_model: TemplateChild<gtk::SortListModel>,
         #[template_child]
         pub(super) filter: TemplateChild<gtk::CustomFilter>,
+
+        pub(super) iwad_id: RefCell<Option<IWadID>>,
     }
 
     //-----------------------------------
@@ -126,6 +129,23 @@ impl EngineComboRow {
             .collect::<Vec<EngineObject>>();
 
         imp.model.splice(0, imp.model.n_items(), &engine_objects);
+
+        // Set engine filter function
+        imp.filter.set_filter_func(clone!(
+            #[weak] imp,
+            #[upgrade_or] false,
+            move |item| {
+                if let Some(id) = &*imp.iwad_id.borrow() {
+                    item
+                        .downcast_ref::<EngineObject>()
+                        .expect("Must be a 'EngineObject'")
+                        .games()
+                        .intersects(*id)
+                } else {
+                    false
+                }
+            }
+        ));
     }
 
     //-----------------------------------
@@ -134,19 +154,9 @@ impl EngineComboRow {
     pub fn filter_engines(&self, iwad_id: Option<IWadID>) {
         let imp = self.imp();
 
-        if let Some(id) = iwad_id {
-            imp.filter.set_filter_func(move |item| {
-                item
-                    .downcast_ref::<EngineObject>()
-                    .expect("Must be a 'EngineObject'")
-                    .games()
-                    .intersects(id)
-            });
-        } else {
-            imp.filter.set_filter_func(move |_| {
-                false
-            });
-        }
+        imp.iwad_id.replace(iwad_id);
+
+        imp.filter.changed(gtk::FilterChange::Different);
     }
 
     //-----------------------------------
