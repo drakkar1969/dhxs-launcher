@@ -18,11 +18,11 @@
       <summary>Extra switches to pass to Doom</summary>
     </key>
     <key name="iwad-folder" type="s">
-      <default>'$HOME/.config/dhxs-launcher/iwads'</default>
+      <default>'$HOME/.local/share/dhxs-launcher/iwads'</default>
       <summary>Folder to search for game (IWAD) files</summary>
     </key>
     <key name="pwad-folder" type="s">
-      <default>'$HOME/.config/dhxs-launcher/pwads'</default>
+      <default>'$HOME/.local/share/dhxs-launcher/pwads'</default>
       <summary>Folder to search for additional files</summary>
     </key>
   </schema>

@@ -266,11 +266,11 @@ impl AppWindow {
     fn setup_widgets(&self) {
         let imp = self.imp();
 
-        // Create user config dirs if they do not exist
+        // Create user data dirs if they do not exist
         let xdg_dirs = xdg::BaseDirectories::new();
 
-        let _ = xdg_dirs.create_config_directory("dhxs-launcher/iwads");
-        let _ = xdg_dirs.create_config_directory("dhxs-launcher/pwads");
+        let _ = xdg_dirs.create_data_directory("dhxs-launcher/iwads");
+        let _ = xdg_dirs.create_data_directory("dhxs-launcher/pwads");
 
         // Create cheats window
         let cheats_window = CheatsWindow::default();
